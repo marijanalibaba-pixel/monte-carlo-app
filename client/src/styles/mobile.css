@@ -1,6 +1,41 @@
 /* Mobile-specific optimizations for PWA */
 
-/* Improve touch targets on mobile */
+/* S24 Ultra and large phone optimizations */
+@media (max-width: 430px) and (min-height: 900px) {
+  /* Large phone specific fixes */
+  .text-3xl {
+    font-size: 1.5rem !important;
+  }
+  
+  .text-4xl {
+    font-size: 1.75rem !important;
+  }
+  
+  .text-5xl {
+    font-size: 2rem !important;
+  }
+  
+  .text-6xl {
+    font-size: 2.25rem !important;
+  }
+  
+  /* Fix header spacing */
+  .h-20 {
+    height: 4rem !important;
+  }
+  
+  /* Reduce padding */
+  .p-6 {
+    padding: 1rem !important;
+  }
+  
+  .px-4 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}
+
+/* Standard mobile optimizations */
 @media (max-width: 640px) {
   button, input, select, textarea {
     min-height: 44px;
@@ -17,13 +52,18 @@
     margin-bottom: 1rem;
   }
   
-  /* Responsive text sizes */
-  h1 {
-    font-size: 1.875rem !important;
+  /* Fix overlapping elements */
+  .space-x-3 > * + * {
+    margin-left: 0.5rem !important;
   }
   
-  h2 {
-    font-size: 1.5rem !important;
+  .space-x-4 > * + * {
+    margin-left: 0.75rem !important;
+  }
+  
+  /* Ensure proper stacking */
+  .flex-wrap {
+    gap: 0.5rem !important;
   }
   
   /* Optimize form layouts */
@@ -37,6 +77,15 @@
   
   .grid-cols-2 {
     grid-template-columns: repeat(1, 1fr) !important;
+  }
+  
+  /* Fix dark mode contrast */
+  .dark .bg-white\/80 {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+  }
+  
+  .dark .text-slate-600 {
+    color: rgb(148, 163, 184) !important;
   }
 }
 
