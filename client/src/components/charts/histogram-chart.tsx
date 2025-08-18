@@ -40,6 +40,13 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
   const p50Days = getPercentileDays(0.5);
   const p80Days = getPercentileDays(0.8);
   const p95Days = getPercentileDays(0.95);
+  
+  // Debug: log percentile values
+  console.log('Histogram percentiles:', { p50Days, p80Days, p95Days });
+  console.log('Histogram data range:', { 
+    min: Math.min(...histogramData.map(d => d.bin)), 
+    max: Math.max(...histogramData.map(d => d.bin)) 
+  });
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -68,9 +75,27 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
               stroke="hsl(var(--primary-600))"
               strokeWidth={1}
             />
-            <ReferenceLine x={p50Days} stroke="#3b82f6" strokeWidth={2} strokeDasharray="4 4" label={{ value: "P50", position: "top" }} />
-            <ReferenceLine x={p80Days} stroke="#f59e0b" strokeWidth={2} strokeDasharray="4 4" label={{ value: "P80", position: "top" }} />
-            <ReferenceLine x={p95Days} stroke="#10b981" strokeWidth={2} strokeDasharray="4 4" label={{ value: "P95", position: "top" }} />
+            <ReferenceLine 
+              x={p50Days} 
+              stroke="#3b82f6" 
+              strokeWidth={3} 
+              strokeDasharray="5 5" 
+              label={{ value: "P50", position: "top" }}
+            />
+            <ReferenceLine 
+              x={p80Days} 
+              stroke="#f59e0b" 
+              strokeWidth={3} 
+              strokeDasharray="5 5" 
+              label={{ value: "P80", position: "top" }}
+            />
+            <ReferenceLine 
+              x={p95Days} 
+              stroke="#10b981" 
+              strokeWidth={3} 
+              strokeDasharray="5 5" 
+              label={{ value: "P95", position: "top" }}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
