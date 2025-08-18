@@ -208,7 +208,6 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardContent>
         </Card>
       </div>
-
       {/* Confidence Intervals Table */}
       <Card>
         <CardHeader>
@@ -251,7 +250,6 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </div>
         </CardContent>
       </Card>
-
       {/* Distribution Histogram */}
       <Card>
         <CardHeader>
@@ -365,7 +363,6 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </div>
         </CardContent>
       </Card>
-
       {/* S-Curve (Cumulative Probability) */}
       <Card>
         <CardHeader>
@@ -452,7 +449,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
               </AreaChart>
             </ResponsiveContainer>
             {/* Legend for S-curve - positioned near bottom of chart area */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2">
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2 mt-[-37px] mb-[-37px]">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
@@ -471,7 +468,6 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </div>
         </CardContent>
       </Card>
-
       {/* Statistical Summary */}
       <Card>
         <CardHeader>
