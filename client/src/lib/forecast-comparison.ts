@@ -109,7 +109,7 @@ export class ForecastComparison {
    * Compare confidence intervals across scenarios
    */
   private static compareConfidenceIntervals(scenarios: ForecastScenario[]) {
-    const confidenceLevels = [0.5, 0.8, 0.85, 0.9, 0.95, 0.99];
+    const confidenceLevels = [0.5, 0.8, 0.95];
     
     return confidenceLevels.map(level => {
       const scenarioData = scenarios.map(scenario => {

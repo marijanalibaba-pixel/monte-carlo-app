@@ -345,19 +345,21 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </BarChart>
             </ResponsiveContainer>
-            {/* Legend for histogram */}
-            <div className="flex justify-center mt-4 space-x-6">
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-0.5 bg-blue-500" style={{borderTop: '2px dashed #3b82f6'}}></div>
-                <span className="text-sm text-muted-foreground">P50 (50% confidence)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-0.5 bg-amber-500" style={{borderTop: '2px dashed #f59e0b'}}></div>
-                <span className="text-sm text-muted-foreground">P80 (80% confidence)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-0.5 bg-red-500" style={{borderTop: '2px dashed #ef4444'}}></div>
-                <span className="text-sm text-muted-foreground">P95 (95% confidence)</span>
+            {/* Legend for histogram - positioned inside chart area */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2">
+              <div className="flex space-x-4 text-xs">
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
+                  <span className="text-muted-foreground">P50</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-0.5" style={{borderTop: '2px dashed #f59e0b'}}></div>
+                  <span className="text-muted-foreground">P80</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-0.5" style={{borderTop: '2px dashed #ef4444'}}></div>
+                  <span className="text-muted-foreground">P95</span>
+                </div>
               </div>
             </div>
           </div>
@@ -449,19 +451,21 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </AreaChart>
             </ResponsiveContainer>
-            {/* Legend for S-curve */}
-            <div className="flex justify-center mt-4 space-x-6">
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-0.5 bg-blue-500" style={{borderTop: '2px dashed #3b82f6'}}></div>
-                <span className="text-sm text-muted-foreground">P50 (50% confidence)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-0.5 bg-amber-500" style={{borderTop: '2px dashed #f59e0b'}}></div>
-                <span className="text-sm text-muted-foreground">P80 (80% confidence)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-0.5 bg-red-500" style={{borderTop: '2px dashed #ef4444'}}></div>
-                <span className="text-sm text-muted-foreground">P95 (95% confidence)</span>
+            {/* Legend for S-curve - positioned inside chart area */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2">
+              <div className="flex space-x-4 text-xs">
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
+                  <span className="text-muted-foreground">P50</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-0.5" style={{borderTop: '2px dashed #f59e0b'}}></div>
+                  <span className="text-muted-foreground">P80</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-0.5" style={{borderTop: '2px dashed #ef4444'}}></div>
+                  <span className="text-muted-foreground">P95</span>
+                </div>
               </div>
             </div>
           </div>

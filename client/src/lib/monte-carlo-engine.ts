@@ -122,7 +122,7 @@ export interface ThroughputConfig {
 export interface CycleTimeConfig {
   backlogSize: number;
   p50CycleTime: number;  // Median cycle time in days
-  p85CycleTime: number;  // 85th percentile
+  p80CycleTime: number;  // 80th percentile
   p95CycleTime: number;  // 95th percentile
   workingDaysPerWeek?: number;  // Default 5
 }
@@ -130,7 +130,7 @@ export interface CycleTimeConfig {
 export interface SimulationConfig {
   trials: number;
   startDate: Date;
-  confidenceLevels: number[];  // e.g., [0.5, 0.8, 0.9, 0.95, 0.99]
+  confidenceLevels: number[];  // e.g., [0.5, 0.8, 0.95]
   includeDependencies?: boolean;
   riskFactors?: RiskFactor[];
 }
@@ -248,41 +248,57 @@ export class MonteCarloEngine {
     config: CycleTimeConfig, 
     simConfig: SimulationConfig
   ): ForecastResult {
-    const completionDays: number[] = [];
+    const completionWeeks: number[] = [];
     const workingDaysPerWeek = config.workingDaysPerWeek || 5;
     
-    // Derive lognormal parameters from percentiles
+    // Derive lognormal parameters from three percentiles (P50, P80, P95)
     const p50 = config.p50CycleTime;
-    const p85 = config.p85CycleTime;
+    const p80 = config.p80CycleTime;
     const p95 = config.p95CycleTime;
     
-    // Estimate lognormal parameters using method of moments
+    // Fit lognormal distribution to the three percentiles
+    // Using method based on percentile equations: ln(X) ~ N(μ, σ²)
+    const z50 = 0.0;      // z-score for 50th percentile
+    const z80 = 0.8416;   // z-score for 80th percentile  
+    const z95 = 1.6449;   // z-score for 95th percentile
+    
+    // Solve system of equations for μ and σ
     const mu = Math.log(p50);
-    const sigma = (Math.log(p95) - Math.log(p50)) / 1.645; // Using z-score for 95th percentile
+    const sigma = (Math.log(p95) - Math.log(p50)) / z95;
     
     for (let trial = 0; trial < simConfig.trials; trial++) {
-      let totalDays = 0;
+      let totalWeeks = 0;
+      let remainingBacklog = config.backlogSize;
       
-      for (let item = 0; item < config.backlogSize; item++) {
-        // Generate cycle time for this item
-        let cycleTime = StatisticalUtils.lognormalRandom(mu, sigma);
+      // Simulate week by week until backlog is complete
+      while (remainingBacklog > 0) {
+        // Draw cycle time for this week (working days per item)
+        const cycleTime = StatisticalUtils.lognormalRandom(mu, sigma);
         
-        // Convert working days to calendar days
-        const calendarDays = (cycleTime / workingDaysPerWeek) * 7;
-        totalDays += calendarDays;
+        // Calculate weekly throughput: working days / cycle time = items/week
+        const weeklyThroughput = workingDaysPerWeek / cycleTime;
+        
+        // Reduce remaining backlog by this week's throughput
+        remainingBacklog -= weeklyThroughput;
+        totalWeeks++;
       }
       
-      // Apply risk factors
+      // Apply risk factors (convert to weeks)
       if (simConfig.riskFactors) {
+        let riskDays = 0;
         for (const risk of simConfig.riskFactors) {
           if (Math.random() < risk.probability) {
-            totalDays += risk.impactDays;
+            riskDays += risk.impactDays;
           }
         }
+        totalWeeks += riskDays / 7; // Convert risk days to weeks
       }
       
-      completionDays.push(Math.ceil(totalDays));
+      completionWeeks.push(totalWeeks);
     }
+    
+    // Convert weeks to calendar days (weeks * 7)
+    const completionDays = completionWeeks.map(weeks => Math.ceil(weeks * 7));
     
     return this.processResults(completionDays, simConfig);
   }

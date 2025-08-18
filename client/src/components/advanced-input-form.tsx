@@ -52,7 +52,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
   
   // Cycle time parameters
   const [p50CycleTime, setP50CycleTime] = useState(3);
-  const [p85CycleTime, setP85CycleTime] = useState(7);
+  const [p80CycleTime, setP80CycleTime] = useState(7);
   const [p95CycleTime, setP95CycleTime] = useState(14);
   const [workingDaysPerWeek, setWorkingDaysPerWeek] = useState(5);
   
@@ -87,7 +87,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
     const simConfig: SimulationConfig = {
       trials,
       startDate,
-      confidenceLevels: [0.5, 0.8, 0.85, 0.9, 0.95, 0.99],
+      confidenceLevels: [0.5, 0.8, 0.95],
       includeDependencies,
       riskFactors: riskFactors.length > 0 ? riskFactors : undefined
     };
@@ -108,7 +108,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
       const cycleTimeConfig: CycleTimeConfig = {
         backlogSize,
         p50CycleTime,
-        p85CycleTime,
+        p80CycleTime,
         p95CycleTime,
         workingDaysPerWeek
       };
@@ -393,14 +393,14 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 </div>
 
                 <div className="space-y-2">
-                  <Label>P85 Cycle Time (days)</Label>
+                  <Label>P80 Cycle Time (days)</Label>
                   <Input
                     type="number"
                     step="0.5"
-                    value={p85CycleTime}
-                    onChange={(e) => setP85CycleTime(parseFloat(e.target.value) || 0)}
+                    value={p80CycleTime}
+                    onChange={(e) => setP80CycleTime(parseFloat(e.target.value) || 0)}
                   />
-                  <p className="text-xs text-muted-foreground">85th percentile</p>
+                  <p className="text-xs text-muted-foreground">80th percentile</p>
                 </div>
 
                 <div className="space-y-2">
