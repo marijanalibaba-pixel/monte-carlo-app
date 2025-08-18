@@ -1,0 +1,539 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+// Top‑level helper instead of Dart records (works on Zapp/Replit)
+class LognormalParams {
+  final double mu;
+  final double sigma;
+  const LognormalParams(this.mu, this.sigma);
+}
+
+
+void main() => runApp(const MonteCarloApp());
+
+class MonteCarloApp extends StatelessWidget {
+  const MonteCarloApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Monte Carlo Forecast',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        useMaterial3: true,
+        brightness: Brightness.light,
+      ),
+      home: const ForecastPage(),
+    );
+  }
+}
+
+class ForecastPage extends StatefulWidget {
+  const ForecastPage({super.key});
+  @override
+  State<ForecastPage> createState() => _ForecastPageState();
+}
+
+class _ForecastPageState extends State<ForecastPage> {
+  // ---- Shared inputs ----
+  final backlogCtrl = TextEditingController(text: '50');
+  final trialsCtrl = TextEditingController(text: '5000');
+  DateTime startDate = DateTime.now();
+
+  // ---- Throughput model inputs ----
+  final meanTpCtrl = TextEditingController(text: '12');  // items / week
+  final cvPctCtrl  = TextEditingController(text: '30');  // %
+
+  // ---- Cycle-time model inputs (days/item) ----
+  final p50Ctrl = TextEditingController(text: '3.94');
+  final p80Ctrl = TextEditingController(text: '14.6');
+  final p95Ctrl = TextEditingController(text: '34.06');
+
+  bool useCycleTime = false;
+
+  // Results
+  List<int> completionDays = []; // days to finish per trial
+
+  // Internal safety cap so simulations can't loop forever (not shown to user)
+  static const int _MAX_WEEKS = 104; // 2 years
+
+  // ===== Utils =====
+  String fmt(DateTime d) {
+    String p2(int n) => n.toString().padLeft(2, '0');
+    return '${d.year}-${p2(d.month)}-${p2(d.day)}';
+  }
+
+  double _randNorm(Random rng) {
+    final u1 = max(rng.nextDouble(), 1e-12);
+    final u2 = rng.nextDouble();
+    return sqrt(-2.0 * log(u1)) * cos(2 * pi * u2);
+  }
+
+  double _randLogNormal(Random rng, double mu, double sigma) =>
+      exp(mu + sigma * _randNorm(rng));
+
+  double _percentile(List<int> arr, double p) {
+    final s = [...arr]..sort();
+    final idx = (p * s.length).ceil() - 1;
+    return s[idx.clamp(0, s.length - 1)].toDouble();
+  }
+  // (helper class moved to top‑level)
+
+  LognormalParams _fitCtLognormal(double p50, double? p80, double p95) {
+    const z50 = 0.0;
+    const z80 = 0.8416212335729143;   // NORM.S.INV(0.80)
+    const z95 = 1.6448536269514722;   // NORM.S.INV(0.95)
+
+    final zs = <double>[z50, if (p80 != null && p80 > 0) z80, z95];
+    final ys = <double>[log(p50), if (p80 != null && p80 > 0) log(p80), log(p95)];
+
+    final mz = zs.reduce((a,b)=>a+b)/zs.length;
+    final my = ys.reduce((a,b)=>a+b)/ys.length;
+    double num = 0, den = 0;
+    for (var i = 0; i < zs.length; i++) {
+      num += (zs[i]-mz)*(ys[i]-my);
+      den += (zs[i]-mz)*(zs[i]-mz);
+    }
+    final sigma = (den == 0) ? (log(p95)-log(p50))/(z95 - z50) : num/den;
+    final mu = my - sigma * mz;
+    return LognormalParams(mu, sigma.abs());
+  }
+
+  void _runForecast() {
+    final backlog = int.tryParse(backlogCtrl.text) ?? 0;
+    final trials  = int.tryParse(trialsCtrl.text) ?? 5000;
+
+    if (backlog <= 0) {
+      setState(() => completionDays.clear());
+      return;
+    }
+
+    final rng = Random(42);
+    final results = <int>[];
+
+    if (useCycleTime) {
+      final p50 = double.tryParse(p50Ctrl.text) ?? 0;
+      final p80 = double.tryParse(p80Ctrl.text);
+      final p95 = double.tryParse(p95Ctrl.text) ?? 0;
+      if (p50 <= 0 || p95 <= 0) {
+        _error('Enter valid cycle-time percentiles (P50 & P95 at minimum).');
+        return;
+      }
+      final fit = _fitCtLognormal(p50, p80, p95);
+      for (int t = 0; t < trials; t++) {
+        double done = 0;
+        int weeks = 0;
+        while (done < backlog && weeks < _MAX_WEEKS) {
+          final ctDays = _randLogNormal(rng, fit.mu, fit.sigma); // days/item
+          final weekly = 7.0 / max(ctDays, 0.0001);              // items/week
+          done += weekly;
+          weeks++;
+        }
+        results.add(weeks * 7);
+      }
+    } else {
+      final mean = double.tryParse(meanTpCtrl.text) ?? 0;
+      final cvp  = double.tryParse(cvPctCtrl.text) ?? 0;
+      if (mean <= 0) {
+        _error('Enter a valid average weekly throughput.');
+        return;
+      }
+      if (cvp <= 0) {
+        final weeks = (backlog / mean).ceil();
+        setState(() => completionDays = List.filled(max(1, trials), weeks * 7));
+        return;
+      }
+      final cv = cvp / 100.0;
+      final sigma = sqrt(log(1 + cv*cv));
+      final mu = log(mean) - sigma*sigma/2;
+      for (int t = 0; t < trials; t++) {
+        double done = 0;
+        int weeks = 0;
+        while (done < backlog && weeks < _MAX_WEEKS) {
+          final weekly = _randLogNormal(rng, mu, sigma);
+          done += weekly;
+          weeks++;
+        }
+        results.add(weeks * 7);
+      }
+    }
+
+    setState(() => completionDays = results);
+  }
+
+  void _error(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  String percentileDate(double p) {
+    if (completionDays.isEmpty) return '-';
+    final days = _percentile(completionDays, p).round();
+    return fmt(startDate.add(Duration(days: days)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasData = completionDays.isNotEmpty;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Monte Carlo Forecast')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Toggle
+            SwitchListTile(
+              title: const Text('Use Cycle-Time model (days per item)'),
+              subtitle: const Text('Off = Throughput model (items per week)'),
+              value: useCycleTime,
+              onChanged: (v) => setState(() => useCycleTime = v),
+            ),
+
+            // Shared inputs
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  controller: backlogCtrl,
+                  decoration: const InputDecoration(labelText: 'Backlog size (items)'),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: trialsCtrl,
+                  decoration: const InputDecoration(labelText: 'Trials (e.g., 5000)'),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ]),
+            const SizedBox(height: 12),
+            Row(children: [
+              Expanded(child: Text('Start date: ${fmt(startDate)}')),
+              TextButton(
+                onPressed: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: startDate,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+                  if (picked != null) setState(() => startDate = picked);
+                },
+                child: const Text('Pick date'),
+              ),
+            ]),
+
+            const SizedBox(height: 12),
+
+            // Model-specific inputs
+            if (!useCycleTime) ...[
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: meanTpCtrl,
+                    decoration: const InputDecoration(labelText: 'Average weekly throughput'),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: cvPctCtrl,
+                    decoration: const InputDecoration(labelText: 'Variability (CV%) — 0 = deterministic'),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ]),
+            ] else ...[
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: p50Ctrl,
+                    decoration: const InputDecoration(labelText: 'Cycle time P50 (days/item)'),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: p80Ctrl,
+                    decoration: const InputDecoration(labelText: 'Cycle time P80 (days/item)'),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: p95Ctrl,
+                    decoration: const InputDecoration(labelText: 'Cycle time P95 (days/item)'),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(child: SizedBox()),
+              ]),
+            ],
+
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _runForecast,
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Run Forecast'),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+            if (hasData) ...[
+              Card(
+                elevation: 0,
+                color: Colors.indigo.withOpacity(.06),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Wrap(spacing: 24, runSpacing: 8, children: [
+                    _metric('P50', percentileDate(.50)),
+                    _metric('P80', percentileDate(.80)),
+                    _metric('P95', percentileDate(.95)),
+                  ]),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text('Histogram (Monte Carlo)', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 220,
+                child: HistogramChart(
+                  completionDays: completionDays,
+                  startDate: startDate,
+                  p50: percentileDate(.50),
+                  p80: percentileDate(.80),
+                  p95: percentileDate(.95),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text('Cumulative Probability (S-curve)', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 220,
+                child: SCurveChart(
+                  completionDays: completionDays,
+                  startDate: startDate,
+                  p50: percentileDate(.50),
+                  p80: percentileDate(.80),
+                  p95: percentileDate(.95),
+                ),
+              ),
+            ],
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _metric(String label, String value) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 2),
+          Text(value, style: const TextStyle(fontSize: 16)),
+        ],
+      );
+}
+
+/* ===================== Charts (CustomPainter) ===================== */
+
+class HistogramChart extends StatelessWidget {
+  final List<int> completionDays;
+  final DateTime startDate;
+  final String p50, p80, p95;
+  const HistogramChart({
+    super.key,
+    required this.completionDays,
+    required this.startDate,
+    required this.p50,
+    required this.p80,
+    required this.p95,
+  });
+
+  @override
+  Widget build(BuildContext context) => CustomPaint(
+        painter: _HistogramPainter(
+          completionDays: completionDays,
+          startDate: startDate,
+          p50: p50,
+          p80: p80,
+          p95: p95,
+          textStyle: Theme.of(context).textTheme.bodySmall!,
+        ),
+      );
+}
+
+class _HistogramPainter extends CustomPainter {
+  final List<int> completionDays;
+  final DateTime startDate;
+  final String p50, p80, p95;
+  final TextStyle textStyle;
+  _HistogramPainter({
+    required this.completionDays,
+    required this.startDate,
+    required this.p50,
+    required this.p80,
+    required this.p95,
+    required this.textStyle,
+  });
+
+  DateTime parse(String s) => DateTime.parse(s);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (completionDays.isEmpty) return;
+
+    final counts = <int, int>{};
+    for (final d in completionDays) {
+      counts[d] = (counts[d] ?? 0) + 1;
+    }
+    final keys = counts.keys.toList()..sort();
+    final maxCount = counts.values.fold<int>(0, max);
+
+    const padding = 28.0;
+    final chartRect = Rect.fromLTWH(padding, 8, size.width - padding * 1.6, size.height - 40);
+    final barPaint = Paint()..style = PaintingStyle.fill;
+    final barWidth = chartRect.width / keys.length.clamp(1, 200);
+
+    for (int i = 0; i < keys.length; i++) {
+      final day = keys[i];
+      final count = counts[day]!.toDouble();
+      final h = (count / max(maxCount, 1)) * chartRect.height;
+      final barRect = Rect.fromLTWH(chartRect.left + i * barWidth, chartRect.bottom - h, max(2.0, barWidth * .8), h);
+      barPaint.color = Colors.indigo.withOpacity(.6);
+      canvas.drawRect(barRect, barPaint);
+    }
+
+    final axisPaint = Paint()..color = Colors.grey.shade600..strokeWidth = 1;
+    canvas.drawLine(Offset(chartRect.left, chartRect.bottom), Offset(chartRect.right, chartRect.bottom), axisPaint);
+    canvas.drawLine(Offset(chartRect.left, chartRect.top), Offset(chartRect.left, chartRect.bottom), axisPaint);
+
+    void vLine(DateTime date, Color color, String label) {
+      final days = date.difference(startDate).inDays;
+      final idx = keys.indexOf(days);
+      if (idx < 0) return;
+      final x = chartRect.left + (idx + .5) * barWidth;
+      final p = Paint()..color = color..strokeWidth = 2..style = PaintingStyle.stroke;
+      canvas.drawLine(Offset(x, chartRect.top), Offset(x, chartRect.bottom), p);
+
+      final tp = TextPainter(text: TextSpan(text: label, style: textStyle.copyWith(color: color)), textDirection: TextDirection.ltr)..layout();
+      tp.paint(canvas, Offset(x - tp.width / 2, chartRect.top - 16));
+    }
+
+    vLine(parse(p50), Colors.red, 'P50');
+    vLine(parse(p80), Colors.orange, 'P80');
+    vLine(parse(p95), Colors.green, 'P95');
+  }
+
+  @override
+  bool shouldRepaint(covariant _HistogramPainter old) =>
+      old.completionDays != completionDays ||
+      old.startDate != startDate ||
+      old.p50 != p50 || old.p80 != p80 || old.p95 != p95;
+}
+
+class SCurveChart extends StatelessWidget {
+  final List<int> completionDays;
+  final DateTime startDate;
+  final String p50, p80, p95;
+  const SCurveChart({
+    super.key,
+    required this.completionDays,
+    required this.startDate,
+    required this.p50,
+    required this.p80,
+    required this.p95,
+  });
+
+  @override
+  Widget build(BuildContext context) => CustomPaint(
+        painter: _SCurvePainter(
+          completionDays: completionDays,
+          startDate: startDate,
+          p50: p50,
+          p80: p80,
+          p95: p95,
+          textStyle: Theme.of(context).textTheme.bodySmall!,
+        ),
+      );
+}
+
+class _SCurvePainter extends CustomPainter {
+  final List<int> completionDays;
+  final DateTime startDate;
+  final String p50, p80, p95;
+  final TextStyle textStyle;
+  _SCurvePainter({
+    required this.completionDays,
+    required this.startDate,
+    required this.p50,
+    required this.p80,
+    required this.p95,
+    required this.textStyle,
+  });
+
+  DateTime parse(String s) => DateTime.parse(s);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (completionDays.isEmpty) return;
+
+    final counts = <int, int>{};
+    for (final d in completionDays) {
+      counts[d] = (counts[d] ?? 0) + 1;
+    }
+    final keys = counts.keys.toList()..sort();
+    int running = 0; final total = completionDays.length; final points = <Offset>[];
+
+    const padding = 28.0;
+    final chartRect = Rect.fromLTWH(padding, 8, size.width - padding * 1.6, size.height - 40);
+
+    for (int i = 0; i < keys.length; i++) {
+      running += counts[keys[i]]!;
+      final x = chartRect.left + (i / (keys.length - 1).clamp(1, 999)) * chartRect.width;
+      final y = chartRect.bottom - (running / total) * chartRect.height;
+      points.add(Offset(x, y));
+    }
+
+    final axisPaint = Paint()..color = Colors.grey.shade600..strokeWidth = 1;
+    canvas.drawLine(Offset(chartRect.left, chartRect.bottom), Offset(chartRect.right, chartRect.bottom), axisPaint);
+    canvas.drawLine(Offset(chartRect.left, chartRect.top), Offset(chartRect.left, chartRect.bottom), axisPaint);
+
+    final linePaint = Paint()..color = Colors.indigo..strokeWidth = 2..style = PaintingStyle.stroke;
+    final path = Path()..moveTo(points.first.dx, points.first.dy);
+    for (int i = 1; i < points.length; i++) { path.lineTo(points[i].dx, points[i].dy); }
+    canvas.drawPath(path, linePaint);
+
+    void vLine(DateTime date, Color color, String label) {
+      final days = date.difference(startDate).inDays;
+      final idx = keys.indexOf(days); if (idx < 0) return;
+      final x = chartRect.left + (idx / (keys.length - 1).clamp(1, 999)) * chartRect.width;
+      final p = Paint()..color = color..strokeWidth = 2..style = PaintingStyle.stroke;
+      canvas.drawLine(Offset(x, chartRect.top), Offset(x, chartRect.bottom), p);
+
+      final tp = TextPainter(text: TextSpan(text: label, style: textStyle.copyWith(color: color)), textDirection: TextDirection.ltr)..layout();
+      tp.paint(canvas, Offset(x - tp.width / 2, chartRect.top - 16));
+    }
+
+    vLine(parse(p50), Colors.red, 'P50');
+    vLine(parse(p80), Colors.orange, 'P80');
+    vLine(parse(p95), Colors.green, 'P95');
+  }
+
+  @override
+  bool shouldRepaint(covariant _SCurvePainter old) =>
+      old.completionDays != completionDays ||
+      old.startDate != startDate ||
+      old.p50 != p50 || old.p80 != p80 || old.p95 != p95;
+}
