@@ -191,21 +191,22 @@ export function InputSection({
       )}
 
       {/* Action Button */}
-      <div className="mt-6">
+      <div className="mt-8 border-t border-gray-200 pt-6">
         <Button
           onClick={onRunForecast}
           disabled={isLoading}
-          className="w-full md:w-auto bg-[hsl(var(--primary-600))] hover:bg-[hsl(var(--primary-700))] text-white font-medium py-3 px-6 transition-colors duration-200 shadow-sm"
+          size="lg"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-8 text-lg shadow-lg"
         >
           {isLoading ? (
             <>
-              <div className="animate-spin inline-block w-4 h-4 border-2 border-white border-r-transparent rounded-full mr-2" />
-              Running...
+              <div className="animate-spin inline-block w-5 h-5 border-2 border-white border-r-transparent rounded-full mr-3" />
+              Running Simulation...
             </>
           ) : (
             <>
-              <Play className="mr-2 h-4 w-4" />
-              Run Forecast
+              <Play className="mr-3 h-5 w-5" />
+              Run Monte Carlo Forecast
             </>
           )}
         </Button>
