@@ -76,8 +76,8 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
             <Line 
               type="monotone" 
               dataKey="probability" 
-              stroke="hsl(var(--primary-600))" 
-              strokeWidth={2}
+              stroke="#6366f1" 
+              strokeWidth={3}
               dot={false}
             />
             <ReferenceLine x={p50Days} stroke="#3b82f6" strokeWidth={2} strokeDasharray="4 4" label={{ value: "P50", position: "top" }} />
@@ -86,9 +86,25 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <div className="mt-4 flex justify-between text-xs text-gray-500">
-        <span>0% probability</span>
-        <span>100% probability</span>
+      <div className="mt-4 space-y-1">
+        <div className="flex justify-between text-xs text-gray-500">
+          <span>0% probability</span>
+          <span>100% probability</span>
+        </div>
+        <div className="flex gap-4 text-xs">
+          <span className="flex items-center gap-1">
+            <div className="w-3 h-0.5 bg-blue-500"></div>
+            P50 ({p50Days}d)
+          </span>
+          <span className="flex items-center gap-1">
+            <div className="w-3 h-0.5 bg-amber-500"></div>
+            P80 ({p80Days}d)
+          </span>
+          <span className="flex items-center gap-1">
+            <div className="w-3 h-0.5 bg-emerald-500"></div>
+            P95 ({p95Days}d)
+          </span>
+        </div>
       </div>
     </div>
   );

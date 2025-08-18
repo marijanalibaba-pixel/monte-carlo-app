@@ -68,15 +68,31 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
               stroke="hsl(var(--primary-600))"
               strokeWidth={1}
             />
-            <ReferenceLine x={p50Days} stroke="#ef4444" strokeWidth={2} label={{ value: "P50", position: "top" }} />
-            <ReferenceLine x={p80Days} stroke="#f97316" strokeWidth={2} label={{ value: "P80", position: "top" }} />
-            <ReferenceLine x={p95Days} stroke="#22c55e" strokeWidth={2} label={{ value: "P95", position: "top" }} />
+            <ReferenceLine x={p50Days} stroke="#3b82f6" strokeWidth={2} strokeDasharray="4 4" label={{ value: "P50", position: "top" }} />
+            <ReferenceLine x={p80Days} stroke="#f59e0b" strokeWidth={2} strokeDasharray="4 4" label={{ value: "P80", position: "top" }} />
+            <ReferenceLine x={p95Days} stroke="#10b981" strokeWidth={2} strokeDasharray="4 4" label={{ value: "P95", position: "top" }} />
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="mt-4 flex justify-between text-xs text-gray-500">
-        <span>Early completion →</span>
-        <span>← Late completion</span>
+      <div className="mt-4 space-y-1">
+        <div className="flex justify-between text-xs text-gray-500">
+          <span>Early completion →</span>
+          <span>← Late completion</span>
+        </div>
+        <div className="flex gap-4 text-xs">
+          <span className="flex items-center gap-1">
+            <div className="w-3 h-0.5 bg-blue-500"></div>
+            P50 ({p50Days}d)
+          </span>
+          <span className="flex items-center gap-1">
+            <div className="w-3 h-0.5 bg-amber-500"></div>
+            P80 ({p80Days}d)
+          </span>
+          <span className="flex items-center gap-1">
+            <div className="w-3 h-0.5 bg-emerald-500"></div>
+            P95 ({p95Days}d)
+          </span>
+        </div>
       </div>
     </div>
   );
