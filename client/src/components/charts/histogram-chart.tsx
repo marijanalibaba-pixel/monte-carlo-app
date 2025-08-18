@@ -14,7 +14,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
       return [];
     }
     
-    const bins = 20;
+    const bins = 50;
     const min = Math.min(...results.completionDays);
     const max = Math.max(...results.completionDays);
     
@@ -57,15 +57,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
   const p80Days = getPercentileDays(0.8);
   const p95Days = getPercentileDays(0.95);
   
-  // Debug: log percentile values
-  console.log('Histogram percentiles:', { p50Days, p80Days, p95Days });
-  console.log('Histogram data:', histogramData);
-  if (histogramData.length > 0) {
-    console.log('Histogram data range:', { 
-      min: Math.min(...histogramData.map(d => d.bin)), 
-      max: Math.max(...histogramData.map(d => d.bin)) 
-    });
-  }
+
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -73,7 +65,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
         <BarChart3 className="text-[hsl(var(--primary-500))] mr-2 h-4 w-4" />
         Completion Distribution (Histogram)
       </h4>
-      <div className="h-64">
+      <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={histogramData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -97,23 +89,23 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
             <ReferenceLine 
               x={p50Days} 
               stroke="#3b82f6" 
-              strokeWidth={3} 
-              strokeDasharray="5 5" 
-              label={{ value: "P50", position: "top" }}
+              strokeWidth={4} 
+              strokeDasharray="8 4" 
+              label={{ value: `P50 (${p50Days}d)`, position: "top", style: { fill: "#3b82f6", fontWeight: "bold" } }}
             />
             <ReferenceLine 
               x={p80Days} 
               stroke="#f59e0b" 
-              strokeWidth={3} 
-              strokeDasharray="5 5" 
-              label={{ value: "P80", position: "top" }}
+              strokeWidth={4} 
+              strokeDasharray="8 4" 
+              label={{ value: `P80 (${p80Days}d)`, position: "top", style: { fill: "#f59e0b", fontWeight: "bold" } }}
             />
             <ReferenceLine 
               x={p95Days} 
               stroke="#10b981" 
-              strokeWidth={3} 
-              strokeDasharray="5 5" 
-              label={{ value: "P95", position: "top" }}
+              strokeWidth={4} 
+              strokeDasharray="8 4" 
+              label={{ value: `P95 (${p95Days}d)`, position: "top", style: { fill: "#10b981", fontWeight: "bold" } }}
             />
           </BarChart>
         </ResponsiveContainer>
