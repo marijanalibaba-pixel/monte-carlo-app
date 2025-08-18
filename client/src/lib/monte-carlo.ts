@@ -203,6 +203,8 @@ export function runMonteCarloSimulation(input: SimulationInput): SimulationResul
     
     if (historicalWeeklyData && historicalWeeklyData.length > 0) {
       // Historical weekly data - bootstrap sampling
+      console.log('Using historical data:', historicalWeeklyData);
+      
       for (let t = 0; t < trials; t++) {
         let done = 0;
         let weeks = 0;
@@ -215,6 +217,8 @@ export function runMonteCarloSimulation(input: SimulationInput): SimulationResul
         
         results.push(weeks * 7);
       }
+      
+      console.log('Bootstrap results sample:', results.slice(0, 10));
     } else {
       // Average weekly model
       if (!meanThroughput) {
@@ -224,6 +228,7 @@ export function runMonteCarloSimulation(input: SimulationInput): SimulationResul
       if (!variabilityCV || variabilityCV <= 0) {
         // Deterministic case
         const weeks = Math.ceil(backlogSize / meanThroughput);
+        console.log('Deterministic case: weeks =', weeks, 'days =', weeks * 7);
         for (let t = 0; t < trials; t++) {
           results.push(weeks * 7);
         }

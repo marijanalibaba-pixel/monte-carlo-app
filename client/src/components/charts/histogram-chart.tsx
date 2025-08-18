@@ -10,9 +10,23 @@ interface HistogramChartProps {
 export function HistogramChart({ results, startDate }: HistogramChartProps) {
   // Create histogram data
   const createHistogramData = () => {
+    if (!results.completionDays || results.completionDays.length === 0) {
+      return [];
+    }
+    
     const bins = 20;
     const min = Math.min(...results.completionDays);
     const max = Math.max(...results.completionDays);
+    
+    // Handle case where all values are the same
+    if (min === max) {
+      return [{
+        bin: min,
+        count: results.completionDays.length,
+        date: new Date(startDate.getTime() + min * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      }];
+    }
+    
     const binSize = (max - min) / bins;
     
     const histogram = Array(bins).fill(0).map((_, i) => ({
@@ -23,10 +37,12 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
     
     results.completionDays.forEach(days => {
       const binIndex = Math.min(Math.floor((days - min) / binSize), bins - 1);
-      histogram[binIndex].count++;
+      if (histogram[binIndex]) {
+        histogram[binIndex].count++;
+      }
     });
     
-    return histogram.filter(bin => bin.count > 0);
+    return histogram.filter(bin => bin && bin.count > 0);
   };
 
   const histogramData = createHistogramData();
@@ -43,10 +59,13 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
   
   // Debug: log percentile values
   console.log('Histogram percentiles:', { p50Days, p80Days, p95Days });
-  console.log('Histogram data range:', { 
-    min: Math.min(...histogramData.map(d => d.bin)), 
-    max: Math.max(...histogramData.map(d => d.bin)) 
-  });
+  console.log('Histogram data:', histogramData);
+  if (histogramData.length > 0) {
+    console.log('Histogram data range:', { 
+      min: Math.min(...histogramData.map(d => d.bin)), 
+      max: Math.max(...histogramData.map(d => d.bin)) 
+    });
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
