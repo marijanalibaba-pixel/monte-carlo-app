@@ -1,5 +1,5 @@
 /**
- * Advanced Monte Carlo Forecasting Engine
+ * Advanced Montecarlo Forecasting Engine
  * Built from statistical modeling expertise
  */
 
@@ -170,9 +170,9 @@ export interface ForecastResult {
 }
 
 /**
- * Advanced Monte Carlo Forecasting Engine
+ * Advanced Montecarlo Forecasting Engine
  */
-export class MonteCarloEngine {
+export class MontecarloEngine {
   
   /**
    * Throughput-based forecasting using historical data or statistical parameters

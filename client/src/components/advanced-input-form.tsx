@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 import { 
   Calculator, 
   Calendar as CalendarIcon, 
@@ -123,7 +124,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-4">
             <Calculator className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl">Advanced Monte Carlo Forecasting</CardTitle>
+          <CardTitle className="text-2xl">Advanced Montecarlo Forecasting</CardTitle>
           <CardDescription className="text-lg">
             Professional-grade statistical modeling for project prediction
           </CardDescription>
@@ -224,21 +225,81 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-base font-semibold">Historical Weekly Data (Recommended)</Label>
+              {/* Data Source Selection */}
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className={`cursor-pointer border-2 transition-all ${historicalData ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className={`w-4 h-4 rounded-full border-2 ${historicalData ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
+                        <h4 className="font-semibold">Historical Data</h4>
+                        <Badge variant="outline" className="text-xs">Recommended</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Use your actual weekly completion data for authentic patterns
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className={`cursor-pointer border-2 transition-all ${!historicalData ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className={`w-4 h-4 rounded-full border-2 ${!historicalData ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
+                        <h4 className="font-semibold">Statistical Parameters</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Define average throughput and variability manually
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Current Calculation Method Indicator */}
+                <div className={`p-4 rounded-lg border-l-4 ${historicalData ? 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className={`w-3 h-3 rounded-full ${historicalData ? 'bg-blue-500' : 'bg-orange-500'}`} />
+                    <h4 className="font-semibold">
+                      {historicalData ? 'Using Bootstrap Sampling' : 'Using Statistical Distribution'}
+                    </h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {historicalData 
+                      ? `Randomly sampling from ${parseHistoricalData(historicalData).length} historical weekly values with realistic variation`
+                      : 'Generating throughput values from lognormal distribution with specified parameters'
+                    }
+                  </p>
+                </div>
+
+                {/* Historical Data Input */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-semibold">Historical Weekly Data</Label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setHistoricalData("")}
+                      className="text-xs"
+                    >
+                      Clear
+                    </Button>
+                  </div>
                   <Textarea
                     value={historicalData}
                     onChange={(e) => setHistoricalData(e.target.value)}
                     placeholder="12, 15, 8, 14, 11, 16, 9, 13, 17, 10, 12, 14, 8, 15, 11..."
-                    className="mt-2 h-24 resize-none"
+                    className="h-24 resize-none"
                   />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Comma or space separated weekly completion counts. 
-                    {historicalData && ` (${parseHistoricalData(historicalData).length} weeks)`}
+                  <p className="text-sm text-muted-foreground">
+                    Enter comma or space separated weekly completion counts. 
+                    {historicalData && (
+                      <span className="font-medium text-blue-600 dark:text-blue-400">
+                        {` Found ${parseHistoricalData(historicalData).length} weeks of data`}
+                      </span>
+                    )}
                   </p>
                 </div>
 
+                {/* Statistical Parameters (when no historical data) */}
                 {!historicalData && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
                     <div className="space-y-3">
@@ -248,11 +309,13 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                         step="0.1"
                         value={averageThroughput}
                         onChange={(e) => setAverageThroughput(parseFloat(e.target.value) || 0)}
+                        className="text-lg"
                       />
+                      <p className="text-xs text-muted-foreground">Mean items completed per week</p>
                     </div>
 
                     <div className="space-y-3">
-                      <Label>Variability (CV)</Label>
+                      <Label>Throughput Variability</Label>
                       <div className="space-y-2">
                         <Slider
                           value={[throughputVariability * 100]}
@@ -261,10 +324,13 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                           max={80}
                           step={5}
                         />
-                        <div className="text-sm text-muted-foreground">
-                          {Math.round(throughputVariability * 100)}% coefficient of variation
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Low (5%)</span>
+                          <span className="font-medium">{Math.round(throughputVariability * 100)}% CV</span>
+                          <span>High (80%)</span>
                         </div>
                       </div>
+                      <p className="text-xs text-muted-foreground">Coefficient of variation (σ/μ)</p>
                     </div>
                   </div>
                 )}
@@ -367,12 +433,36 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
         
         {showAdvanced && (
           <CardContent className="space-y-6">
-            <div className="flex items-center space-x-3">
-              <Switch
-                checked={includeDependencies}
-                onCheckedChange={setIncludeDependencies}
-              />
-              <Label>Include dependency modeling</Label>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <Switch
+                  checked={includeDependencies}
+                  onCheckedChange={setIncludeDependencies}
+                />
+                <Label className="font-semibold">Include dependency modeling</Label>
+              </div>
+              
+              {/* Dependency Modeling Explanation */}
+              <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center">
+                  <Target className="w-4 h-4 mr-2" />
+                  What is Dependency Modeling?
+                </h4>
+                <div className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+                  <p>
+                    <strong>Dependencies</strong> are external factors that can delay your project beyond normal work variation:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4">
+                    <li><strong>External teams:</strong> Waiting for API integrations, design reviews, or approvals</li>
+                    <li><strong>Third-party services:</strong> Vendor delays, external system outages</li>
+                    <li><strong>Resource constraints:</strong> Key person unavailable, infrastructure issues</li>
+                    <li><strong>Regulatory approvals:</strong> Legal reviews, compliance checks</li>
+                  </ul>
+                  <p className="font-medium">
+                    When enabled, the model uses PERT distribution to simulate these additional delays based on optimistic, most likely, and pessimistic scenarios.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-4">

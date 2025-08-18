@@ -19,25 +19,59 @@ interface AdvancedVisualizationProps {
 
 export function AdvancedVisualization({ result, startDate }: AdvancedVisualizationProps) {
   
-  // Prepare histogram data with enhanced binning
+  // Prepare histogram data with evenly distributed bins
   const histogramData = useMemo(() => {
-    const { bins, frequencies } = result.distributionData;
-    return bins.map((bin, index) => ({
-      days: Math.round(bin),
-      frequency: frequencies[index] * 100,
-      count: Math.round(frequencies[index] * result.completionDates.length),
-      date: format(addDays(startDate, bin), 'MMM d')
-    }));
+    const sortedDays = result.completionDates.map(date => {
+      return Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    }).sort((a, b) => a - b);
+    
+    const minDays = sortedDays[0];
+    const maxDays = sortedDays[sortedDays.length - 1];
+    const binCount = 25; // Fixed number of evenly distributed bins
+    const binWidth = (maxDays - minDays) / binCount;
+    
+    const histogram = Array(binCount).fill(0).map((_, index) => {
+      const binStart = minDays + index * binWidth;
+      const binEnd = binStart + binWidth;
+      const binCenter = binStart + binWidth / 2;
+      
+      const count = sortedDays.filter(day => day >= binStart && day < binEnd).length;
+      const frequency = (count / sortedDays.length) * 100;
+      
+      return {
+        days: Math.round(binCenter),
+        frequency,
+        count,
+        date: format(addDays(startDate, binCenter), 'MMM d'),
+        binStart: Math.round(binStart),
+        binEnd: Math.round(binEnd)
+      };
+    });
+    
+    return histogram;
   }, [result, startDate]);
 
-  // Prepare S-curve data
+  // Prepare S-curve data with smooth distribution
   const scurveData = useMemo(() => {
-    const { bins, cumulativeProbabilities } = result.distributionData;
-    return bins.map((bin, index) => ({
-      days: Math.round(bin),
-      probability: cumulativeProbabilities[index] * 100,
-      date: format(addDays(startDate, bin), 'MMM d, yyyy')
-    }));
+    const sortedDays = result.completionDates.map(date => {
+      return Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    }).sort((a, b) => a - b);
+    
+    const minDays = sortedDays[0];
+    const maxDays = sortedDays[sortedDays.length - 1];
+    const points = 50; // Number of points for smooth curve
+    
+    return Array(points).fill(0).map((_, index) => {
+      const day = minDays + (index / (points - 1)) * (maxDays - minDays);
+      const countBelow = sortedDays.filter(d => d <= day).length;
+      const probability = (countBelow / sortedDays.length) * 100;
+      
+      return {
+        days: Math.round(day),
+        probability,
+        date: format(addDays(startDate, day), 'MMM d, yyyy')
+      };
+    });
   }, [result, startDate]);
 
   // Enhanced confidence intervals with color coding
@@ -241,21 +275,40 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   ))}
                 </Bar>
                 
-                {/* Confidence interval lines */}
-                {result.confidenceIntervals.map((ci) => (
-                  <ReferenceLine
-                    key={ci.level}
-                    x={ci.daysFromStart}
-                    stroke={getConfidenceColor(ci.level)}
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    label={{ 
-                      value: `P${Math.round(ci.level * 100)}`, 
-                      position: "top",
-                      style: { fill: getConfidenceColor(ci.level), fontWeight: 'bold' }
-                    }}
-                  />
-                ))}
+                {/* Key percentile lines */}
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.5)?.daysFromStart || 0}
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P50", 
+                    position: "top",
+                    style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0}
+                  stroke="#f59e0b"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P80", 
+                    position: "top",
+                    style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0}
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P95", 
+                    position: "top",
+                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
                 
                 <defs>
                   <linearGradient id="gradient-0" x1="0" y1="0" x2="0" y2="1">
@@ -320,21 +373,40 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   fill="url(#scurveGradient)"
                 />
                 
-                {/* Confidence interval lines */}
-                {result.confidenceIntervals.map((ci) => (
-                  <ReferenceLine
-                    key={ci.level}
-                    x={ci.daysFromStart}
-                    stroke={getConfidenceColor(ci.level)}
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    label={{ 
-                      value: `P${Math.round(ci.level * 100)}`, 
-                      position: "top",
-                      style: { fill: getConfidenceColor(ci.level), fontWeight: 'bold' }
-                    }}
-                  />
-                ))}
+                {/* Key percentile lines */}
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.5)?.daysFromStart || 0}
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P50", 
+                    position: "top",
+                    style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0}
+                  stroke="#f59e0b"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P80", 
+                    position: "top",
+                    style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0}
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P95", 
+                    position: "top",
+                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
                 
                 <defs>
                   <linearGradient id="scurveGradient" x1="0" y1="0" x2="0" y2="1">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
+import { MontecarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
 import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
 import { AdvancedVisualization } from "@/components/advanced-visualization";
@@ -47,14 +47,14 @@ export function AdvancedDashboard() {
       let forecastResult: ForecastResult;
       
       if (throughputConfig) {
-        forecastResult = MonteCarloEngine.forecastByThroughput(throughputConfig, simConfig);
+        forecastResult = MontecarloEngine.forecastByThroughput(throughputConfig, simConfig);
         setLastConfig({ 
           type: 'throughput', 
           startDate: simConfig.startDate,
           parameters: throughputConfig 
         });
       } else if (cycleTimeConfig) {
-        forecastResult = MonteCarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
+        forecastResult = MontecarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
         setLastConfig({ 
           type: 'cycletime', 
           startDate: simConfig.startDate,
@@ -125,7 +125,7 @@ export function AdvancedDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">
-                  Monte Carlo Pro
+                  Montecarlo Pro
                 </h1>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   Advanced Statistical Forecasting Engine
@@ -168,7 +168,7 @@ export function AdvancedDashboard() {
               <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full mb-6">
                 <Calculator className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                  Professional Monte Carlo Simulation
+                  Professional Montecarlo Simulation
                 </span>
               </div>
               
@@ -181,7 +181,7 @@ export function AdvancedDashboard() {
               </h2>
               
               <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
-                Advanced Monte Carlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
+                Advanced Montecarlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
               </p>
 
               {/* Features */}
@@ -238,7 +238,7 @@ export function AdvancedDashboard() {
                 </div>
                 <CardTitle className="text-3xl">Forecast Complete</CardTitle>
                 <CardDescription className="text-lg">
-                  Analysis of {result.completionDates.length.toLocaleString()} Monte Carlo simulations
+                  Analysis of {result.completionDates.length.toLocaleString()} Montecarlo simulations
                   {lastConfig && (
                     <span className="block mt-2">
                       <Badge variant="outline" className="mr-2">
