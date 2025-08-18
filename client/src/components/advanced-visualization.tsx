@@ -391,40 +391,46 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   fill="url(#scurveGradient)"
                 />
                 
-                {/* Key percentile lines for S-curve */}
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.5)?.daysFromStart || 0}
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P50", 
-                    position: "top",
-                    style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0}
-                  stroke="#f59e0b"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P80", 
-                    position: "top",
-                    style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0}
-                  stroke="#ef4444"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P95", 
-                    position: "top",
-                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
+                {/* Percentile reference lines - always show all three */}
+                {result.confidenceIntervals.find(ci => ci.level === 0.5) && (
+                  <ReferenceLine
+                    x={result.confidenceIntervals.find(ci => ci.level === 0.5)!.daysFromStart}
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    strokeDasharray="8 4"
+                    label={{ 
+                      value: "P50", 
+                      position: "top",
+                      style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                    }}
+                  />
+                )}
+                {result.confidenceIntervals.find(ci => ci.level === 0.8) && (
+                  <ReferenceLine
+                    x={result.confidenceIntervals.find(ci => ci.level === 0.8)!.daysFromStart}
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                    strokeDasharray="8 4"
+                    label={{ 
+                      value: "P80", 
+                      position: "top",
+                      style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                    }}
+                  />
+                )}
+                {result.confidenceIntervals.find(ci => ci.level === 0.95) && (
+                  <ReferenceLine
+                    x={result.confidenceIntervals.find(ci => ci.level === 0.95)!.daysFromStart}
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                    strokeDasharray="8 4"
+                    label={{ 
+                      value: "P95", 
+                      position: "top",
+                      style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                    }}
+                  />
+                )}
                 
 
                 
@@ -449,7 +455,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <h4 className="font-semibold text-lg">Central Tendency</h4>
               <div className="space-y-2">
@@ -498,29 +504,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="font-semibold text-lg">Distribution Shape</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <StatTooltip explanation="Skewness measures distribution asymmetry. Positive = right-tailed (longer projects more likely), Negative = left-tailed, Zero = symmetric.">
-                    <span className="text-muted-foreground">Skewness:</span>
-                  </StatTooltip>
-                  <span className="font-medium">{result.statistics.skewness.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <StatTooltip explanation="Kurtosis measures distribution tail heaviness. High values indicate more extreme outcomes are possible. Normal distribution = 3.0.">
-                    <span className="text-muted-foreground">Kurtosis:</span>
-                  </StatTooltip>
-                  <span className="font-medium">{result.statistics.kurtosis.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <StatTooltip explanation="Fastest and slowest completion times found in all simulation trials. Shows the absolute bounds of possible outcomes.">
-                    <span className="text-muted-foreground">Min/Max:</span>
-                  </StatTooltip>
-                  <span className="font-medium">{result.statistics.min.toFixed(0)} / {result.statistics.max.toFixed(0)}</span>
-                </div>
-              </div>
-            </div>
+
           </div>
         </CardContent>
       </Card>
