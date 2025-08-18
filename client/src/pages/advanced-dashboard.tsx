@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
+import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
 import { AdvancedVisualization } from "@/components/advanced-visualization";
+import { ForecastComparisonPanel } from "@/components/forecast-comparison-panel";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,15 +16,19 @@ import {
   Target,
   ArrowRight,
   Sparkles,
-  Activity
+  Activity,
+  GitCompare
 } from "lucide-react";
 
 export function AdvancedDashboard() {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<ForecastResult | null>(null);
+  const [scenarios, setScenarios] = useState<ForecastScenario[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
   const [lastConfig, setLastConfig] = useState<{
     type: 'throughput' | 'cycletime';
     startDate: Date;
+    parameters?: any;
   } | null>(null);
 
   const handleForecast = async (
@@ -42,10 +48,18 @@ export function AdvancedDashboard() {
       
       if (throughputConfig) {
         forecastResult = MonteCarloEngine.forecastByThroughput(throughputConfig, simConfig);
-        setLastConfig({ type: 'throughput', startDate: simConfig.startDate });
+        setLastConfig({ 
+          type: 'throughput', 
+          startDate: simConfig.startDate,
+          parameters: throughputConfig 
+        });
       } else if (cycleTimeConfig) {
         forecastResult = MonteCarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
-        setLastConfig({ type: 'cycletime', startDate: simConfig.startDate });
+        setLastConfig({ 
+          type: 'cycletime', 
+          startDate: simConfig.startDate,
+          parameters: cycleTimeConfig 
+        });
       } else {
         throw new Error('No configuration provided');
       }
@@ -61,6 +75,37 @@ export function AdvancedDashboard() {
   const clearResults = () => {
     setResult(null);
     setLastConfig(null);
+  };
+
+  const saveAsScenario = () => {
+    if (!result || !lastConfig) return;
+    
+    const scenarioName = `Scenario ${scenarios.length + 1}`;
+    const newScenario: ForecastScenario = {
+      id: crypto.randomUUID(),
+      name: scenarioName,
+      description: `${lastConfig.type} analysis`,
+      result,
+      config: {
+        type: lastConfig.type,
+        backlogSize: lastConfig.parameters?.backlogSize || 0,
+        startDate: lastConfig.startDate,
+        parameters: lastConfig.parameters
+      },
+      createdAt: new Date()
+    };
+    
+    setScenarios(prev => [...prev, newScenario]);
+    setShowComparison(true);
+  };
+
+  const removeScenario = (scenarioId: string) => {
+    setScenarios(prev => prev.filter(s => s.id !== scenarioId));
+  };
+
+  const clearAllScenarios = () => {
+    setScenarios([]);
+    setShowComparison(false);
   };
 
   return (
@@ -93,10 +138,21 @@ export function AdvancedDashboard() {
                 <Activity className="w-3 h-3 mr-1" />
                 Real-time
               </Badge>
+              {scenarios.length > 0 && (
+                <Badge variant="outline" className="bg-purple-50 border-purple-200 text-purple-700">
+                  <GitCompare className="w-3 h-3 mr-1" />
+                  {scenarios.length} scenarios
+                </Badge>
+              )}
               {result && (
-                <Button variant="outline" size="sm" onClick={clearResults}>
-                  New Forecast
-                </Button>
+                <>
+                  <Button variant="outline" size="sm" onClick={saveAsScenario}>
+                    Save Scenario
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={clearResults}>
+                    New Forecast
+                  </Button>
+                </>
               )}
             </div>
           </div>
@@ -205,7 +261,14 @@ export function AdvancedDashboard() {
 
             {/* Actions */}
             <div className="text-center pt-8 border-t border-slate-200 dark:border-slate-700">
-              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
+                <Button
+                  onClick={saveAsScenario}
+                  className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700"
+                >
+                  <GitCompare className="w-4 h-4" />
+                  <span>Save for Comparison</span>
+                </Button>
                 <Button
                   variant="outline"
                   onClick={clearResults}
@@ -222,6 +285,17 @@ export function AdvancedDashboard() {
                 </Button>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Comparison Panel */}
+        {(showComparison || scenarios.length > 0) && (
+          <div className="mt-12">
+            <ForecastComparisonPanel
+              scenarios={scenarios}
+              onRemoveScenario={removeScenario}
+              onClearAll={clearAllScenarios}
+            />
           </div>
         )}
       </div>
