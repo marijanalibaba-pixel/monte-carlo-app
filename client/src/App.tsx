@@ -5,10 +5,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdvancedDashboard } from "@/pages/advanced-dashboard";
 import NotFound from "@/pages/not-found";
+import { TestComponent } from "./test-component";
 
 function Router() {
   return (
     <Switch>
+      <Route path="/test" component={TestComponent} />
       <Route path="/" component={AdvancedDashboard} />
       <Route component={NotFound} />
     </Switch>
