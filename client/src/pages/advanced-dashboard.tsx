@@ -161,11 +161,10 @@ export function AdvancedDashboard() {
           </div>
         </div>
       </div>
-
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         {!result ? (
           /* Input Phase */
-          <div className="space-y-8">
+          (<div className="space-y-8">
             {/* Hero Section */}
             <div className="text-center mb-12">
               <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full mb-6">
@@ -183,9 +182,7 @@ export function AdvancedDashboard() {
                 </span>
               </h2>
               
-              <p className="text-lg sm:text-xl lg:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8 px-4">
-                Advanced Monte Carlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
-              </p>
+              <p className="text-lg sm:text-xl lg:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8 px-4">Advanced Monte Carlo modeling with Completion time distribution and Cumulative probability curve</p>
 
               {/* Features */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto px-4">
@@ -226,13 +223,12 @@ export function AdvancedDashboard() {
                 </div>
               </div>
             </div>
-
             {/* Input Form */}
             <AdvancedInputForm onForecast={handleForecast} isRunning={isRunning} />
-          </div>
+          </div>)
         ) : (
           /* Results Phase */
-          <div className="space-y-8">
+          (<div className="space-y-8">
             {/* Results Header */}
             <Card className="border-none bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
               <CardHeader className="text-center">
@@ -255,13 +251,11 @@ export function AdvancedDashboard() {
                 </CardDescription>
               </CardHeader>
             </Card>
-
             {/* Visualization */}
             <AdvancedVisualization 
               result={result} 
               startDate={lastConfig?.startDate || new Date()} 
             />
-
             {/* Actions */}
             <div className="text-center pt-8 border-t border-slate-200 dark:border-slate-700">
               <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
@@ -288,7 +282,7 @@ export function AdvancedDashboard() {
                 </Button>
               </div>
             </div>
-          </div>
+          </div>)
         )}
 
         {/* Comparison Panel */}
@@ -302,7 +296,6 @@ export function AdvancedDashboard() {
           </div>
         )}
       </div>
-
       {/* Footer */}
       <div className="mt-12 sm:mt-20 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
