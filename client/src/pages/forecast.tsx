@@ -14,7 +14,7 @@ export default function ForecastPage() {
   
   // Shared inputs
   const [backlogSize, setBacklogSize] = useState(50);
-  const [trials, setTrials] = useState(5000);
+  const [trials, setTrials] = useState(10000);
   const [startDate, setStartDate] = useState(new Date());
   
   // Throughput model inputs
@@ -31,30 +31,63 @@ export default function ForecastPage() {
   const [results, setResults] = useState<SimulationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Parse and validate weekly throughput data
-  const parseWeeklyData = (): { values: number[], mean: number, cv: number } | null => {
+  // Parse and validate weekly throughput data according to spec
+  const parseWeeklyData = (): { values: number[], mean: number, median: number, stdDev: number, cv: number } | null => {
     if (!weeklyThroughputData.trim()) return null;
     
+    // Parse comma-separated values, allowing integers >= 0 (zeros are valid for holidays/slow weeks)
     const values = weeklyThroughputData
       .split(',')
-      .map(v => parseFloat(v.trim()))
-      .filter(v => !isNaN(v) && v > 0);
+      .map(v => parseInt(v.trim(), 10))
+      .filter(v => !isNaN(v) && v >= 0);
     
-    if (values.length < 5 || values.length > 30) {
+    // Require >= 8 weeks, ideally 13-26, but allow up to 30
+    if (values.length < 8) {
       toast({
         title: "Invalid Data",
-        description: "Please enter between 5 and 30 weekly throughput values.",
+        description: "Please enter at least 8 weekly throughput values. Use 0 for holidays/slow weeks.",
         variant: "destructive",
       });
       return null;
     }
     
+    if (values.length > 30) {
+      toast({
+        title: "Too Much Data",
+        description: "Please enter no more than 30 weekly throughput values.",
+        variant: "destructive",
+      });
+      return null;
+    }
+    
+    // Check that at least one week has > 0 throughput
+    if (values.every(v => v === 0)) {
+      toast({
+        title: "Invalid Data",
+        description: "At least one week must have throughput > 0.",
+        variant: "destructive",
+      });
+      return null;
+    }
+    
+    // Calculate statistics
     const mean = values.reduce((a, b) => a + b) / values.length;
+    const sortedValues = [...values].sort((a, b) => a - b);
+    const median = sortedValues.length % 2 === 0 
+      ? (sortedValues[sortedValues.length / 2 - 1] + sortedValues[sortedValues.length / 2]) / 2
+      : sortedValues[Math.floor(sortedValues.length / 2)];
+    
     const variance = values.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / values.length;
     const stdDev = Math.sqrt(variance);
-    const cv = (stdDev / mean) * 100;
+    const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
     
-    return { values, mean, cv };
+    return { 
+      values, 
+      mean: Math.round(mean * 10) / 10, 
+      median: Math.round(median * 10) / 10,
+      stdDev: Math.round(stdDev * 10) / 10, 
+      cv: Math.round(cv * 10) / 10
+    };
   };
 
   const validateInputs = (): boolean => {
@@ -67,10 +100,10 @@ export default function ForecastPage() {
       return false;
     }
 
-    if (!trials || trials < 100 || trials > 50000) {
+    if (!trials || trials < 1000 || trials > 50000) {
       toast({
         title: "Validation Error",
-        description: "Please enter a number of trials between 100 and 50,000.",
+        description: "Please enter a number of trials between 1,000 and 50,000.",
         variant: "destructive",
       });
       return false;
@@ -142,16 +175,17 @@ export default function ForecastPage() {
           let finalMeanThroughput = meanThroughput;
           let finalVariabilityCV = variabilityCV;
           
-          // Check if using historical data
+          // Check if using historical data and prepare input
+          let historicalData: number[] | undefined;
+          
           if (!useCycleTime && weeklyThroughputData.trim()) {
             const weeklyData = parseWeeklyData();
             if (weeklyData) {
-              finalMeanThroughput = weeklyData.mean;
-              finalVariabilityCV = weeklyData.cv;
+              historicalData = weeklyData.values;
               
               toast({
                 title: "Using Historical Data",
-                description: `Calculated mean: ${weeklyData.mean.toFixed(1)} items/week, CV: ${weeklyData.cv.toFixed(1)}%`,
+                description: `${weeklyData.values.length} weeks: Mean=${weeklyData.mean}, Median=${weeklyData.median}, CV=${weeklyData.cv}%`,
               });
             }
           }
@@ -163,6 +197,7 @@ export default function ForecastPage() {
             useCycleTime,
             meanThroughput: useCycleTime ? undefined : finalMeanThroughput,
             variabilityCV: useCycleTime ? undefined : finalVariabilityCV,
+            historicalWeeklyData: historicalData,
             p50CycleTime: useCycleTime ? p50CycleTime : undefined,
             p80CycleTime: useCycleTime && p80CycleTime > 0 ? p80CycleTime : undefined,
             p95CycleTime: useCycleTime ? p95CycleTime : undefined,

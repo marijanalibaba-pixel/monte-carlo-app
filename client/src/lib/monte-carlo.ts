@@ -13,6 +13,7 @@ export interface SimulationInput {
   // Throughput model
   meanThroughput?: number;
   variabilityCV?: number;
+  historicalWeeklyData?: number[];  // New: for bootstrap sampling
   // Cycle time model
   p50CycleTime?: number;
   p80CycleTime?: number;
@@ -33,24 +34,69 @@ export interface SimulationResult {
 }
 
 const MAX_WEEKS = 104; // 2 years safety cap
+const RNG_SEED = 42; // Fixed seed for reproducibility
 
-// Box-Muller transformation for normal random generation
-function randNorm(): number {
-  const u1 = Math.max(Math.random(), 1e-12);
-  const u2 = Math.random();
+// Simple seedable random number generator (LCG)
+class SeededRandom {
+  private seed: number;
+  
+  constructor(seed: number) {
+    this.seed = seed;
+  }
+  
+  next(): number {
+    this.seed = (this.seed * 1664525 + 1013904223) % (2 ** 32);
+    return this.seed / (2 ** 32);
+  }
+}
+
+// Box-Muller transformation for normal random generation using seeded RNG
+function randNorm(rng: SeededRandom): number {
+  const u1 = Math.max(rng.next(), 1e-12);
+  const u2 = rng.next();
   return Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
 }
 
-// Generate lognormal random number
-function randLogNormal(mu: number, sigma: number): number {
-  return Math.exp(mu + sigma * randNorm());
+// Generate lognormal random number using seeded RNG
+function randLogNormal(mu: number, sigma: number, rng: SeededRandom): number {
+  return Math.exp(mu + sigma * randNorm(rng));
 }
 
-// Calculate percentile from sorted array
+// Bootstrap sampling from historical data
+function sampleFromHistorical(historicalData: number[], rng: SeededRandom): number {
+  const index = Math.floor(rng.next() * historicalData.length);
+  return historicalData[index];
+}
+
+// Calculate percentile using nearest-rank (ceil) method
 function percentile(arr: number[], p: number): number {
   const sorted = [...arr].sort((a, b) => a - b);
   const idx = Math.ceil(p * sorted.length) - 1;
   return sorted[Math.max(0, Math.min(idx, sorted.length - 1))];
+}
+
+// Calculate descriptive statistics for historical data
+function calculateHistoricalStats(data: number[]): {
+  mean: number;
+  median: number;
+  stdDev: number;
+  cv: number;
+  count: number;
+} {
+  const mean = data.reduce((a, b) => a + b, 0) / data.length;
+  const median = percentile(data, 0.5);
+  
+  const variance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length;
+  const stdDev = Math.sqrt(variance);
+  const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
+  
+  return {
+    mean: Math.round(mean * 10) / 10,
+    median: Math.round(median * 10) / 10,
+    stdDev: Math.round(stdDev * 10) / 10,
+    cv: Math.round(cv * 10) / 10,
+    count: data.length
+  };
 }
 
 // Fit lognormal distribution to cycle time percentiles
@@ -127,9 +173,10 @@ function calculateStatistics(completionDays: number[]): {
 export function runMonteCarloSimulation(input: SimulationInput): SimulationResult {
   const { backlogSize, trials, startDate, useCycleTime } = input;
   const results: number[] = [];
+  const rng = new SeededRandom(RNG_SEED);
 
   if (useCycleTime) {
-    // Cycle time model
+    // Cycle time model (unchanged)
     const { p50CycleTime, p80CycleTime, p95CycleTime } = input;
     if (!p50CycleTime || !p95CycleTime) {
       throw new Error('P50 and P95 cycle times are required');
@@ -142,8 +189,8 @@ export function runMonteCarloSimulation(input: SimulationInput): SimulationResul
       let weeks = 0;
       
       while (done < backlogSize && weeks < MAX_WEEKS) {
-        const ctDays = randLogNormal(params.mu, params.sigma); // days/item
-        const weekly = 7.0 / Math.max(ctDays, 0.0001); // items/week
+        const ctDays = randLogNormal(params.mu, params.sigma, rng);
+        const weekly = 7.0 / Math.max(ctDays, 0.0001);
         done += weekly;
         weeks++;
       }
@@ -151,35 +198,53 @@ export function runMonteCarloSimulation(input: SimulationInput): SimulationResul
       results.push(weeks * 7);
     }
   } else {
-    // Throughput model
-    const { meanThroughput, variabilityCV } = input;
-    if (!meanThroughput) {
-      throw new Error('Mean throughput is required');
-    }
-
-    if (!variabilityCV || variabilityCV <= 0) {
-      // Deterministic case
-      const weeks = Math.ceil(backlogSize / meanThroughput);
-      for (let t = 0; t < trials; t++) {
-        results.push(weeks * 7);
-      }
-    } else {
-      // Stochastic case
-      const cv = variabilityCV / 100.0;
-      const sigma = Math.sqrt(Math.log(1 + cv * cv));
-      const mu = Math.log(meanThroughput) - sigma * sigma / 2;
-      
+    // Throughput model with historical data support
+    const { meanThroughput, variabilityCV, historicalWeeklyData } = input;
+    
+    if (historicalWeeklyData && historicalWeeklyData.length > 0) {
+      // Historical weekly data - bootstrap sampling
       for (let t = 0; t < trials; t++) {
         let done = 0;
         let weeks = 0;
         
         while (done < backlogSize && weeks < MAX_WEEKS) {
-          const weekly = randLogNormal(mu, sigma);
+          const weekly = sampleFromHistorical(historicalWeeklyData, rng);
           done += weekly;
           weeks++;
         }
         
         results.push(weeks * 7);
+      }
+    } else {
+      // Average weekly model
+      if (!meanThroughput) {
+        throw new Error('Mean throughput is required');
+      }
+
+      if (!variabilityCV || variabilityCV <= 0) {
+        // Deterministic case
+        const weeks = Math.ceil(backlogSize / meanThroughput);
+        for (let t = 0; t < trials; t++) {
+          results.push(weeks * 7);
+        }
+      } else {
+        // Stochastic case with lognormal distribution
+        const cv = variabilityCV / 100.0;
+        const sigma = Math.sqrt(Math.log(1 + cv * cv));
+        const mu = Math.log(meanThroughput) - sigma * sigma / 2;
+        
+        for (let t = 0; t < trials; t++) {
+          let done = 0;
+          let weeks = 0;
+          
+          while (done < backlogSize && weeks < MAX_WEEKS) {
+            const weekly = Math.max(randLogNormal(mu, sigma, rng), 1e-6); // Clamp to avoid zero
+            done += weekly;
+            weeks++;
+          }
+          
+          results.push(weeks * 7);
+        }
       }
     }
   }

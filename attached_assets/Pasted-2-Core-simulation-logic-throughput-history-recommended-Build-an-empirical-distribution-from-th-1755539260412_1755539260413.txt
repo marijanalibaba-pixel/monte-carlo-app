@@ -1,0 +1,87 @@
+2) Core simulation logic (throughput history – recommended)
+
+Build an empirical distribution from the weekly counts.
+
+For each trial (≥ 10k, seedable for reproducibility):
+
+sum = 0, weeks = 0.
+
+While sum < backlog: sample 1 week from history with replacement (uniform; keep zeros), add to sum, weeks++.
+
+Record weeks.
+
+Convert weeks → date: start_date + 7×weeks (calendar days).
+
+Compute P50 / P80 / P95 using nearest-rank (ceil) on the weeks array, then map to dates.
+
+3) Cycle-time fallback (when no weekly history)
+
+If you have raw cycle times (days/item): for each simulated week, sample a cycle time, convert to weekly throughput = 7 / sampled_days, accumulate until backlog is reached.
+
+If you only have percentiles: fit a lognormal to P50 & P95 (optionally include P80 for a better fit), then sample cycle times as above.
+
+Same stopping rule and date conversion as in §2.
+
+4) Rounding & stopping rules (must-haves)
+
+Stop the loop immediately when sum ≥ backlog (no “extra” week).
+
+Percentiles: nearest-rank (ceil).
+
+Show weeks and dates; dates use calendar days (optionally offer “workdays” as a toggle later).
+
+5) Outliers, recency & representativeness
+
+Keep zeros.
+
+Do not clip highs by default; optionally offer a winsorize toggle (cap at 99th percentile) for a conservative scenario.
+
+By default sample all weeks equally. Optionally provide a recency weight toggle (e.g., exponential decay with half-life 6 weeks) and label it clearly.
+
+6) Inputs & UX
+
+Backlog size (items), Start date (default today), Trials (default 10k).
+
+Model selector:
+
+Throughput – Historical: textarea to paste comma-separated weekly counts; shows derived mean/median/CV and #weeks used.
+
+Throughput – Simple: mean + CV% (use only if no history).
+
+Cycle-time: P50/P80/P95 (or textarea for raw cycle times).
+
+Validation: reject negative/blank values; warn if fewer than 8 weeks of data; show when current week is partial.
+
+7) Outputs
+
+Summary cards: P50/P80/P95 dates; corresponding weeks; trials run.
+
+Histogram of completion dates + S-curve, both with vertical markers at P50/P80/P95.
+
+Assumptions box: model used, #weeks, average & CV, any toggles (winsorize/recency) that were on.
+
+8) Reproducibility & performance
+
+Fixed RNG seed (editable).
+
+Trials: 10k default; allow up to 50k.
+
+Add a safety cap (e.g., 104 weeks). If hit, flag “cap reached” in the UI.
+
+9) QA / acceptance checks
+
+Changing the weekly list changes outputs; removing zeros shifts dates earlier (sanity check).
+
+Throughput-history vs mean+CV: with CV=0, P50 equals deterministic date; with CV>0, spread appears.
+
+Cycle-time model produces later tails (heavier P95) than throughput when data is the same—expected.
+
+10) When to re-forecast
+
+Every new week completed.
+
+Any policy/capacity change (team size, scope filter).
+
+When backlog composition changes (e.g., different issue type mix).
+
+Give your dev this list and ask them to implement the Throughput – Historical path first (it yields the best realism), then keep the Cycle-time path as a fallback.

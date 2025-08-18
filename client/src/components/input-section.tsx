@@ -82,7 +82,7 @@ export function InputSection({
             type="number"
             value={trials}
             onChange={(e) => setTrials(Number(e.target.value))}
-            min="100"
+            min="1000"
             max="50000"
             className="text-sm"
           />
@@ -165,17 +165,17 @@ export function InputSection({
               <div className="space-y-2">
                 <Label htmlFor="weeklyData">Weekly Throughput History</Label>
                 <p className="text-xs text-gray-500">
-                  Enter 5-30 weekly throughput values, separated by commas. Start with the most recent week and go backwards in time.
+                  Enter 8-30 weekly throughput values (integers ≥ 0), separated by commas. Use 0 for holidays/slow weeks. At least one week must be greater than 0.
                 </p>
                 <Textarea
                   id="weeklyData"
-                  placeholder="Example: 12, 15, 8, 11, 14, 13, 9, 16, 12, 10"
+                  placeholder="Example: 12, 15, 8, 11, 0, 14, 13, 9, 16, 12, 10, 7, 15"
                   value={weeklyThroughputData}
                   onChange={(e) => setWeeklyThroughputData(e.target.value)}
                   className="text-sm min-h-[80px]"
                 />
                 <p className="text-xs text-gray-400">
-                  Variability will be calculated automatically from your data
+                  Bootstrap sampling will be used - statistics calculated automatically
                 </p>
               </div>
             </TabsContent>

@@ -1,0 +1,107 @@
+Here’s a logic-only spec for the Throughput model with two options: Historical Weekly and Average Weekly.
+
+Inputs (shared)
+
+Backlog size (items, >0)
+
+Start date (calendar date; default today)
+
+Trials (default 10,000, allow 1k–50k)
+
+RNG seed (fixed default for reproducibility, e.g., 42)
+
+Add a safety cap of 104 weeks per trial; if hit, flag “cap reached”.
+
+A) Throughput — Historical Weekly (preferred)
+Data entry
+
+Textarea for comma-separated weekly completions (most recent week first or last; order doesn’t matter).
+
+Require ≥ 8 and ideally 13–26 full calendar weeks.
+
+Keep zeros (they model holidays/slow weeks).
+
+Validate: all integers ≥0 and at least one week >0. Warn if current week is partial and should be excluded.
+
+Pre-calc stats (display only)
+
+Mean, median, standard deviation, CV = stdev/mean (if mean>0), number of weeks.
+
+Simulation (bootstrap)
+
+For each trial:
+
+sum = 0 items, weeks = 0.
+
+While sum < backlog and weeks < cap:
+
+Sample one weekly value uniformly with replacement from the provided list (zeros allowed).
+
+sum += sampledWeekly
+
+weeks += 1
+
+Record weeks.
+
+Percentiles & dates
+
+Percentiles from the weeks array using nearest-rank (ceil): P50, P80, P95.
+
+Convert to dates: completion_date = start_date + 7 * weeks (calendar days, not business days).
+
+Also report the raw weeks for P50/P80/P95.
+
+Optional toggles (nice to have)
+
+Recency weighting (off by default): exponential weights (e.g., half-life 6 weeks).
+
+Winsorize (off by default): cap weekly samples at the 99th percentile to produce a conservative scenario.
+
+B) Throughput — Average Weekly (simple fallback)
+Data entry
+
+Average weekly throughput (mean, >0)
+
+Variability (CV%) (≥0; 0 means deterministic)
+
+Random weekly generator
+
+If CV% = 0: weekly value = mean every week (deterministic).
+
+Else model weekly throughput as lognormal with:
+
+cv = CV% / 100
+
+sigma = sqrt( ln(1 + cv^2) )
+
+mu = ln(mean) − (sigma^2)/2
+
+On each simulated week, draw weekly = LogNormal(mu, sigma). Clamp to a tiny ε if needed to avoid zero (max(weekly, 1e-6)).
+
+Simulation & outputs
+
+Same loop and stopping rule as Historical Weekly (accumulate per week until sum ≥ backlog), record weeks, compute P50/P80/P95 by nearest-rank, convert to dates as above.
+
+Rounding & stopping rules (must be consistent)
+
+Stop immediately when sum ≥ backlog (do not add an extra “closing” week).
+
+Percentiles: nearest-rank (ceil).
+
+Dates: start date + (weeks × 7 days).
+
+Validation & UX notes
+
+If all weekly values are zero, block the run with a clear error.
+
+Show a small Assumptions box: model used, #weeks (historical), mean & CV, trials, seed, and whether any toggles (recency/winsorize) were on.
+
+Acceptance checks
+
+Removing zeros from historical data shifts dates earlier (sanity check).
+
+With CV=0 in the Average option, P50 equals ceil(backlog/mean) weeks and P80/P95 ≈ P50.
+
+Increasing trials (e.g., 10k → 50k) changes P80/P95 by ≤ 1 week.
+
+This spec gives you consistent, reproducible Monte Carlo forecasts using either real weekly history (best) or a mean+variability fallback.
