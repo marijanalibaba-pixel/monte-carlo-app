@@ -295,7 +295,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   ))}
                 </Bar>
                 
-                {/* Percentile reference lines - manually calculated */}
+                {/* Percentile reference lines - improved spacing */}
                 {(() => {
                   const p50 = result.confidenceIntervals.find(ci => ci.level === 0.5);
                   const p80 = result.confidenceIntervals.find(ci => ci.level === 0.8); 
@@ -313,7 +313,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                           label={{ 
                             value: "P50", 
                             position: "top",
-                            style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                            offset: -15,
+                            style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '11px' }
                           }}
                         />
                       )}
@@ -326,7 +327,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                           label={{ 
                             value: "P80", 
                             position: "top",
-                            style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                            offset: 0,
+                            style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '11px' }
                           }}
                         />
                       )}
@@ -339,7 +341,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                           label={{ 
                             value: "P95", 
                             position: "top",
-                            style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                            offset: 15,
+                            style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '11px' }
                           }}
                         />
                       )}
@@ -410,12 +413,15 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   fill="url(#scurveGradient)"
                 />
                 
-                {/* Percentile reference lines - debugging S-curve */}
+                {/* Percentile reference lines - improved positioning */}
                 {(() => {
                   const p50 = result.confidenceIntervals.find(ci => ci.level === 0.5);
                   const p80 = result.confidenceIntervals.find(ci => ci.level === 0.8); 
                   const p95 = result.confidenceIntervals.find(ci => ci.level === 0.95);
-                  console.log('S-curve percentiles:', { p50, p80, p95 });
+                  
+                  // Calculate label offsets to prevent overlap when lines are close
+                  const lines = [p50, p80, p95].filter(Boolean);
+                  const spacing = 15; // minimum spacing between labels
                   
                   return (
                     <>
@@ -427,8 +433,9 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                           strokeDasharray="8 4"
                           label={{ 
                             value: "P50", 
-                            position: "top",
-                            style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                            position: "topLeft",
+                            offset: -10,
+                            style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '11px' }
                           }}
                         />
                       )}
@@ -441,7 +448,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                           label={{ 
                             value: "P80", 
                             position: "top",
-                            style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                            offset: 0,
+                            style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '11px' }
                           }}
                         />
                       )}
@@ -453,8 +461,9 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                           strokeDasharray="8 4"
                           label={{ 
                             value: "P95", 
-                            position: "top",
-                            style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                            position: "topRight",
+                            offset: 10,
+                            style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '11px' }
                           }}
                         />
                       )}
