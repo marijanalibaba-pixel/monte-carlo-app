@@ -15,7 +15,13 @@ export async function setupViteInline(app: Express) {
     root: path.resolve(root, "client"),
     plugins: [react()],                  // ← only official React plugin
     server: { middlewareMode: true, hmr: { overlay: true } },
-    resolve: { alias: { "@": path.resolve(root, "client/src") } },
+    resolve: { 
+      alias: { 
+        "@": path.resolve(root, "client/src"),
+        "@shared": path.resolve(root, "shared"),
+        "@assets": path.resolve(root, "attached_assets")
+      } 
+    },
     build: { outDir: path.resolve(root, "dist/public"), emptyOutDir: true },
   });
 
