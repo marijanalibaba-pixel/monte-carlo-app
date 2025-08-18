@@ -1,6 +1,7 @@
 import { SimulationResult } from "@/lib/monte-carlo";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { TrendingUp } from "lucide-react";
+import { useState } from "react";
 
 interface SCurveChartProps {
   results: SimulationResult;
@@ -8,6 +9,7 @@ interface SCurveChartProps {
 }
 
 export function SCurveChart({ results, startDate }: SCurveChartProps) {
+  const [hoveredData, setHoveredData] = useState<{ days: number; probability: number } | null>(null);
   // Create S-curve data
   const createSCurveData = () => {
     const sorted = [...results.completionDays].sort((a, b) => a - b);
@@ -48,6 +50,17 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
   const p50Days = getPercentileDays(0.5);
   const p80Days = getPercentileDays(0.8);
   const p95Days = getPercentileDays(0.95);
+
+  const handleMouseEnter = (data: any) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const payload = data.activePayload[0].payload;
+      setHoveredData({ days: payload.days, probability: payload.probability });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredData(null);
+  };
   
 
 
@@ -57,9 +70,26 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
         <TrendingUp className="text-[hsl(var(--primary-500))] mr-2 h-4 w-4" />
         Cumulative Probability (S-curve)
       </h4>
-      <div className="h-80">
+      <div className="h-80 relative">
+        {hoveredData && (
+          <div 
+            className="absolute top-4 right-4 bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl z-10 
+                       animate-fadeInSlide backdrop-blur-sm border border-gray-700"
+          >
+            <div className="text-sm font-semibold">Day {hoveredData.days}</div>
+            <div className="text-lg font-bold text-green-400">
+              {hoveredData.probability.toFixed(1)}%
+            </div>
+            <div className="text-xs opacity-75">completion probability</div>
+          </div>
+        )}
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={scurveData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <LineChart 
+            data={scurveData} 
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            onMouseMove={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="days"
