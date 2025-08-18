@@ -1,0 +1,28 @@
+// server/vite-inline.ts
+import type { Express } from "express";
+import { createServer as createViteServer } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(__dirname, "..");
+
+export async function setupViteInline(app: Express) {
+  const vite = await createViteServer({
+    configFile: false,                   // ← ignore vite.config.ts
+    root: path.resolve(root, "client"),
+    plugins: [react()],                  // ← only official React plugin
+    server: { middlewareMode: true, hmr: { overlay: true } },
+    resolve: { 
+      alias: { 
+        "@": path.resolve(root, "client/src"),
+        "@shared": path.resolve(root, "shared"),
+        "@assets": path.resolve(root, "attached_assets")
+      } 
+    },
+    build: { outDir: path.resolve(root, "dist/public"), emptyOutDir: true },
+  });
+
+  app.use(vite.middlewares);
+}

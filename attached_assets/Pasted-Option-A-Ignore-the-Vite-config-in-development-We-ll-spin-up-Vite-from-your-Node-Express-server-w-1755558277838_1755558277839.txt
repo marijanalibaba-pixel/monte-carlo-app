@@ -1,0 +1,108 @@
+Option A — Ignore the Vite config in development
+
+We’ll spin up Vite from your Node/Express server with an inline config (so the Replit overlay plugins never load).
+
+1) Add a new file: server/vite-inline.ts
+// server/vite-inline.ts
+import type { Express } from "express";
+import { createServer as createViteServer } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(__dirname, "..");
+
+export async function setupViteInline(app: Express) {
+  const vite = await createViteServer({
+    configFile: false,                   // ← ignore vite.config.ts
+    root: path.resolve(root, "client"),
+    plugins: [react()],                  // ← only official React plugin
+    server: { middlewareMode: true, hmr: { overlay: true } },
+    resolve: { alias: { "@": path.resolve(root, "client/src") } },
+    build: { outDir: path.resolve(root, "dist/public"), emptyOutDir: true },
+  });
+
+  app.use(vite.middlewares);
+}
+
+2) Edit server/index.ts to use the inline setup
+
+Replace the existing import that sets up Vite (the one that currently pulls from ./vite) with the new one, and call it:
+
+// server/index.ts
+import express, { type Request, Response, NextFunction } from "express";
+// ⬇️ replace the old import (setupVite) with:
+import { setupViteInline } from "./vite-inline";
+
+const app = express();
+// ... your existing middleware, routes, etc ...
+
+(async () => {
+  const server = await registerRoutes(app);
+
+  // error handler stays the same...
+
+  if (app.get("env") === "development") {
+    await setupViteInline(app);   // ← use the inline Vite (no config file)
+  } else {
+    serveStatic(app);
+  }
+
+  const port = parseInt(process.env.PORT || "5000", 10);
+  server.listen({ port, host: "0.0.0.0", reusePort: true }, () => {
+    log(`serving on port ${port}`);
+  });
+})();
+
+3) Run
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
+
+
+That’s it. Dev now runs with no reference to vite.config.ts, so the Replit overlay plugins can’t load and the RefreshRuntime.register is not a function error disappears.
+
+Option B — Use your own Vite config for build too (optional)
+
+If you also want to build without touching the protected file:
+
+1) Add vite.inline.config.ts at the repo root
+// vite.inline.config.ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig({
+  plugins: [react()],
+  root: path.resolve(__dirname, "client"),
+  build: { outDir: path.resolve(__dirname, "dist/public"), emptyOutDir: true },
+  resolve: { alias: { "@": path.resolve(__dirname, "client/src") } },
+  server: { hmr: { overlay: true } },
+});
+
+2) Update package.json scripts to point at your own config
+{
+  "scripts": {
+    "dev": "NODE_ENV=development tsx server/index.ts",
+    "build": "vite build --config vite.inline.config.ts",
+    "start": "NODE_ENV=production node dist/index.js"
+  }
+}
+
+
+Now npm run build doesn’t read the protected vite.config.ts at all.
+
+Why this fixes it
+
+Your locked vite.config.ts loads Replit’s runtime-error overlay/cartographer plugins, which conflict with React Fast Refresh and throw:
+
+[plugin:runtime-error-plugin] RefreshRuntime.register is not a function
+
+
+By ignoring that config (via configFile:false in dev and/or providing your own config for build), only the official @vitejs/plugin-react runs—and Fast Refresh + overlay work correctly.
+
+If any of the files mentioned above are also protected, tell me which ones you can edit (e.g., only server/index.ts and adding new files), and I’ll tailor an alternative that fits exactly within those constraints.
