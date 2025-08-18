@@ -1,0 +1,42 @@
+If the agent or system is going around in circles, just paste your issue and the relevant code into AIStudio to walk you through a solution. Here, I did it for you.
+
+Copy and paste this into your assistant:
+
+The error null is not an object (evaluating 'dispatcher.useContext') almost always means your React app is confused because it's seeing more than one version of React, or React's internal "rules" aren't set up right when a Hook (like useContext) is called.
+
+Force a Single React Version (The Best Fix):
+
+Go to your Replit files, find package.json.
+
+Add or edit the overrides (for npm) or resolutions (for yarn) section. Most Replit projects use npm.
+
+Go to the "Shell" tab in Replit.
+
+Type npm install and press Enter. (Or yarn install if you're using Yarn).
+
+This tells Replit to re-read your package rules and try to fix the versions.
+
+Restart your app.
+
+"Clean" Your Replit Project's Packages:
+
+Sometimes things just get messy.
+
+In the "Shell" tab:
+
+Type rm -rf node_modules and press Enter (this deletes the installed packages folder).
+
+Type rm package-lock.json and press Enter (or rm yarn.lock if you use Yarn).
+
+Type npm install (or yarn install) and press Enter (this reinstalls everything fresh based on your package.json).
+
+Restart your app.
+
+Fork Your Repl (More Drastic, but Sometimes Works):
+
+If things are really stuck, you can "Fork" your Repl. This creates a fresh copy. Sometimes, this clears out hidden environment issues. Then, immediately try step 1 (adding overrides) in the new fork before running into the error again.
+
+Why switching devices is a temporary fix:
+When you switch devices, you might be getting a slightly cleaner, cached version from Replit's servers initially. But if the underlying project configuration (package.json or how packages are installed) has the version conflict, the problem will eventually reappear as Replit re-evaluates or reinstalls packages.
+
+The OpenAI APIs themselves are very unlikely to cause this specific React error. The error happens inside your React code when it tries to use a Hook.
