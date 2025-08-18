@@ -373,7 +373,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   fill="url(#scurveGradient)"
                 />
                 
-                {/* Key percentile lines */}
+                {/* Key percentile lines for S-curve */}
                 <ReferenceLine
                   x={result.confidenceIntervals.find(ci => ci.level === 0.5)?.daysFromStart || 0}
                   stroke="#3b82f6"
@@ -406,6 +406,29 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                     position: "top",
                     style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
                   }}
+                />
+                
+                {/* Horizontal percentile reference lines at 50%, 80%, 95% probability */}
+                <ReferenceLine
+                  y={50}
+                  stroke="#3b82f6"
+                  strokeWidth={1}
+                  strokeDasharray="4 2"
+                  strokeOpacity={0.6}
+                />
+                <ReferenceLine
+                  y={80}
+                  stroke="#f59e0b"
+                  strokeWidth={1}
+                  strokeDasharray="4 2"
+                  strokeOpacity={0.6}
+                />
+                <ReferenceLine
+                  y={95}
+                  stroke="#ef4444"
+                  strokeWidth={1}
+                  strokeDasharray="4 2"
+                  strokeOpacity={0.6}
                 />
                 
                 <defs>

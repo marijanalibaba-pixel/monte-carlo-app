@@ -48,6 +48,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
   const [historicalData, setHistoricalData] = useState("");
   const [weeklyCapacity, setWeeklyCapacity] = useState(20);
   const [useCapacityLimit, setUseCapacityLimit] = useState(false);
+  const [dataSourceType, setDataSourceType] = useState<'historical' | 'statistical'>('historical');
   
   // Cycle time parameters
   const [p50CycleTime, setP50CycleTime] = useState(3);
@@ -92,13 +93,13 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
     };
     
     if (forecastType === 'throughput') {
-      const historicalThroughput = historicalData ? parseHistoricalData(historicalData) : undefined;
+      const historicalThroughput = dataSourceType === 'historical' && historicalData ? parseHistoricalData(historicalData) : undefined;
       
       const throughputConfig: ThroughputConfig = {
         backlogSize,
         historicalThroughput,
-        averageThroughput: historicalThroughput ? undefined : averageThroughput,
-        throughputVariability: historicalThroughput ? undefined : throughputVariability,
+        averageThroughput: dataSourceType === 'statistical' ? averageThroughput : undefined,
+        throughputVariability: dataSourceType === 'statistical' ? throughputVariability : undefined,
         weeklyCapacity: useCapacityLimit ? weeklyCapacity : undefined
       };
       
@@ -228,10 +229,18 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
               {/* Data Source Selection */}
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className={`cursor-pointer border-2 transition-all ${historicalData ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <Card 
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'historical' ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    onClick={() => {
+                      setDataSourceType('historical');
+                      if (dataSourceType !== 'historical') {
+                        setHistoricalData("12, 15, 8, 14, 11, 16, 9, 13, 17, 10, 12, 14, 8, 15, 11");
+                      }
+                    }}
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`w-4 h-4 rounded-full border-2 ${historicalData ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${dataSourceType === 'historical' ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
                         <h4 className="font-semibold">Historical Data</h4>
                         <Badge variant="outline" className="text-xs">Recommended</Badge>
                       </div>
@@ -241,10 +250,16 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                     </CardContent>
                   </Card>
                   
-                  <Card className={`cursor-pointer border-2 transition-all ${!historicalData ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <Card 
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'statistical' ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    onClick={() => {
+                      setDataSourceType('statistical');
+                      setHistoricalData("");
+                    }}
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`w-4 h-4 rounded-full border-2 ${!historicalData ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${dataSourceType === 'statistical' ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
                         <h4 className="font-semibold">Statistical Parameters</h4>
                       </div>
                       <p className="text-sm text-muted-foreground">
@@ -255,52 +270,54 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 </div>
 
                 {/* Current Calculation Method Indicator */}
-                <div className={`p-4 rounded-lg border-l-4 ${historicalData ? 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
+                <div className={`p-4 rounded-lg border-l-4 ${dataSourceType === 'historical' ? 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
                   <div className="flex items-center space-x-2 mb-2">
-                    <div className={`w-3 h-3 rounded-full ${historicalData ? 'bg-blue-500' : 'bg-orange-500'}`} />
+                    <div className={`w-3 h-3 rounded-full ${dataSourceType === 'historical' ? 'bg-blue-500' : 'bg-orange-500'}`} />
                     <h4 className="font-semibold">
-                      {historicalData ? 'Using Bootstrap Sampling' : 'Using Statistical Distribution'}
+                      {dataSourceType === 'historical' ? 'Using Bootstrap Sampling' : 'Using Statistical Distribution'}
                     </h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {historicalData 
-                      ? `Randomly sampling from ${parseHistoricalData(historicalData).length} historical weekly values with realistic variation`
+                    {dataSourceType === 'historical'
+                      ? `Randomly sampling from ${historicalData ? parseHistoricalData(historicalData).length : 0} historical weekly values with realistic variation`
                       : 'Generating throughput values from lognormal distribution with specified parameters'
                     }
                   </p>
                 </div>
 
                 {/* Historical Data Input */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">Historical Weekly Data</Label>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setHistoricalData("")}
-                      className="text-xs"
-                    >
-                      Clear
-                    </Button>
+                {dataSourceType === 'historical' && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-semibold">Historical Weekly Data</Label>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setHistoricalData("")}
+                        className="text-xs"
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                    <Textarea
+                      value={historicalData}
+                      onChange={(e) => setHistoricalData(e.target.value)}
+                      placeholder="12, 15, 8, 14, 11, 16, 9, 13, 17, 10, 12, 14, 8, 15, 11..."
+                      className="h-24 resize-none"
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Enter comma or space separated weekly completion counts. 
+                      {historicalData && (
+                        <span className="font-medium text-blue-600 dark:text-blue-400">
+                          {` Found ${parseHistoricalData(historicalData).length} weeks of data`}
+                        </span>
+                      )}
+                    </p>
                   </div>
-                  <Textarea
-                    value={historicalData}
-                    onChange={(e) => setHistoricalData(e.target.value)}
-                    placeholder="12, 15, 8, 14, 11, 16, 9, 13, 17, 10, 12, 14, 8, 15, 11..."
-                    className="h-24 resize-none"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    Enter comma or space separated weekly completion counts. 
-                    {historicalData && (
-                      <span className="font-medium text-blue-600 dark:text-blue-400">
-                        {` Found ${parseHistoricalData(historicalData).length} weeks of data`}
-                      </span>
-                    )}
-                  </p>
-                </div>
+                )}
 
-                {/* Statistical Parameters (when no historical data) */}
-                {!historicalData && (
+                {/* Statistical Parameters */}
+                {dataSourceType === 'statistical' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
                     <div className="space-y-3">
                       <Label>Average Weekly Throughput</Label>
