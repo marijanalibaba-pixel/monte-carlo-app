@@ -293,40 +293,46 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   ))}
                 </Bar>
                 
-                {/* Key percentile lines */}
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.5)?.daysFromStart || 0}
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P50", 
-                    position: "top",
-                    style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0}
-                  stroke="#f59e0b"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P80", 
-                    position: "top",
-                    style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0}
-                  stroke="#ef4444"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P95", 
-                    position: "top",
-                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
+                {/* Percentile reference lines - consistently show all three */}
+                {result.confidenceIntervals.find(ci => ci.level === 0.5) && (
+                  <ReferenceLine
+                    x={result.confidenceIntervals.find(ci => ci.level === 0.5)!.daysFromStart}
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    strokeDasharray="8 4"
+                    label={{ 
+                      value: "P50", 
+                      position: "top",
+                      style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                    }}
+                  />
+                )}
+                {result.confidenceIntervals.find(ci => ci.level === 0.8) && (
+                  <ReferenceLine
+                    x={result.confidenceIntervals.find(ci => ci.level === 0.8)!.daysFromStart}
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                    strokeDasharray="8 4"
+                    label={{ 
+                      value: "P80", 
+                      position: "top",
+                      style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                    }}
+                  />
+                )}
+                {result.confidenceIntervals.find(ci => ci.level === 0.95) && (
+                  <ReferenceLine
+                    x={result.confidenceIntervals.find(ci => ci.level === 0.95)!.daysFromStart}
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                    strokeDasharray="8 4"
+                    label={{ 
+                      value: "P95", 
+                      position: "top",
+                      style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                    }}
+                  />
+                )}
                 
                 <defs>
                   <linearGradient id="gradient-0" x1="0" y1="0" x2="0" y2="1">
