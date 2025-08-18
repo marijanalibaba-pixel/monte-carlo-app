@@ -268,7 +268,9 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
             {/* Percentile lines overlay for histogram - GUARANTEED VISIBILITY */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                {result.confidenceIntervals.map((interval) => {
+                {result.confidenceIntervals
+                  .filter(interval => [0.5, 0.8, 0.95].includes(interval.level))
+                  .map((interval) => {
                   const minDay = Math.min(...histogramData.map(d => d.days));
                   const maxDay = Math.max(...histogramData.map(d => d.days));
                   const xPercent = ((interval.daysFromStart - minDay) / (maxDay - minDay)) * 85 + 10;
@@ -290,17 +292,6 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                         strokeDasharray="6 3"
                         vectorEffect="non-scaling-stroke"
                       />
-                      <text
-                        x={`${xPercent}%`}
-                        y="12%"
-                        fill={color}
-                        fontSize="10"
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        P{Math.round(interval.level * 100)}
-                      </text>
                     </g>
                   );
                 })}
@@ -354,6 +345,21 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </BarChart>
             </ResponsiveContainer>
+            {/* Legend for histogram */}
+            <div className="flex justify-center mt-4 space-x-6">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-0.5 bg-blue-500" style={{borderTop: '2px dashed #3b82f6'}}></div>
+                <span className="text-sm text-muted-foreground">P50 (50% confidence)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-0.5 bg-amber-500" style={{borderTop: '2px dashed #f59e0b'}}></div>
+                <span className="text-sm text-muted-foreground">P80 (80% confidence)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-0.5 bg-red-500" style={{borderTop: '2px dashed #ef4444'}}></div>
+                <span className="text-sm text-muted-foreground">P95 (95% confidence)</span>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -374,7 +380,9 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
             {/* Percentile lines overlay - DIRECT SVG APPROACH */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                {result.confidenceIntervals.map((interval) => {
+                {result.confidenceIntervals
+                  .filter(interval => [0.5, 0.8, 0.95].includes(interval.level))
+                  .map((interval) => {
                   const minDay = Math.min(...scurveData.map(d => d.days));
                   const maxDay = Math.max(...scurveData.map(d => d.days));
                   const xPercent = ((interval.daysFromStart - minDay) / (maxDay - minDay)) * 85 + 10; // Account for margins
@@ -396,17 +404,6 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                         strokeDasharray="6 3"
                         vectorEffect="non-scaling-stroke"
                       />
-                      <text
-                        x={`${xPercent}%`}
-                        y="12%"
-                        fill={color}
-                        fontSize="10"
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        P{Math.round(interval.level * 100)}
-                      </text>
                     </g>
                   );
                 })}
@@ -452,6 +449,21 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </AreaChart>
             </ResponsiveContainer>
+            {/* Legend for S-curve */}
+            <div className="flex justify-center mt-4 space-x-6">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-0.5 bg-blue-500" style={{borderTop: '2px dashed #3b82f6'}}></div>
+                <span className="text-sm text-muted-foreground">P50 (50% confidence)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-0.5 bg-amber-500" style={{borderTop: '2px dashed #f59e0b'}}></div>
+                <span className="text-sm text-muted-foreground">P80 (80% confidence)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-0.5 bg-red-500" style={{borderTop: '2px dashed #ef4444'}}></div>
+                <span className="text-sm text-muted-foreground">P95 (95% confidence)</span>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
