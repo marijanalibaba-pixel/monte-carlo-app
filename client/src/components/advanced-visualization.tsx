@@ -6,9 +6,10 @@ import {
 } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   TrendingUp, BarChart3, Target, Calendar, AlertTriangle, 
-  Activity, Gauge, PieChart, Zap, Award
+  Activity, Gauge, PieChart, Zap, Award, HelpCircle
 } from "lucide-react";
 import { format, addDays } from "date-fns";
 
@@ -16,6 +17,23 @@ interface AdvancedVisualizationProps {
   result: ForecastResult;
   startDate: Date;
 }
+
+// Statistical explanation tooltips
+const StatTooltip = ({ children, explanation }: { children: React.ReactNode; explanation: string }) => (
+  <TooltipProvider>
+    <UITooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center space-x-1 cursor-help">
+          {children}
+          <HelpCircle className="w-3 h-3 text-muted-foreground" />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs p-3">
+        <p className="text-sm">{explanation}</p>
+      </TooltipContent>
+    </UITooltip>
+  </TooltipProvider>
+);
 
 export function AdvancedVisualization({ result, startDate }: AdvancedVisualizationProps) {
   
@@ -408,28 +426,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   }}
                 />
                 
-                {/* Horizontal percentile reference lines at 50%, 80%, 95% probability */}
-                <ReferenceLine
-                  y={50}
-                  stroke="#3b82f6"
-                  strokeWidth={1}
-                  strokeDasharray="4 2"
-                  strokeOpacity={0.6}
-                />
-                <ReferenceLine
-                  y={80}
-                  stroke="#f59e0b"
-                  strokeWidth={1}
-                  strokeDasharray="4 2"
-                  strokeOpacity={0.6}
-                />
-                <ReferenceLine
-                  y={95}
-                  stroke="#ef4444"
-                  strokeWidth={1}
-                  strokeDasharray="4 2"
-                  strokeOpacity={0.6}
-                />
+
                 
                 <defs>
                   <linearGradient id="scurveGradient" x1="0" y1="0" x2="0" y2="1">
@@ -457,15 +454,21 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
               <h4 className="font-semibold text-lg">Central Tendency</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Mean:</span>
+                  <StatTooltip explanation="Average completion time across all simulation trials. Can be affected by extreme values.">
+                    <span className="text-muted-foreground">Mean:</span>
+                  </StatTooltip>
                   <span className="font-medium">{result.statistics.mean.toFixed(1)} days</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Median:</span>
+                  <StatTooltip explanation="Middle value when all completion times are sorted. Less affected by extreme values, often more realistic for planning.">
+                    <span className="text-muted-foreground">Median:</span>
+                  </StatTooltip>
                   <span className="font-medium">{result.statistics.median.toFixed(1)} days</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Mode:</span>
+                  <StatTooltip explanation="Most frequently occurring completion time in the simulation results.">
+                    <span className="text-muted-foreground">Mode:</span>
+                  </StatTooltip>
                   <span className="font-medium">{histogramData.reduce((a, b) => a.frequency > b.frequency ? a : b).days} days</span>
                 </div>
               </div>
@@ -475,15 +478,21 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
               <h4 className="font-semibold text-lg">Variability</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Std Dev:</span>
+                  <StatTooltip explanation="Standard Deviation measures how spread out the completion times are. Lower values indicate more predictable outcomes.">
+                    <span className="text-muted-foreground">Std Dev:</span>
+                  </StatTooltip>
                   <span className="font-medium">{result.statistics.standardDeviation.toFixed(1)} days</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">CV:</span>
+                  <StatTooltip explanation="Coefficient of Variation (CV) = Standard Deviation / Mean. Shows relative variability. <15% = Low risk, 15-30% = Medium risk, >30% = High risk.">
+                    <span className="text-muted-foreground">CV:</span>
+                  </StatTooltip>
                   <span className="font-medium">{(riskAssessment.cv * 100).toFixed(1)}%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Range:</span>
+                  <StatTooltip explanation="Difference between fastest and slowest completion times in the simulation. Shows the total spread of possible outcomes.">
+                    <span className="text-muted-foreground">Range:</span>
+                  </StatTooltip>
                   <span className="font-medium">{riskAssessment.range.toFixed(0)} days</span>
                 </div>
               </div>
@@ -493,15 +502,21 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
               <h4 className="font-semibold text-lg">Distribution Shape</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Skewness:</span>
+                  <StatTooltip explanation="Skewness measures distribution asymmetry. Positive = right-tailed (longer projects more likely), Negative = left-tailed, Zero = symmetric.">
+                    <span className="text-muted-foreground">Skewness:</span>
+                  </StatTooltip>
                   <span className="font-medium">{result.statistics.skewness.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Kurtosis:</span>
+                  <StatTooltip explanation="Kurtosis measures distribution tail heaviness. High values indicate more extreme outcomes are possible. Normal distribution = 3.0.">
+                    <span className="text-muted-foreground">Kurtosis:</span>
+                  </StatTooltip>
                   <span className="font-medium">{result.statistics.kurtosis.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Min/Max:</span>
+                  <StatTooltip explanation="Fastest and slowest completion times found in all simulation trials. Shows the absolute bounds of possible outcomes.">
+                    <span className="text-muted-foreground">Min/Max:</span>
+                  </StatTooltip>
                   <span className="font-medium">{result.statistics.min.toFixed(0)} / {result.statistics.max.toFixed(0)}</span>
                 </div>
               </div>
