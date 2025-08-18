@@ -234,7 +234,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                     onClick={() => {
                       setDataSourceType('historical');
                       if (dataSourceType !== 'historical') {
-                        setHistoricalData("12, 15, 8, 14, 11, 16, 9, 13, 17, 10, 12, 14, 8, 15, 11");
+                        setHistoricalData("15, 12, 18, 9, 14, 11, 16, 8, 13, 17, 10, 12, 14, 15, 11");
                       }
                     }}
                   >
@@ -245,7 +245,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                         <Badge variant="outline" className="text-xs">Recommended</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Use your actual weekly completion data for authentic patterns
+                        Use your actual weekly completion data (most recent first) for authentic patterns
                       </p>
                     </CardContent>
                   </Card>
@@ -279,7 +279,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {dataSourceType === 'historical'
-                      ? `Randomly sampling from ${historicalData ? parseHistoricalData(historicalData).length : 0} historical weekly values with realistic variation`
+                      ? `Bootstrap sampling from ${historicalData ? parseHistoricalData(historicalData).length : 0} weeks of historical data (most recent week first) with authentic variability patterns`
                       : 'Generating throughput values from lognormal distribution with specified parameters'
                     }
                   </p>
@@ -302,11 +302,11 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                     <Textarea
                       value={historicalData}
                       onChange={(e) => setHistoricalData(e.target.value)}
-                      placeholder="12, 15, 8, 14, 11, 16, 9, 13, 17, 10, 12, 14, 8, 15, 11..."
+                      placeholder="15, 12, 18, 9, 14, 11, 16, 8, 13, 17..."
                       className="h-24 resize-none"
                     />
                     <p className="text-sm text-muted-foreground">
-                      Enter comma or space separated weekly completion counts. 
+                      <strong>Enter in reverse chronological order:</strong> Start with last week's throughput, then the week before, and so on.
                       {historicalData && (
                         <span className="font-medium text-blue-600 dark:text-blue-400">
                           {` Found ${parseHistoricalData(historicalData).length} weeks of data`}
