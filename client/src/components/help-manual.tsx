@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,15 @@ import { Badge } from "@/components/ui/badge";
 import { HelpCircle, Target, TrendingUp, BarChart3, Settings, Calculator, Lightbulb, AlertTriangle } from "lucide-react";
 
 export function HelpManual() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't render until mounted to avoid hydration issues
+  if (!mounted) return null;
+
   return (
     <Dialog>
       <DialogTrigger asChild>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -187,6 +187,11 @@ const tutorialSteps = [
 
 export function TutorialModal({ open, onOpenChange }: TutorialModalProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleNext = () => {
     if (currentStep < tutorialSteps.length - 1) {
@@ -201,11 +206,18 @@ export function TutorialModal({ open, onOpenChange }: TutorialModalProps) {
   };
 
   const handleComplete = () => {
-    localStorage.setItem('monte-carlo-tutorial-completed', 'true');
+    try {
+      localStorage.setItem('monte-carlo-tutorial-completed', 'true');
+    } catch (error) {
+      console.warn('Failed to save tutorial completion:', error);
+    }
     onOpenChange(false);
   };
 
   const currentStepData = tutorialSteps[currentStep];
+
+  // Don't render until mounted to avoid hydration issues
+  if (!mounted) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

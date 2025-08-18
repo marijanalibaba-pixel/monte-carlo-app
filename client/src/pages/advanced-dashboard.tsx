@@ -39,9 +39,13 @@ export function AdvancedDashboard() {
 
   // Check if user is first-time visitor
   useEffect(() => {
-    const hasSeenTutorial = localStorage.getItem('monte-carlo-tutorial-completed');
-    if (!hasSeenTutorial) {
-      setTimeout(() => setShowTutorial(true), 1000); // Show after 1 second
+    try {
+      const hasSeenTutorial = localStorage.getItem('monte-carlo-tutorial-completed');
+      if (!hasSeenTutorial) {
+        setTimeout(() => setShowTutorial(true), 1000); // Show after 1 second
+      }
+    } catch (error) {
+      console.warn('Tutorial check failed:', error);
     }
   }, []);
 
