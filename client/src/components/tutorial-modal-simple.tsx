@@ -69,45 +69,6 @@ const tutorialSteps = [
     )
   },
   {
-    title: "Input Your Project Data",
-    icon: <Settings className="w-6 h-6" />,
-    content: (
-      <div className="space-y-4">
-        <p className="text-slate-600 dark:text-slate-300">
-          Enter the key parameters for your forecast:
-        </p>
-        <div className="space-y-4">
-          <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
-            <h4 className="font-semibold mb-3">Common Inputs:</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-300">Backlog Size:</span>
-                <span className="font-medium">Total items to complete</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-300">Simulations:</span>
-                <span className="font-medium">How many scenarios to run (1000-10000)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-300">Start Date:</span>
-                <span className="font-medium">When work begins</span>
-              </div>
-            </div>
-          </div>
-          <div className="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg">
-            <h5 className="font-medium text-amber-800 dark:text-amber-200 flex items-center gap-2">
-              <Lightbulb className="w-4 h-4" />
-              Pro Tip
-            </h5>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-              More simulations = more accurate results, but takes longer to compute
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  },
-  {
     title: "Understanding the Results",
     icon: <BarChart3 className="w-6 h-6" />,
     content: (
@@ -135,49 +96,11 @@ const tutorialSteps = [
             </CardContent>
           </Card>
         </div>
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-          <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Reading the Charts:</h4>
-          <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-            <li>• <strong>Histogram:</strong> Shows distribution of possible completion dates</li>
-            <li>• <strong>S-Curve:</strong> Shows cumulative probability over time</li>
-            <li>• <strong>Percentile Lines:</strong> Key confidence intervals for planning</li>
-          </ul>
-        </div>
-      </div>
-    )
-  },
-  {
-    title: "Making Decisions",
-    icon: <TrendingUp className="w-6 h-6" />,
-    content: (
-      <div className="space-y-4">
-        <p className="text-slate-600 dark:text-slate-300">
-          Use your forecast results to make informed project decisions:
-        </p>
-        <div className="space-y-3">
-          <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
-            <h4 className="font-semibold mb-3">Decision Framework:</h4>
-            <div className="space-y-3 text-sm">
-              <div className="flex gap-3">
-                <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Conservative</Badge>
-                <span className="text-slate-600 dark:text-slate-300">Use P80 or P95 for external commitments</span>
-              </div>
-              <div className="flex gap-3">
-                <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Balanced</Badge>
-                <span className="text-slate-600 dark:text-slate-300">Use P50 for internal planning</span>
-              </div>
-              <div className="flex gap-3">
-                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">Aggressive</Badge>
-                <span className="text-slate-600 dark:text-slate-300">Use P20 for stretch goals</span>
-              </div>
-            </div>
-          </div>
-          <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg">
-            <h5 className="font-medium text-emerald-800 dark:text-emerald-200">Ready to Start!</h5>
-            <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1">
-              You're now ready to create accurate forecasts for your projects. Try running your first simulation!
-            </p>
-          </div>
+        <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg">
+          <h5 className="font-medium text-emerald-800 dark:text-emerald-200">Ready to Start!</h5>
+          <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1">
+            You're now ready to create accurate forecasts for your projects. Try running your first simulation!
+          </p>
         </div>
       </div>
     )

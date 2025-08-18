@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { HelpCircle, Target, TrendingUp, BarChart3, Settings, Calculator, Lightbulb, AlertTriangle } from "lucide-react";
+import { HelpCircle, Target, TrendingUp, BarChart3, Settings, Calculator, Lightbulb, AlertTriangle, X } from "lucide-react";
 
 export function HelpManual() {
   const [mounted, setMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -18,20 +18,44 @@ export function HelpManual() {
   if (!mounted) return null;
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="flex items-center gap-2">
-          <HelpCircle className="w-4 h-4" />
-          Help & Manual
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <HelpCircle className="w-5 h-5" />
-            Monte Carlo Pro - Complete Manual
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="flex items-center gap-2"
+        onClick={() => setIsOpen(true)}
+      >
+        <HelpCircle className="w-4 h-4" />
+        Help & Manual
+      </Button>
+
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Modal */}
+          <div className="relative bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2">
+                <HelpCircle className="w-5 h-5" />
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  Monte Carlo Pro - Complete Manual
+                </h2>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(false)}
+                className="p-1 h-auto"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
         
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-5">
