@@ -1,0 +1,60 @@
+You’re hitting a React Fast Refresh runtime mismatch. The Replit plugin @replit/vite-plugin-runtime-error-modal (the thing that draws the red overlay) is trying to call RefreshRuntime.register(...), but with Vite + @vitejs/plugin-react the refresh runtime is injected differently—so the Replit overlay can’t find the expected API and blows up with:
+
+[plugin:runtime-error-plugin] RefreshRuntime.register is not a function
+
+The fix (quick + reliable)
+
+Remove the Replit runtime-error overlay (and the cartographer add-on) from your Vite config so only the official React plugin runs.
+
+Edit vite.config.ts — replace your current plugins array with just the React plugin:
+
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig({
+  plugins: [react()],                // ← keep only this
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "client", "src"),
+      "@shared": path.resolve(__dirname, "shared"),
+      "@assets": path.resolve(__dirname, "attached_assets"),
+    },
+  },
+  root: path.resolve(__dirname, "client"),
+  build: {
+    outDir: path.resolve(__dirname, "dist/public"),
+    emptyOutDir: true,
+  },
+  server: {
+    hmr: { overlay: true },          // Vite’s built-in overlay is enough
+  },
+});
+
+
+Remove plugin imports you no longer use at the top of vite.config.ts:
+
+Delete import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+Delete the dynamic @replit/vite-plugin-cartographer import block.
+
+Reinstall & restart
+
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
+
+Why this works
+
+You had two different “error/refresh” layers trying to hook into React Fast Refresh (Vite’s own via @vitejs/plugin-react, plus Replit’s overlay plugin). They don’t agree on the runtime API, so the overlay plugin tries to call a function that isn’t there → the crash. Using only Vite’s official React plugin resolves the conflict.
+
+Optional hardening
+
+Keep Vite 5 + @vitejs/plugin-react 4.x (which you already have).
+
+If you must load extra Vite plugins conditionally, export an async config (so you can await import(...) cleanly) instead of using await inside an array literal. But for now, the simplest path is no Replit overlay plugins.
+
+If you still see any overlay after this change, clear your browser cache and hard reload the preview tab.
