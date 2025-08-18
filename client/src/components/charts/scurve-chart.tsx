@@ -72,8 +72,11 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
               tickFormatter={(value) => `${value}%`}
             />
             <Tooltip 
-              formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Completion Probability']}
-              labelFormatter={(value) => `${value} days`}
+              formatter={(value, name, props) => {
+                const days = props.payload?.days;
+                return [`${Number(value).toFixed(1)}%`, `Completion Probability at ${days} days`];
+              }}
+              labelFormatter={(value) => `Day ${value}`}
             />
             <Line 
               type="monotone" 
@@ -85,23 +88,26 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
             <ReferenceLine 
               x={p50Days} 
               stroke="#3b82f6" 
-              strokeWidth={4} 
-              strokeDasharray="8 4" 
-              label={{ value: `P50 (${p50Days}d)`, position: "top", style: { fill: "#3b82f6", fontWeight: "bold" } }}
+              strokeWidth={5} 
+              strokeDasharray="10 5" 
+              label={{ value: `P50`, position: "topRight", style: { fill: "#3b82f6", fontWeight: "bold", fontSize: "12px" } }}
+              isFront={true}
             />
             <ReferenceLine 
               x={p80Days} 
               stroke="#f59e0b" 
-              strokeWidth={4} 
-              strokeDasharray="8 4" 
-              label={{ value: `P80 (${p80Days}d)`, position: "top", style: { fill: "#f59e0b", fontWeight: "bold" } }}
+              strokeWidth={5} 
+              strokeDasharray="10 5" 
+              label={{ value: `P80`, position: "topRight", style: { fill: "#f59e0b", fontWeight: "bold", fontSize: "12px" } }}
+              isFront={true}
             />
             <ReferenceLine 
               x={p95Days} 
               stroke="#10b981" 
-              strokeWidth={4} 
-              strokeDasharray="8 4" 
-              label={{ value: `P95 (${p95Days}d)`, position: "top", style: { fill: "#10b981", fontWeight: "bold" } }}
+              strokeWidth={5} 
+              strokeDasharray="10 5" 
+              label={{ value: `P95`, position: "topRight", style: { fill: "#10b981", fontWeight: "bold", fontSize: "12px" } }}
+              isFront={true}
             />
           </LineChart>
         </ResponsiveContainer>

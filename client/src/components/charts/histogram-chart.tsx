@@ -14,7 +14,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
       return [];
     }
     
-    const bins = 50;
+    const bins = 100;
     const min = Math.min(...results.completionDays);
     const max = Math.max(...results.completionDays);
     
@@ -77,7 +77,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
             <YAxis tick={{ fontSize: 12 }} />
             <Tooltip 
               formatter={(value) => [value, 'Frequency']}
-              labelFormatter={(value) => `${value} days`}
+              labelFormatter={(value) => `Day ${value}`}
             />
             <Bar 
               dataKey="count" 
@@ -89,23 +89,26 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
             <ReferenceLine 
               x={p50Days} 
               stroke="#3b82f6" 
-              strokeWidth={4} 
-              strokeDasharray="8 4" 
-              label={{ value: `P50 (${p50Days}d)`, position: "top", style: { fill: "#3b82f6", fontWeight: "bold" } }}
+              strokeWidth={5} 
+              strokeDasharray="10 5" 
+              label={{ value: `P50`, position: "topRight", style: { fill: "#3b82f6", fontWeight: "bold", fontSize: "12px" } }}
+              isFront={true}
             />
             <ReferenceLine 
               x={p80Days} 
               stroke="#f59e0b" 
-              strokeWidth={4} 
-              strokeDasharray="8 4" 
-              label={{ value: `P80 (${p80Days}d)`, position: "top", style: { fill: "#f59e0b", fontWeight: "bold" } }}
+              strokeWidth={5} 
+              strokeDasharray="10 5" 
+              label={{ value: `P80`, position: "topRight", style: { fill: "#f59e0b", fontWeight: "bold", fontSize: "12px" } }}
+              isFront={true}
             />
             <ReferenceLine 
               x={p95Days} 
               stroke="#10b981" 
-              strokeWidth={4} 
-              strokeDasharray="8 4" 
-              label={{ value: `P95 (${p95Days}d)`, position: "top", style: { fill: "#10b981", fontWeight: "bold" } }}
+              strokeWidth={5} 
+              strokeDasharray="10 5" 
+              label={{ value: `P95`, position: "topRight", style: { fill: "#10b981", fontWeight: "bold", fontSize: "12px" } }}
+              isFront={true}
             />
           </BarChart>
         </ResponsiveContainer>
