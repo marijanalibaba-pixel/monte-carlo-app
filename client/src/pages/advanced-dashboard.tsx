@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
 import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
 import { AdvancedVisualization } from "@/components/advanced-visualization";
 import { ForecastComparisonPanel } from "@/components/forecast-comparison-panel";
 import { CalculationMethodology } from "@/components/calculation-methodology";
+import { TutorialModal } from "@/components/tutorial-modal";
+import { HelpManual } from "@/components/help-manual";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,7 +20,9 @@ import {
   ArrowRight,
   Sparkles,
   Activity,
-  GitCompare
+  GitCompare,
+  Play,
+  HelpCircle
 } from "lucide-react";
 
 export function AdvancedDashboard() {
@@ -26,11 +30,20 @@ export function AdvancedDashboard() {
   const [result, setResult] = useState<ForecastResult | null>(null);
   const [scenarios, setScenarios] = useState<ForecastScenario[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const [lastConfig, setLastConfig] = useState<{
     type: 'throughput' | 'cycletime';
     startDate: Date;
     parameters?: any;
   } | null>(null);
+
+  // Check if user is first-time visitor
+  useEffect(() => {
+    const hasSeenTutorial = localStorage.getItem('monte-carlo-tutorial-completed');
+    if (!hasSeenTutorial) {
+      setTimeout(() => setShowTutorial(true), 1000); // Show after 1 second
+    }
+  }, []);
 
   const handleForecast = async (
     throughputConfig?: ThroughputConfig,
@@ -170,8 +183,20 @@ export function AdvancedDashboard() {
               <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full mb-6">
                 <Calculator className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                  Professional Montecarlo Simulation
+                  Professional Monte Carlo Simulation
                 </span>
+              </div>
+              
+              <div className="flex justify-center gap-3 mb-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowTutorial(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Play className="w-4 h-4" />
+                  Quick Tutorial
+                </Button>
+                <HelpManual />
               </div>
               
               <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 dark:text-white mb-6">
@@ -306,6 +331,12 @@ export function AdvancedDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Tutorial Modal */}
+      <TutorialModal 
+        open={showTutorial} 
+        onOpenChange={setShowTutorial} 
+      />
     </div>
   );
 }
