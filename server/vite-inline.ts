@@ -5,7 +5,8 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, "..");
 
 export async function setupViteInline(app: Express) {
@@ -14,13 +15,7 @@ export async function setupViteInline(app: Express) {
     root: path.resolve(root, "client"),
     plugins: [react()],                  // ← only official React plugin
     server: { middlewareMode: true, hmr: { overlay: true } },
-    resolve: { 
-      alias: { 
-        "@": path.resolve(root, "client/src"),
-        "@shared": path.resolve(root, "shared"),
-        "@assets": path.resolve(root, "attached_assets")
-      } 
-    },
+    resolve: { alias: { "@": path.resolve(root, "client/src") } },
     build: { outDir: path.resolve(root, "dist/public"), emptyOutDir: true },
   });
 
