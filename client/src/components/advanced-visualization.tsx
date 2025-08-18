@@ -39,19 +39,9 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
   
   // Prepare histogram data with evenly distributed bins
   const histogramData = useMemo(() => {
-    // Check if we have completion dates
-    if (!result.completionDates || result.completionDates.length === 0) {
-      return [];
-    }
-    
     const sortedDays = result.completionDates.map(date => {
       return Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     }).sort((a, b) => a - b);
-    
-    // Check if we have processed data
-    if (sortedDays.length === 0) {
-      return [];
-    }
     
     const minDays = sortedDays[0];
     const maxDays = sortedDays[sortedDays.length - 1];
@@ -83,19 +73,9 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
 
   // Prepare S-curve data with smooth distribution
   const scurveData = useMemo(() => {
-    // Check if we have completion dates
-    if (!result.completionDates || result.completionDates.length === 0) {
-      return [];
-    }
-    
     const sortedDays = result.completionDates.map(date => {
       return Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     }).sort((a, b) => a - b);
-    
-    // Check if we have processed data
-    if (sortedDays.length === 0) {
-      return [];
-    }
     
     const minDays = sortedDays[0];
     const maxDays = sortedDays[sortedDays.length - 1];
@@ -286,7 +266,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
             {/* Percentile lines overlay for histogram - GUARANTEED VISIBILITY */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                {histogramData.length > 0 && result.confidenceIntervals
+                {result.confidenceIntervals
                   .filter(interval => [0.5, 0.8, 0.95].includes(interval.level))
                   .map((interval) => {
                   const minDay = Math.min(...histogramData.map(d => d.days));
@@ -399,7 +379,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
             {/* Percentile lines overlay - DIRECT SVG APPROACH */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                {scurveData.length > 0 && result.confidenceIntervals
+                {result.confidenceIntervals
                   .filter(interval => [0.5, 0.8, 0.95].includes(interval.level))
                   .map((interval) => {
                   const minDay = Math.min(...scurveData.map(d => d.days));
