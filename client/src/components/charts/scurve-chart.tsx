@@ -19,7 +19,7 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
       grouped[days] = (grouped[days] || 0) + 1;
     });
     
-    const data = [];
+    const data: Array<{ days: number; probability: number; date: string }> = [];
     let cumulative = 0;
     
     Object.keys(grouped)
