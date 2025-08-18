@@ -16,7 +16,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
       return [];
     }
     
-    const bins = 200;
+    const bins = 500;
     const min = Math.min(...results.completionDays);
     const max = Math.max(...results.completionDays);
     
@@ -52,7 +52,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
   
   const getPercentileDays = (percentile: number) => {
     const sorted = [...results.completionDays].sort((a, b) => a - b);
-    const idx = Math.ceil(percentile * sorted.length) - 1;
+    const idx = Math.floor(percentile * sorted.length);
     return sorted[Math.max(0, Math.min(idx, sorted.length - 1))];
   };
 
@@ -123,7 +123,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
               stroke="#3b82f6" 
               strokeWidth={6} 
               strokeDasharray="12 6" 
-              label={{ value: `P50`, position: "topLeft", offset: 10, style: { fill: "#3b82f6", fontWeight: "bold", fontSize: "14px" } }}
+              label={{ value: `P50`, position: "top", style: { fill: "#3b82f6", fontWeight: "bold", fontSize: "14px" } }}
               strokeOpacity={0.9}
             />
             <ReferenceLine 
@@ -131,7 +131,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
               stroke="#f59e0b" 
               strokeWidth={6} 
               strokeDasharray="12 6" 
-              label={{ value: `P80`, position: "topLeft", offset: 10, style: { fill: "#f59e0b", fontWeight: "bold", fontSize: "14px" } }}
+              label={{ value: `P80`, position: "top", style: { fill: "#f59e0b", fontWeight: "bold", fontSize: "14px" } }}
               strokeOpacity={0.9}
             />
             <ReferenceLine 
@@ -139,7 +139,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
               stroke="#10b981" 
               strokeWidth={6} 
               strokeDasharray="12 6" 
-              label={{ value: `P95`, position: "topLeft", offset: 10, style: { fill: "#10b981", fontWeight: "bold", fontSize: "14px" } }}
+              label={{ value: `P95`, position: "top", style: { fill: "#10b981", fontWeight: "bold", fontSize: "14px" } }}
               strokeOpacity={0.9}
             />
           </BarChart>
