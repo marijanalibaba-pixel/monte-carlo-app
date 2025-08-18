@@ -200,21 +200,21 @@ export function ModernCharts({ results, startDate }: ModernChartsProps) {
                 stroke="#3b82f6" 
                 strokeWidth={3} 
                 strokeDasharray="8 4"
-                label={{ value: "P50", position: "topLeft" }}
+                label={{ value: "P50", position: "top" }}
               />
               <ReferenceLine 
                 x={p80Days} 
                 stroke="#f59e0b" 
                 strokeWidth={3} 
                 strokeDasharray="8 4"
-                label={{ value: "P80", position: "topLeft" }}
+                label={{ value: "P80", position: "top" }}
               />
               <ReferenceLine 
                 x={p95Days} 
                 stroke="#10b981" 
                 strokeWidth={3} 
                 strokeDasharray="8 4"
-                label={{ value: "P95", position: "topLeft" }}
+                label={{ value: "P95", position: "top" }}
               />
               
               <defs>
@@ -307,21 +307,21 @@ export function ModernCharts({ results, startDate }: ModernChartsProps) {
                 stroke="#3b82f6" 
                 strokeWidth={3} 
                 strokeDasharray="8 4"
-                label={{ value: "P50", position: "topLeft" }}
+                label={{ value: "P50", position: "top" }}
               />
               <ReferenceLine 
                 x={p80Days} 
                 stroke="#f59e0b" 
                 strokeWidth={3} 
                 strokeDasharray="8 4"
-                label={{ value: "P80", position: "topLeft" }}
+                label={{ value: "P80", position: "top" }}
               />
               <ReferenceLine 
                 x={p95Days} 
                 stroke="#10b981" 
                 strokeWidth={3} 
                 strokeDasharray="8 4"
-                label={{ value: "P95", position: "topLeft" }}
+                label={{ value: "P95", position: "top" }}
               />
               
               <defs>
@@ -351,13 +351,13 @@ export function ModernCharts({ results, startDate }: ModernChartsProps) {
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {Math.round(results.statistics.min)}d
+              {Math.round(Math.min(...results.completionDays))}d
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400">Minimum</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {Math.round(results.statistics.max)}d
+              {Math.round(Math.max(...results.completionDays))}d
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-400">Maximum</p>
           </div>
