@@ -16,7 +16,7 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
       return [];
     }
     
-    const bins = 100;
+    const bins = 200;
     const min = Math.min(...results.completionDays);
     const max = Math.max(...results.completionDays);
     
@@ -121,26 +121,26 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
             <ReferenceLine 
               x={p50Days} 
               stroke="#3b82f6" 
-              strokeWidth={5} 
-              strokeDasharray="10 5" 
-              label={{ value: `P50`, position: "topRight", style: { fill: "#3b82f6", fontWeight: "bold", fontSize: "12px" } }}
-              isFront={true}
+              strokeWidth={6} 
+              strokeDasharray="12 6" 
+              label={{ value: `P50`, position: "topLeft", offset: 10, style: { fill: "#3b82f6", fontWeight: "bold", fontSize: "14px" } }}
+              strokeOpacity={0.9}
             />
             <ReferenceLine 
               x={p80Days} 
               stroke="#f59e0b" 
-              strokeWidth={5} 
-              strokeDasharray="10 5" 
-              label={{ value: `P80`, position: "topRight", style: { fill: "#f59e0b", fontWeight: "bold", fontSize: "12px" } }}
-              isFront={true}
+              strokeWidth={6} 
+              strokeDasharray="12 6" 
+              label={{ value: `P80`, position: "topLeft", offset: 10, style: { fill: "#f59e0b", fontWeight: "bold", fontSize: "14px" } }}
+              strokeOpacity={0.9}
             />
             <ReferenceLine 
               x={p95Days} 
               stroke="#10b981" 
-              strokeWidth={5} 
-              strokeDasharray="10 5" 
-              label={{ value: `P95`, position: "topRight", style: { fill: "#10b981", fontWeight: "bold", fontSize: "12px" } }}
-              isFront={true}
+              strokeWidth={6} 
+              strokeDasharray="12 6" 
+              label={{ value: `P95`, position: "topLeft", offset: 10, style: { fill: "#10b981", fontWeight: "bold", fontSize: "14px" } }}
+              strokeOpacity={0.9}
             />
           </BarChart>
         </ResponsiveContainer>
