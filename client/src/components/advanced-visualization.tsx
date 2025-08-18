@@ -295,60 +295,58 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   ))}
                 </Bar>
                 
-                {/* Percentile reference lines - improved spacing */}
-                {(() => {
-                  const p50 = result.confidenceIntervals.find(ci => ci.level === 0.5);
-                  const p80 = result.confidenceIntervals.find(ci => ci.level === 0.8); 
-                  const p95 = result.confidenceIntervals.find(ci => ci.level === 0.95);
-
-                  
-                  return (
-                    <>
-                      {p50 && (
-                        <ReferenceLine
-                          x={p50.daysFromStart}
-                          stroke="#3b82f6"
-                          strokeWidth={2}
-                          strokeDasharray="8 4"
-                          label={{ 
-                            value: "P50", 
-                            position: "top",
-                            offset: -15,
-                            style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '11px' }
-                          }}
-                        />
-                      )}
-                      {p80 && (
-                        <ReferenceLine
-                          x={p80.daysFromStart}
-                          stroke="#f59e0b"
-                          strokeWidth={2}
-                          strokeDasharray="8 4"
-                          label={{ 
-                            value: "P80", 
-                            position: "top",
-                            offset: 0,
-                            style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '11px' }
-                          }}
-                        />
-                      )}
-                      {p95 && (
-                        <ReferenceLine
-                          x={p95.daysFromStart}
-                          stroke="#ef4444"
-                          strokeWidth={2}
-                          strokeDasharray="8 4"
-                          label={{ 
-                            value: "P95", 
-                            position: "top",
-                            offset: 15,
-                            style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '11px' }
-                          }}
-                        />
-                      )}
-                    </>
-                  );
-                })()}
+                {/* Force all three percentile lines */}
+                {result.confidenceIntervals.map((interval) => {
+                  if (interval.level === 0.5) {
+                    return (
+                      <ReferenceLine
+                        key="hist-p50"
+                        x={interval.daysFromStart}
+                        stroke="#3b82f6"
+                        strokeWidth={3}
+                        strokeDasharray="5 5"
+                        label={{
+                          value: "P50",
+                          position: "top",
+                          style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                        }}
+                      />
+                    );
+                  }
+                  if (interval.level === 0.8) {
+                    return (
+                      <ReferenceLine
+                        key="hist-p80"
+                        x={interval.daysFromStart}
+                        stroke="#f59e0b"
+                        strokeWidth={3}
+                        strokeDasharray="5 5"
+                        label={{
+                          value: "P80",
+                          position: "top",
+                          style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                        }}
+                      />
+                    );
+                  }
+                  if (interval.level === 0.95) {
+                    return (
+                      <ReferenceLine
+                        key="hist-p95"
+                        x={interval.daysFromStart}
+                        stroke="#ef4444"
+                        strokeWidth={3}
+                        strokeDasharray="5 5"
+                        label={{
+                          value: "P95",
+                          position: "top",
+                          style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                        }}
+                      />
+                    );
+                  }
+                  return null;
+                })}
                 
                 <defs>
                   <linearGradient id="gradient-0" x1="0" y1="0" x2="0" y2="1">
@@ -413,43 +411,59 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   fill="url(#scurveGradient)"
                 />
                 
-                {/* Percentile reference lines */}
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.5)?.daysFromStart}
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P50", 
-                    position: "top",
-                    style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart}
-                  stroke="#f59e0b"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P80", 
-                    position: "top",
-                    style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
-                <ReferenceLine
-                  x={result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart}
-                  stroke="#ef4444"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  label={{ 
-                    value: "P95", 
-                    position: "top",
-                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
-                  }}
-                />
-                
+                {/* Force percentile lines to appear */}
+                {result.confidenceIntervals.map((interval) => {
+                  if (interval.level === 0.5) {
+                    return (
+                      <ReferenceLine
+                        key="p50"
+                        x={interval.daysFromStart}
+                        stroke="#3b82f6"
+                        strokeWidth={3}
+                        strokeDasharray="5 5"
+                        label={{
+                          value: "P50",
+                          position: "top",
+                          style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                        }}
+                      />
+                    );
+                  }
+                  if (interval.level === 0.8) {
+                    return (
+                      <ReferenceLine
+                        key="p80"
+                        x={interval.daysFromStart}
+                        stroke="#f59e0b"
+                        strokeWidth={3}
+                        strokeDasharray="5 5"
+                        label={{
+                          value: "P80",
+                          position: "top",
+                          style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                        }}
+                      />
+                    );
+                  }
+                  if (interval.level === 0.95) {
+                    return (
+                      <ReferenceLine
+                        key="p95"
+                        x={interval.daysFromStart}
+                        stroke="#ef4444"
+                        strokeWidth={3}
+                        strokeDasharray="5 5"
+                        label={{
+                          value: "P95",
+                          position: "top",
+                          style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                        }}
+                      />
+                    );
+                  }
+                  return null;
+                })}
 
-                
                 <defs>
                   <linearGradient id="scurveGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4}/>
