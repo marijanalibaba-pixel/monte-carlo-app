@@ -4,6 +4,7 @@ import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
 import { AdvancedVisualization } from "@/components/advanced-visualization";
 import { ForecastComparisonPanel } from "@/components/forecast-comparison-panel";
+import { CalculationMethodology } from "@/components/calculation-methodology";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
