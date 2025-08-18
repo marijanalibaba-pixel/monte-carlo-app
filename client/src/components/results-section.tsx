@@ -1,7 +1,6 @@
 import { SimulationResult } from "@/lib/monte-carlo";
 import { format } from "date-fns";
-import { HistogramChart } from "./charts/histogram-chart";
-import { SCurveChart } from "./charts/scurve-chart";
+import { HistogramChart, SCurveChart } from "./charts";
 
 interface ResultsSectionProps {
   results: SimulationResult;
