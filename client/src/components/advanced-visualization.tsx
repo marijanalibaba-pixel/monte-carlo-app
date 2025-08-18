@@ -264,7 +264,48 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80">
+          <div className="h-80 relative">
+            {/* Percentile lines overlay for histogram - GUARANTEED VISIBILITY */}
+            <div className="absolute inset-0 pointer-events-none z-10">
+              <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                {result.confidenceIntervals.map((interval) => {
+                  const minDay = Math.min(...histogramData.map(d => d.days));
+                  const maxDay = Math.max(...histogramData.map(d => d.days));
+                  const xPercent = ((interval.daysFromStart - minDay) / (maxDay - minDay)) * 85 + 10;
+                  
+                  let color = '#6b7280';
+                  if (interval.level === 0.5) color = '#3b82f6';
+                  if (interval.level === 0.8) color = '#f59e0b';
+                  if (interval.level === 0.95) color = '#ef4444';
+                  
+                  return (
+                    <g key={`hist-overlay-${interval.level}`}>
+                      <line
+                        x1={`${xPercent}%`}
+                        y1="15%"
+                        x2={`${xPercent}%`}
+                        y2="85%"
+                        stroke={color}
+                        strokeWidth="2"
+                        strokeDasharray="6 3"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <text
+                        x={`${xPercent}%`}
+                        y="12%"
+                        fill={color}
+                        fontSize="10"
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        P{Math.round(interval.level * 100)}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={histogramData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
@@ -295,58 +336,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   ))}
                 </Bar>
                 
-                {/* Force all three percentile lines */}
-                {result.confidenceIntervals.map((interval) => {
-                  if (interval.level === 0.5) {
-                    return (
-                      <ReferenceLine
-                        key="hist-p50"
-                        x={interval.daysFromStart}
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        strokeDasharray="5 5"
-                        label={{
-                          value: "P50",
-                          position: "top",
-                          style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
-                        }}
-                      />
-                    );
-                  }
-                  if (interval.level === 0.8) {
-                    return (
-                      <ReferenceLine
-                        key="hist-p80"
-                        x={interval.daysFromStart}
-                        stroke="#f59e0b"
-                        strokeWidth={3}
-                        strokeDasharray="5 5"
-                        label={{
-                          value: "P80",
-                          position: "top",
-                          style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
-                        }}
-                      />
-                    );
-                  }
-                  if (interval.level === 0.95) {
-                    return (
-                      <ReferenceLine
-                        key="hist-p95"
-                        x={interval.daysFromStart}
-                        stroke="#ef4444"
-                        strokeWidth={3}
-                        strokeDasharray="5 5"
-                        label={{
-                          value: "P95",
-                          position: "top",
-                          style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
-                        }}
-                      />
-                    );
-                  }
-                  return null;
-                })}
+
                 
                 <defs>
                   <linearGradient id="gradient-0" x1="0" y1="0" x2="0" y2="1">
@@ -380,7 +370,48 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80">
+          <div className="h-80 relative">
+            {/* Percentile lines overlay - DIRECT SVG APPROACH */}
+            <div className="absolute inset-0 pointer-events-none z-10">
+              <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                {result.confidenceIntervals.map((interval) => {
+                  const minDay = Math.min(...scurveData.map(d => d.days));
+                  const maxDay = Math.max(...scurveData.map(d => d.days));
+                  const xPercent = ((interval.daysFromStart - minDay) / (maxDay - minDay)) * 85 + 10; // Account for margins
+                  
+                  let color = '#6b7280';
+                  if (interval.level === 0.5) color = '#3b82f6';
+                  if (interval.level === 0.8) color = '#f59e0b';
+                  if (interval.level === 0.95) color = '#ef4444';
+                  
+                  return (
+                    <g key={`overlay-${interval.level}`}>
+                      <line
+                        x1={`${xPercent}%`}
+                        y1="15%"
+                        x2={`${xPercent}%`}
+                        y2="85%"
+                        stroke={color}
+                        strokeWidth="2"
+                        strokeDasharray="6 3"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <text
+                        x={`${xPercent}%`}
+                        y="12%"
+                        fill={color}
+                        fontSize="10"
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        P{Math.round(interval.level * 100)}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={scurveData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
@@ -411,58 +442,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   fill="url(#scurveGradient)"
                 />
                 
-                {/* Force percentile lines to appear */}
-                {result.confidenceIntervals.map((interval) => {
-                  if (interval.level === 0.5) {
-                    return (
-                      <ReferenceLine
-                        key="p50"
-                        x={interval.daysFromStart}
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        strokeDasharray="5 5"
-                        label={{
-                          value: "P50",
-                          position: "top",
-                          style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
-                        }}
-                      />
-                    );
-                  }
-                  if (interval.level === 0.8) {
-                    return (
-                      <ReferenceLine
-                        key="p80"
-                        x={interval.daysFromStart}
-                        stroke="#f59e0b"
-                        strokeWidth={3}
-                        strokeDasharray="5 5"
-                        label={{
-                          value: "P80",
-                          position: "top",
-                          style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
-                        }}
-                      />
-                    );
-                  }
-                  if (interval.level === 0.95) {
-                    return (
-                      <ReferenceLine
-                        key="p95"
-                        x={interval.daysFromStart}
-                        stroke="#ef4444"
-                        strokeWidth={3}
-                        strokeDasharray="5 5"
-                        label={{
-                          value: "P95",
-                          position: "top",
-                          style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
-                        }}
-                      />
-                    );
-                  }
-                  return null;
-                })}
+
 
                 <defs>
                   <linearGradient id="scurveGradient" x1="0" y1="0" x2="0" y2="1">
