@@ -220,7 +220,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {result.confidenceIntervals.map((ci) => (
               <div 
                 key={ci.level}
@@ -262,7 +262,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64 sm:h-80 relative">
+          <div className="h-80 relative">
             {/* Percentile lines overlay for histogram - GUARANTEED VISIBILITY */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -375,7 +375,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64 sm:h-80 relative">
+          <div className="h-80 relative">
             {/* Percentile lines overlay - DIRECT SVG APPROACH */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -477,7 +477,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <h4 className="font-semibold text-lg">Central Tendency</h4>
               <div className="space-y-2">

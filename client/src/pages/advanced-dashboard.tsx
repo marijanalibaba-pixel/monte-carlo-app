@@ -110,7 +110,7 @@ export function AdvancedDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 safe-area-top safe-area-bottom">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,7 +134,7 @@ export function AdvancedDashboard() {
               </div>
             </div>
             
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="flex items-center space-x-3">
               <Badge variant="outline" className="bg-emerald-50 border-emerald-200 text-emerald-700">
                 <Activity className="w-3 h-3 mr-1" />
                 Real-time
@@ -147,13 +147,11 @@ export function AdvancedDashboard() {
               )}
               {result && (
                 <>
-                  <Button variant="outline" size="sm" onClick={saveAsScenario} className="text-xs sm:text-sm">
-                    <span className="hidden sm:inline">Save Scenario</span>
-                    <span className="sm:hidden">Save</span>
+                  <Button variant="outline" size="sm" onClick={saveAsScenario}>
+                    Save Scenario
                   </Button>
-                  <Button variant="outline" size="sm" onClick={clearResults} className="text-xs sm:text-sm">
-                    <span className="hidden sm:inline">New Forecast</span>
-                    <span className="sm:hidden">New</span>
+                  <Button variant="outline" size="sm" onClick={clearResults}>
+                    New Forecast
                   </Button>
                 </>
               )}
@@ -175,7 +173,7 @@ export function AdvancedDashboard() {
                 </span>
               </div>
               
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 dark:text-white mb-6">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
                 Forecast with
                 <br />
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -183,12 +181,12 @@ export function AdvancedDashboard() {
                 </span>
               </h2>
               
-              <p className="text-lg sm:text-xl lg:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8 px-4">
-                Advanced Monte Carlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
+              <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
+                Advanced Montecarlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
               </p>
 
               {/* Features */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto px-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
                 <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-2xl p-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <TrendingUp className="w-6 h-6 text-white" />

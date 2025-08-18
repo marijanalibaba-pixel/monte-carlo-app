@@ -380,7 +380,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label>P50 Cycle Time (days)</Label>
                   <Input
@@ -497,7 +497,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
               </div>
 
               {riskFactors.map((risk, index) => (
-                <div key={index} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3 border rounded-lg">
+                <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-3 border rounded-lg">
                   <Input
                     placeholder="Risk name"
                     value={risk.name}
