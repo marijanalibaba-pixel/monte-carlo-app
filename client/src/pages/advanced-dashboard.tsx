@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MontecarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
+import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
 import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
 import { AdvancedVisualization } from "@/components/advanced-visualization";
@@ -48,14 +48,14 @@ export function AdvancedDashboard() {
       let forecastResult: ForecastResult;
       
       if (throughputConfig) {
-        forecastResult = MontecarloEngine.forecastByThroughput(throughputConfig, simConfig);
+        forecastResult = MonteCarloEngine.forecastByThroughput(throughputConfig, simConfig);
         setLastConfig({ 
           type: 'throughput', 
           startDate: simConfig.startDate,
           parameters: throughputConfig 
         });
       } else if (cycleTimeConfig) {
-        forecastResult = MontecarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
+        forecastResult = MonteCarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
         setLastConfig({ 
           type: 'cycletime', 
           startDate: simConfig.startDate,
@@ -126,7 +126,7 @@ export function AdvancedDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">
-                  Montecarlo Pro
+                  Monte Carlo Pro
                 </h1>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   Advanced Statistical Forecasting Engine
