@@ -20,6 +20,7 @@ export default function ForecastPage() {
   // Throughput model inputs
   const [meanThroughput, setMeanThroughput] = useState(12);
   const [variabilityCV, setVariabilityCV] = useState(30);
+  const [weeklyThroughputData, setWeeklyThroughputData] = useState("");
   
   // Cycle time model inputs
   const [p50CycleTime, setP50CycleTime] = useState(3.94);
@@ -29,6 +30,32 @@ export default function ForecastPage() {
   // Results
   const [results, setResults] = useState<SimulationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Parse and validate weekly throughput data
+  const parseWeeklyData = (): { values: number[], mean: number, cv: number } | null => {
+    if (!weeklyThroughputData.trim()) return null;
+    
+    const values = weeklyThroughputData
+      .split(',')
+      .map(v => parseFloat(v.trim()))
+      .filter(v => !isNaN(v) && v > 0);
+    
+    if (values.length < 5 || values.length > 30) {
+      toast({
+        title: "Invalid Data",
+        description: "Please enter between 5 and 30 weekly throughput values.",
+        variant: "destructive",
+      });
+      return null;
+    }
+    
+    const mean = values.reduce((a, b) => a + b) / values.length;
+    const variance = values.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / values.length;
+    const stdDev = Math.sqrt(variance);
+    const cv = (stdDev / mean) * 100;
+    
+    return { values, mean, cv };
+  };
 
   const validateInputs = (): boolean => {
     if (!backlogSize || backlogSize <= 0) {
@@ -77,13 +104,25 @@ export default function ForecastPage() {
         return false;
       }
     } else {
-      if (!meanThroughput || meanThroughput <= 0) {
-        toast({
-          title: "Validation Error",
-          description: "Please enter a valid average weekly throughput greater than 0.",
-          variant: "destructive",
-        });
-        return false;
+      // Check if using historical data or simple parameters
+      const weeklyData = parseWeeklyData();
+      
+      if (weeklyData) {
+        // Using historical data - no need to validate mean/CV as they'll be calculated
+        return true;
+      } else if (weeklyThroughputData.trim()) {
+        // User tried to enter data but it's invalid
+        return false; // parseWeeklyData already showed error
+      } else {
+        // Using simple parameters
+        if (!meanThroughput || meanThroughput <= 0) {
+          toast({
+            title: "Validation Error",
+            description: "Please enter a valid average weekly throughput greater than 0 or provide historical data.",
+            variant: "destructive",
+          });
+          return false;
+        }
       }
     }
 
@@ -100,13 +139,30 @@ export default function ForecastPage() {
       // Run simulation in a timeout to allow UI to update
       setTimeout(() => {
         try {
+          let finalMeanThroughput = meanThroughput;
+          let finalVariabilityCV = variabilityCV;
+          
+          // Check if using historical data
+          if (!useCycleTime && weeklyThroughputData.trim()) {
+            const weeklyData = parseWeeklyData();
+            if (weeklyData) {
+              finalMeanThroughput = weeklyData.mean;
+              finalVariabilityCV = weeklyData.cv;
+              
+              toast({
+                title: "Using Historical Data",
+                description: `Calculated mean: ${weeklyData.mean.toFixed(1)} items/week, CV: ${weeklyData.cv.toFixed(1)}%`,
+              });
+            }
+          }
+          
           const simulationInput = {
             backlogSize,
             trials,
             startDate,
             useCycleTime,
-            meanThroughput: useCycleTime ? undefined : meanThroughput,
-            variabilityCV: useCycleTime ? undefined : variabilityCV,
+            meanThroughput: useCycleTime ? undefined : finalMeanThroughput,
+            variabilityCV: useCycleTime ? undefined : finalVariabilityCV,
             p50CycleTime: useCycleTime ? p50CycleTime : undefined,
             p80CycleTime: useCycleTime && p80CycleTime > 0 ? p80CycleTime : undefined,
             p95CycleTime: useCycleTime ? p95CycleTime : undefined,
@@ -172,6 +228,8 @@ export default function ForecastPage() {
           setMeanThroughput={setMeanThroughput}
           variabilityCV={variabilityCV}
           setVariabilityCV={setVariabilityCV}
+          weeklyThroughputData={weeklyThroughputData}
+          setWeeklyThroughputData={setWeeklyThroughputData}
           p50CycleTime={p50CycleTime}
           setP50CycleTime={setP50CycleTime}
           p80CycleTime={p80CycleTime}

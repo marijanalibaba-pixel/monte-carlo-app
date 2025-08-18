@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, Play } from "lucide-react";
@@ -19,6 +21,8 @@ interface InputSectionProps {
   setMeanThroughput: (value: number) => void;
   variabilityCV: number;
   setVariabilityCV: (value: number) => void;
+  weeklyThroughputData: string;
+  setWeeklyThroughputData: (value: string) => void;
   p50CycleTime: number;
   setP50CycleTime: (value: number) => void;
   p80CycleTime: number;
@@ -41,6 +45,8 @@ export function InputSection({
   setMeanThroughput,
   variabilityCV,
   setVariabilityCV,
+  weeklyThroughputData,
+  setWeeklyThroughputData,
   p50CycleTime,
   setP50CycleTime,
   p80CycleTime,
@@ -119,32 +125,61 @@ export function InputSection({
       {!useCycleTime ? (
         <div className="space-y-4">
           <h4 className="text-base font-medium text-gray-800 mb-3">Throughput Model Parameters</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="meanThroughput">Average Weekly Throughput</Label>
-              <Input
-                id="meanThroughput"
-                type="number"
-                value={meanThroughput}
-                onChange={(e) => setMeanThroughput(Number(e.target.value))}
-                min="0.1"
-                step="0.1"
-                className="text-sm"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="variability">Variability (CV%) — 0 = deterministic</Label>
-              <Input
-                id="variability"
-                type="number"
-                value={variabilityCV}
-                onChange={(e) => setVariabilityCV(Number(e.target.value))}
-                min="0"
-                max="200"
-                className="text-sm"
-              />
-            </div>
-          </div>
+          
+          <Tabs defaultValue="simple" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="simple">Simple Parameters</TabsTrigger>
+              <TabsTrigger value="historical">Historical Data</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="simple" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="meanThroughput">Average Weekly Throughput</Label>
+                  <Input
+                    id="meanThroughput"
+                    type="number"
+                    value={meanThroughput}
+                    onChange={(e) => setMeanThroughput(Number(e.target.value))}
+                    min="0.1"
+                    step="0.1"
+                    className="text-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="variability">Variability (CV%) — 0 = deterministic</Label>
+                  <Input
+                    id="variability"
+                    type="number"
+                    value={variabilityCV}
+                    onChange={(e) => setVariabilityCV(Number(e.target.value))}
+                    min="0"
+                    max="200"
+                    className="text-sm"
+                  />
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="historical" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="weeklyData">Weekly Throughput History</Label>
+                <p className="text-xs text-gray-500">
+                  Enter 5-30 weekly throughput values, separated by commas. Start with the most recent week and go backwards in time.
+                </p>
+                <Textarea
+                  id="weeklyData"
+                  placeholder="Example: 12, 15, 8, 11, 14, 13, 9, 16, 12, 10"
+                  value={weeklyThroughputData}
+                  onChange={(e) => setWeeklyThroughputData(e.target.value)}
+                  className="text-sm min-h-[80px]"
+                />
+                <p className="text-xs text-gray-400">
+                  Variability will be calculated automatically from your data
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       ) : (
         <div className="space-y-4">
