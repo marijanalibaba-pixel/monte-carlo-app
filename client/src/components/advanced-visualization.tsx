@@ -48,7 +48,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     const binCount = 25; // Fixed number of evenly distributed bins
     const binWidth = (maxDays - minDays) / binCount;
     
-    console.log('Histogram data range:', { minDays, maxDays, binWidth, sortedDays: sortedDays.slice(0, 5) });
+
     
     const histogram = Array(binCount).fill(0).map((_, index) => {
       const binStart = minDays + index * binWidth;
@@ -300,7 +300,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   const p50 = result.confidenceIntervals.find(ci => ci.level === 0.5);
                   const p80 = result.confidenceIntervals.find(ci => ci.level === 0.8); 
                   const p95 = result.confidenceIntervals.find(ci => ci.level === 0.95);
-                  console.log('Histogram percentiles:', { p50, p80, p95 });
+
                   
                   return (
                     <>
@@ -413,63 +413,40 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                   fill="url(#scurveGradient)"
                 />
                 
-                {/* Percentile reference lines - improved positioning */}
-                {(() => {
-                  const p50 = result.confidenceIntervals.find(ci => ci.level === 0.5);
-                  const p80 = result.confidenceIntervals.find(ci => ci.level === 0.8); 
-                  const p95 = result.confidenceIntervals.find(ci => ci.level === 0.95);
-                  
-                  // Calculate label offsets to prevent overlap when lines are close
-                  const lines = [p50, p80, p95].filter(Boolean);
-                  const spacing = 15; // minimum spacing between labels
-                  
-                  return (
-                    <>
-                      {p50 && (
-                        <ReferenceLine
-                          x={p50.daysFromStart}
-                          stroke="#3b82f6"
-                          strokeWidth={2}
-                          strokeDasharray="8 4"
-                          label={{ 
-                            value: "P50", 
-                            position: "topLeft",
-                            offset: -10,
-                            style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '11px' }
-                          }}
-                        />
-                      )}
-                      {p80 && (
-                        <ReferenceLine
-                          x={p80.daysFromStart}
-                          stroke="#f59e0b"
-                          strokeWidth={2}
-                          strokeDasharray="8 4"
-                          label={{ 
-                            value: "P80", 
-                            position: "top",
-                            offset: 0,
-                            style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '11px' }
-                          }}
-                        />
-                      )}
-                      {p95 && (
-                        <ReferenceLine
-                          x={p95.daysFromStart}
-                          stroke="#ef4444"
-                          strokeWidth={2}
-                          strokeDasharray="8 4"
-                          label={{ 
-                            value: "P95", 
-                            position: "topRight",
-                            offset: 10,
-                            style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '11px' }
-                          }}
-                        />
-                      )}
-                    </>
-                  );
-                })()}
+                {/* Percentile reference lines */}
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.5)?.daysFromStart}
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P50", 
+                    position: "top",
+                    style: { fill: '#3b82f6', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart}
+                  stroke="#f59e0b"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P80", 
+                    position: "top",
+                    style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
+                <ReferenceLine
+                  x={result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart}
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  strokeDasharray="8 4"
+                  label={{ 
+                    value: "P95", 
+                    position: "top",
+                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                  }}
+                />
                 
 
                 
