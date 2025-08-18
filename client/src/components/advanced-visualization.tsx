@@ -345,8 +345,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </BarChart>
             </ResponsiveContainer>
-            {/* Legend for histogram - positioned inside chart area */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2">
+            {/* Legend for histogram - positioned in lower third of chart area */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
@@ -451,8 +451,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </AreaChart>
             </ResponsiveContainer>
-            {/* Legend for S-curve - positioned inside chart area */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2">
+            {/* Legend for S-curve - positioned in lower third of chart area */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
