@@ -10,14 +10,6 @@ The application is built as a modern React frontend with an Express.js backend, 
 
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (August 18, 2025)
-
-✓ **Chart Legend Positioning** - Moved legends inside chart frames at optimal position (bottom-4)
-✓ **Confidence Intervals Reduced** - Now only shows P50, P80, P95 (removed P85, P90, P99)
-✓ **Cycle Time Analysis Updated** - Changed from P85 to P80 percentile throughout application
-✓ **New Weekly Throughput Calculation** - Implemented methodology: fit lognormal to P50/P80/P95, draw cycle time per week, convert to weekly throughput (5/X items/week)
-✓ **Fixed React Fast Refresh Issues** - Resolved development server cache conflicts after reverts
-
 ## System Architecture
 
 ### Frontend Architecture
