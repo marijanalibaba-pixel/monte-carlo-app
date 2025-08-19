@@ -1,12 +1,8 @@
 [deployment]
-run = ["npm", "run", "build"]
-deploymentTarget = "static"
+run = ["npm", "run", "dev"]
+deploymentTarget = "autoscale"
 ignorePorts = false
 
 [[deployment.env]]
 name = "NODE_ENV"
 value = "production"
-
-[deployment.static]
-baseDir = "dist/public"
-defaultPage = "index.html"
