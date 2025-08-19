@@ -1,0 +1,12 @@
+[deployment]
+run = ["npm", "run", "build"]
+deploymentTarget = "static"
+ignorePorts = false
+
+[[deployment.env]]
+name = "NODE_ENV"
+value = "production"
+
+[deployment.static]
+baseDir = "dist/public"
+defaultPage = "index.html"
