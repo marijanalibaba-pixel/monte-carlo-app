@@ -3,6 +3,7 @@ import { Calculator, TrendingUp, BarChart3, Calendar, Zap } from "lucide-react";
 import { SimulationInput, runMonteCarloSimulation, SimulationResult } from "@/lib/monte-carlo";
 import { ModernInputSection } from "@/components/modern-input-section";
 import { ModernResultsSection } from "@/components/modern-results-section";
+import forecastLogo from "@assets/ChatGPT Image Aug 18, 2025, 10_50_05 PM_1755599064681.png";
 
 export function Dashboard() {
   const [results, setResults] = useState<SimulationResult | null>(null);
@@ -28,8 +29,8 @@ export function Dashboard() {
           <div className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Calculator className="w-6 h-6 text-white" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+                  <img src={forecastLogo} alt="Forecast Pro Logo" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full animate-pulse"></div>
               </div>
