@@ -1,6 +1,8 @@
 import { createRoot } from "react-dom/client";
-import App from "./App";
 import "./index.css";
+
+// Dynamic import to avoid HMR conflicts
+const { default: App } = await import("./App");
 
 // Register service worker for PWA functionality
 if ('serviceWorker' in navigator) {
