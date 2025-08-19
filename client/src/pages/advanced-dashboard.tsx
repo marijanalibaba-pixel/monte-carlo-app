@@ -18,8 +18,10 @@ import {
   ArrowRight,
   Sparkles,
   Activity,
-  GitCompare
+  GitCompare,
+  HelpCircle
 } from "lucide-react";
+import { Link } from "wouter";
 
 export function AdvancedDashboard() {
   const [isRunning, setIsRunning] = useState(false);
@@ -155,6 +157,12 @@ export function AdvancedDashboard() {
                   </Button>
                 </>
               )}
+              <Link href="/help">
+                <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                  <HelpCircle className="w-4 h-4" />
+                  <span className="hidden sm:inline">Help</span>
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
