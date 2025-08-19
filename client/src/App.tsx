@@ -6,15 +6,21 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdvancedDashboard } from "@/pages/advanced-dashboard";
 import NotFound from "@/pages/not-found";
 
+function Router() {
+  return (
+    <Switch>
+      <Route path="/" component={AdvancedDashboard} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Switch>
-          <Route path="/" component={AdvancedDashboard} />
-          <Route component={NotFound} />
-        </Switch>
+        <Router />
       </TooltipProvider>
     </QueryClientProvider>
   );
