@@ -126,12 +126,9 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
             <Calculator className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-2xl">Advanced Montecarlo Forecasting</CardTitle>
-          <CardDescription className="text-lg">
-            Professional-grade statistical modeling for project prediction
-          </CardDescription>
+          <CardDescription className="text-lg">Statistical modeling for project prediction</CardDescription>
         </CardHeader>
       </Card>
-
       {/* Core Configuration */}
       <Card>
         <CardHeader>
@@ -194,7 +191,6 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
           </div>
         </CardContent>
       </Card>
-
       {/* Forecasting Method */}
       <Card>
         <CardHeader>
@@ -429,7 +425,6 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
           </Tabs>
         </CardContent>
       </Card>
-
       {/* Advanced Options */}
       <Card>
         <CardHeader>
@@ -536,7 +531,6 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
           </CardContent>
         )}
       </Card>
-
       {/* Run Simulation */}
       <div className="text-center">
         <Button
