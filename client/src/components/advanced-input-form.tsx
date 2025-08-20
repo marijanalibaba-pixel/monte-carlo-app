@@ -126,7 +126,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
             <Calculator className="w-8 h-8 text-white" />
           </div>
           
-          <CardDescription className="text-lg">Statistical modeling for project prediction</CardDescription>
+          
         </CardHeader>
       </Card>
       {/* Core Configuration */}
