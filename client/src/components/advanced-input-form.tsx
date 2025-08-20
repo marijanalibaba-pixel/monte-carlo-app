@@ -125,7 +125,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-4">
             <Calculator className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl">Advanced Montecarlo Forecasting</CardTitle>
+          
           <CardDescription className="text-lg">Statistical modeling for project prediction</CardDescription>
         </CardHeader>
       </Card>
