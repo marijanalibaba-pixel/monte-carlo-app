@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { ForecastResult } from "@/lib/monte-carlo-engine";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine,
@@ -144,10 +144,30 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     return [value, name];
   };
 
+  // Orientation change handler to force re-render
+  const [refreshKey, setRefreshKey] = useState(0);
+  
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      // Small delay to allow orientation to fully complete
+      setTimeout(() => {
+        setRefreshKey(prev => prev + 1);
+      }, 150);
+    };
+
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleOrientationChange);
+
+    return () => {
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleOrientationChange);
+    };
+  }, []);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 orientation-responsive">
       {/* Executive Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="responsive-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 border-blue-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -220,7 +240,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="responsive-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {result.confidenceIntervals.map((ci) => (
               <div 
                 key={ci.level}
@@ -262,7 +282,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80 relative">
+          <div className="h-80 relative chart-container">
             {/* Percentile lines overlay for histogram - GUARANTEED VISIBILITY */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -295,7 +315,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 })}
               </svg>
             </div>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer key={`histogram-${refreshKey}`} width="100%" height="100%">
               <BarChart data={histogramData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
                 <XAxis 
@@ -343,8 +363,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </BarChart>
             </ResponsiveContainer>
-            {/* Legend for histogram - positioned near bottom of chart area */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2 mt-[-37px] mb-[-37px]">
+            {/* Legend for histogram - responsive positioning */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-2">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
@@ -375,7 +395,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80 relative">
+          <div className="h-80 relative chart-container">
             {/* Percentile lines overlay - DIRECT SVG APPROACH */}
             <div className="absolute inset-0 pointer-events-none z-10">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -408,7 +428,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 })}
               </svg>
             </div>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer key={`scurve-${refreshKey}`} width="100%" height="100%">
               <AreaChart data={scurveData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
                 <XAxis 
@@ -448,8 +468,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 </defs>
               </AreaChart>
             </ResponsiveContainer>
-            {/* Legend for S-curve - positioned near bottom of chart area */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2 mt-[-37px] mb-[-37px]">
+            {/* Legend for S-curve - responsive positioning */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-2">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
@@ -477,7 +497,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="responsive-grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-4">
               <h4 className="font-semibold text-lg">Central Tendency</h4>
               <div className="space-y-2">
