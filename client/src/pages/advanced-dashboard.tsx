@@ -164,9 +164,7 @@ export function AdvancedDashboard() {
             <div className="text-center mb-12">
               <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full mb-6">
                 <Calculator className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                  Professional Montecarlo Simulation
-                </span>
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Montecarlo Simulation</span>
               </div>
               
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
