@@ -469,7 +469,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
               </AreaChart>
             </ResponsiveContainer>
             {/* Legend for S-curve - responsive positioning */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-2 pt-[2px] pb-[2px] mt-[-12px] mb-[-12px]">
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-2 mt-[-12px] mb-[-12px] pt-[0px] pb-[0px]">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
