@@ -126,7 +126,7 @@ export function AdvancedDashboard() {
                 </div>
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Monte Carlo Forcasting</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Monte Carlo Forecasting</h1>
                 <p className="text-sm text-slate-600 dark:text-slate-400">Statistical Forecasting Engine</p>
               </div>
             </div>
@@ -162,9 +162,8 @@ export function AdvancedDashboard() {
           (<div className="space-y-8">
             {/* Hero Section */}
             <div className="text-center mb-12">
-              <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full mb-6">
-                <Calculator className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Montecarlo Simulation</span>
+              <div className="mx-auto w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center mb-8 shadow-lg">
+                <Calculator className="w-10 h-10 text-white" />
               </div>
               
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-6">
@@ -232,7 +231,7 @@ export function AdvancedDashboard() {
                 </div>
                 <CardTitle className="text-3xl">Forecast Complete</CardTitle>
                 <CardDescription className="text-lg">
-                  Analysis of {result.completionDates.length.toLocaleString()} Montecarlo simulations
+                  Analysis of {result.completionDates.length.toLocaleString()} Monte Carlo simulations
                   {lastConfig && (
                     <span className="block mt-2">
                       <Badge variant="outline" className="mr-2">
