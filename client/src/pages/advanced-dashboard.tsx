@@ -8,6 +8,7 @@ import { CalculationMethodology } from "@/components/calculation-methodology";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import forecastLogo from "@assets/ChatGPT Image Aug 18, 2025, 10_50_05 PM_1755599064681.png";
 import { 
   Calculator, 
   TrendingUp, 
@@ -117,8 +118,8 @@ export function AdvancedDashboard() {
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Brain className="w-7 h-7 text-white" />
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
+                  <img src={forecastLogo} alt="Forecast Pro Logo" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full flex items-center justify-center">
                   <Sparkles className="w-3 h-3 text-white" />
