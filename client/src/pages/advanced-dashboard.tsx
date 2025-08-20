@@ -174,9 +174,7 @@ export function AdvancedDashboard() {
                 </span>
               </h2>
               
-              <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
-                Advanced Monte Carlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
-              </p>
+              <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">Advanced Monte Carlo modeling with Completion Time Distribution, Cumulative Probability (S-Curve), and risk analysis</p>
 
               {/* Features */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
