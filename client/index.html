@@ -22,18 +22,15 @@
     <div id="root">
       <div class="card">
         <h1>Monte Carlo App</h1>
-        <p>Ako vidiš ovu stranicu, Vercel deployment radi. Tvoja React aplikacija se učitava iz <code>client/src/main.tsx</code> ili <code>main.jsx</code>.</p>
-        <p>
-          <button id="btn-install" hidden>Instaliraj PWA</button>
-        </p>
+        <p>Deployment radi. Tvoj React kod dolazi iz <code>client/src/main.tsx</code> ili <code>main.jsx</code>.</p>
+        <p><button id="btn-install" hidden>Instaliraj PWA</button></p>
       </div>
     </div>
 
-    <!-- Tvoj app entry; Vite će ga povući -->
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      // Registracija Service Workera (PWA)
+      // Registracija Service Workera
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker.register("/sw.js").catch(console.error);
