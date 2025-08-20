@@ -416,28 +416,28 @@ export function ForecastComparisonPanel({
             <CardContent className="space-y-6">
               {/* Key Insights */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
                   <div className="flex items-center space-x-2 mb-2">
                     <CheckCircle className="w-5 h-5 text-emerald-600" />
-                    <h4 className="font-semibold text-emerald-900 dark:text-emerald-100">Best Case</h4>
+                    <h4 className="font-semibold text-emerald-900">Best Case</h4>
                   </div>
-                  <p className="text-emerald-800 dark:text-emerald-200">{comparison.recommendations.bestCase}</p>
+                  <p className="text-emerald-800">{comparison.recommendations.bestCase}</p>
                 </div>
 
-                <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <div className="flex items-center space-x-2 mb-2">
                     <Target className="w-5 h-5 text-blue-600" />
-                    <h4 className="font-semibold text-blue-900 dark:text-blue-100">Recommended</h4>
+                    <h4 className="font-semibold text-blue-900">Recommended</h4>
                   </div>
-                  <p className="text-blue-800 dark:text-blue-200">{comparison.recommendations.recommended}</p>
+                  <p className="text-blue-800">{comparison.recommendations.recommended}</p>
                 </div>
 
-                <div className="p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
                   <div className="flex items-center space-x-2 mb-2">
                     <AlertTriangle className="w-5 h-5 text-orange-600" />
-                    <h4 className="font-semibold text-orange-900 dark:text-orange-100">Worst Case</h4>
+                    <h4 className="font-semibold text-orange-900">Worst Case</h4>
                   </div>
-                  <p className="text-orange-800 dark:text-orange-200">{comparison.recommendations.worstCase}</p>
+                  <p className="text-orange-800">{comparison.recommendations.worstCase}</p>
                 </div>
               </div>
 

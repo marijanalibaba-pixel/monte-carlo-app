@@ -42,7 +42,7 @@ export function CalculationMethodology() {
                     <span>Data Processing</span>
                   </h4>
                   <div className="space-y-3 text-sm">
-                    <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                    <div className="p-3 bg-blue-50 rounded-lg">
                       <p className="font-medium mb-2">1. Historical Data Parsing</p>
                       <p className="text-muted-foreground">
                         Input weekly completion data is parsed from comma or space-separated values. 
@@ -50,7 +50,7 @@ export function CalculationMethodology() {
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                    <div className="p-3 bg-blue-50 rounded-lg">
                       <p className="font-medium mb-2">2. Bootstrap Sampling</p>
                       <p className="text-muted-foreground">
                         For each simulation trial, we randomly sample (with replacement) from your historical 
@@ -58,7 +58,7 @@ export function CalculationMethodology() {
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                    <div className="p-3 bg-blue-50 rounded-lg">
                       <p className="font-medium mb-2">3. Realistic Variation</p>
                       <p className="text-muted-foreground">
                         Since we sample with replacement, the simulation captures both your team's typical 
@@ -74,7 +74,7 @@ export function CalculationMethodology() {
                     <span>Simulation Process</span>
                   </h4>
                   <div className="space-y-3 text-sm">
-                    <div className="p-3 bg-gray-50 dark:bg-gray-950/20 rounded-lg">
+                    <div className="p-3 bg-gray-50 rounded-lg">
                       <p className="font-medium mb-2">Weekly Simulation Loop</p>
                       <div className="space-y-1 text-muted-foreground">
                         <p>• Start with your backlog size</p>
@@ -85,7 +85,7 @@ export function CalculationMethodology() {
                       </div>
                     </div>
                     
-                    <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                    <div className="p-3 bg-green-50 rounded-lg">
                       <p className="font-medium mb-2">Why This Works</p>
                       <p className="text-muted-foreground">
                         Bootstrap sampling is a proven statistical technique that uses your actual performance 
@@ -97,7 +97,7 @@ export function CalculationMethodology() {
                 </div>
               </div>
               
-              <div className="p-4 border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950/20 rounded-r-lg">
+              <div className="p-4 border-l-4 border-l-blue-500 bg-blue-50 rounded-r-lg">
                 <h5 className="font-semibold mb-2">Example Calculation</h5>
                 <p className="text-sm text-muted-foreground mb-2">
                   Historical data: [12, 15, 8, 14, 11, 16, 9, 13, 17, 10] items per week
@@ -127,7 +127,7 @@ export function CalculationMethodology() {
                     <span>Parameter Configuration</span>
                   </h4>
                   <div className="space-y-3 text-sm">
-                    <div className="p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                    <div className="p-3 bg-orange-50 rounded-lg">
                       <p className="font-medium mb-2">Average Weekly Throughput (μ)</p>
                       <p className="text-muted-foreground">
                         The mean number of items your team completes per week. This becomes the 
@@ -135,7 +135,7 @@ export function CalculationMethodology() {
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                    <div className="p-3 bg-orange-50 rounded-lg">
                       <p className="font-medium mb-2">Throughput Variability (CV)</p>
                       <p className="text-muted-foreground">
                         Coefficient of Variation = σ/μ. This controls how much your weekly throughput 
@@ -143,7 +143,7 @@ export function CalculationMethodology() {
                       </p>
                     </div>
                     
-                    <div className="p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                    <div className="p-3 bg-orange-50 rounded-lg">
                       <p className="font-medium mb-2">Mathematical Transform</p>
                       <p className="text-muted-foreground">
                         We convert your mean and CV into lognormal parameters:
@@ -160,7 +160,7 @@ export function CalculationMethodology() {
                     <span>Distribution Sampling</span>
                   </h4>
                   <div className="space-y-3 text-sm">
-                    <div className="p-3 bg-gray-50 dark:bg-gray-950/20 rounded-lg">
+                    <div className="p-3 bg-gray-50 rounded-lg">
                       <p className="font-medium mb-2">Random Generation Process</p>
                       <div className="space-y-1 text-muted-foreground">
                         <p>• Generate normal random values using Box-Muller transformation</p>
@@ -169,7 +169,7 @@ export function CalculationMethodology() {
                       </div>
                     </div>
                     
-                    <div className="p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
+                    <div className="p-3 bg-yellow-50 rounded-lg">
                       <p className="font-medium mb-2">Why Lognormal Distribution?</p>
                       <p className="text-muted-foreground">
                         Throughput values are always positive and often right-skewed. Lognormal 
@@ -181,7 +181,7 @@ export function CalculationMethodology() {
                 </div>
               </div>
               
-              <div className="p-4 border-l-4 border-l-orange-500 bg-orange-50 dark:bg-orange-950/20 rounded-r-lg">
+              <div className="p-4 border-l-4 border-l-orange-500 bg-orange-50 rounded-r-lg">
                 <h5 className="font-semibold mb-2">Example Calculation</h5>
                 <p className="text-sm text-muted-foreground mb-2">
                   Input: Average = 12 items/week, Variability = 25% CV
@@ -197,7 +197,7 @@ export function CalculationMethodology() {
           </TabsContent>
         </Tabs>
         
-        <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-950/20 rounded-lg">
+        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
           <h4 className="font-semibold mb-3 flex items-center space-x-2">
             <BarChart3 className="w-5 h-5" />
             <span>Common Simulation Process</span>
