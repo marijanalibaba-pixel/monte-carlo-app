@@ -127,7 +127,7 @@ export function AdvancedDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Monte Carlo Forecasting</h1>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Statistical Forecasting Engine</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Flow-based probabilistic dates with SLEs, histograms & S-curves</p>
               </div>
             </div>
             
