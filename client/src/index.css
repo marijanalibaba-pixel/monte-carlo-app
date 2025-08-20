@@ -41,6 +41,20 @@
   }
 }
 
+/* Force light mode - override system preferences */
+html {
+  color-scheme: light !important;
+}
+
+/* Ensure light mode even when system is dark */
+@media (prefers-color-scheme: dark) {
+  html, body, #root {
+    color-scheme: light !important;
+    background-color: hsl(0 0% 100%) !important;
+    color: hsl(222.2 84% 4.9%) !important;
+  }
+}
+
 /* Custom fonts */
 .font-architects {
   font-family: 'Architects Daughter', cursive;
