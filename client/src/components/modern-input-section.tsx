@@ -59,16 +59,16 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
   };
 
   return (
-    <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 shadow-xl">
+    <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-3xl p-6 sm:p-8 shadow-xl">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Sparkles className="w-7 h-7 text-white" />
         </div>
-        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">
+        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-2">
           Configure Simulation
         </h3>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Set up your project parameters for forecasting
         </p>
       </div>
@@ -78,12 +78,12 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
         <div className="space-y-4">
           <div className="flex items-center space-x-2 mb-4">
             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <h4 className="font-semibold text-slate-900">Project Details</h4>
+            <h4 className="font-semibold text-slate-900 dark:text-white">Project Details</h4>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="backlog-size" className="text-sm font-medium text-slate-700">
+              <Label htmlFor="backlog-size" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 Backlog Size
               </Label>
               <Input
@@ -91,26 +91,26 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
                 type="number"
                 value={backlogSize}
                 onChange={(e) => setBacklogSize(parseInt(e.target.value) || 0)}
-                className="bg-white/50 border-slate-200 rounded-xl"
+                className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                 placeholder="Items to complete"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-slate-700">
+              <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 Start Date
               </Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full bg-white/50 border-slate-200 rounded-xl justify-start"
+                    className="w-full bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl justify-start"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {startDate ? format(startDate, "PPP") : "Pick a date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 bg-white border-slate-200 rounded-xl">
+                <PopoverContent className="w-auto p-0 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl">
                   <Calendar
                     mode="single"
                     selected={startDate}
@@ -123,7 +123,7 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="trials" className="text-sm font-medium text-slate-700">
+            <Label htmlFor="trials" className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Simulation Trials
             </Label>
             <Input
@@ -131,10 +131,10 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
               type="number"
               value={trials}
               onChange={(e) => setTrials(parseInt(e.target.value) || 1000)}
-              className="bg-white/50 border-slate-200 rounded-xl"
+              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
               placeholder="Number of simulations"
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Higher values increase accuracy but take longer to compute
             </p>
           </div>
@@ -144,15 +144,15 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
         <div className="space-y-4">
           <div className="flex items-center space-x-2 mb-4">
             <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-            <h4 className="font-semibold text-slate-900">Forecasting Model</h4>
+            <h4 className="font-semibold text-slate-900 dark:text-white">Forecasting Model</h4>
           </div>
 
           <Tabs defaultValue="throughput" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-100 rounded-xl p-1">
+            <TabsList className="grid w-full grid-cols-2 bg-slate-100 dark:bg-slate-700 rounded-xl p-1">
               <TabsTrigger 
                 value="throughput" 
                 onClick={() => setUseCycleTime(false)}
-                className="rounded-lg data-[state=active]:bg-white[state=active]:bg-slate-600"
+                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Throughput</span>
@@ -161,7 +161,7 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
               <TabsTrigger 
                 value="cycletime" 
                 onClick={() => setUseCycleTime(true)}
-                className="rounded-lg data-[state=active]:bg-white[state=active]:bg-slate-600"
+                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-600"
               >
                 <Clock className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Cycle Time</span>
@@ -170,19 +170,19 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
             </TabsList>
 
             <TabsContent value="throughput" className="mt-6 space-y-4">
-              <div className="bg-blue-50 rounded-xl p-4">
-                <h5 className="font-medium text-blue-900 mb-2 flex items-center">
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
+                <h5 className="font-medium text-blue-900 dark:text-blue-100 mb-2 flex items-center">
                   <TrendingUp className="w-4 h-4 mr-2" />
                   Team Velocity Analysis
                 </h5>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
                   Forecast based on how many items your team completes per week
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="mean-throughput" className="text-sm font-medium text-slate-700">
+                  <Label htmlFor="mean-throughput" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     Average Items/Week
                   </Label>
                   <Input
@@ -190,13 +190,13 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
                     type="number"
                     value={meanThroughput}
                     onChange={(e) => setMeanThroughput(parseFloat(e.target.value) || 0)}
-                    className="bg-white/50 border-slate-200 rounded-xl"
+                    className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                     placeholder="Team velocity"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="variability" className="text-sm font-medium text-slate-700">
+                  <Label htmlFor="variability" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     Variability (%)
                   </Label>
                   <Input
@@ -204,44 +204,44 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
                     type="number"
                     value={variabilityCV}
                     onChange={(e) => setVariabilityCV(parseFloat(e.target.value) || 0)}
-                    className="bg-white/50 border-slate-200 rounded-xl"
+                    className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                     placeholder="Coefficient of variation"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="weekly-data" className="text-sm font-medium text-slate-700">
+                <Label htmlFor="weekly-data" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Historical Weekly Data (Optional)
                 </Label>
                 <Textarea
                   id="weekly-data"
                   value={weeklyThroughputData}
                   onChange={(e) => setWeeklyThroughputData(e.target.value)}
-                  className="bg-white/50 border-slate-200 rounded-xl resize-none"
+                  className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl resize-none"
                   placeholder="12, 15, 8, 14, 11, 16, 9..."
                   rows={3}
                 />
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Comma-separated weekly completion counts (8-30 values for bootstrap sampling)
                 </p>
               </div>
             </TabsContent>
 
             <TabsContent value="cycletime" className="mt-6 space-y-4">
-              <div className="bg-emerald-50 rounded-xl p-4">
-                <h5 className="font-medium text-emerald-900 mb-2 flex items-center">
+              <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4">
+                <h5 className="font-medium text-emerald-900 dark:text-emerald-100 mb-2 flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
                   Individual Item Duration
                 </h5>
-                <p className="text-sm text-emerald-700">
+                <p className="text-sm text-emerald-700 dark:text-emerald-300">
                   Forecast based on how long individual items take to complete
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="p50-cycle" className="text-sm font-medium text-slate-700">
+                  <Label htmlFor="p50-cycle" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     P50 (Days)
                   </Label>
                   <Input
@@ -249,13 +249,13 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
                     type="number"
                     value={p50CycleTime}
                     onChange={(e) => setP50CycleTime(parseFloat(e.target.value) || 0)}
-                    className="bg-white/50 border-slate-200 rounded-xl"
+                    className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                     placeholder="Median time"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="p80-cycle" className="text-sm font-medium text-slate-700">
+                  <Label htmlFor="p80-cycle" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     P80 (Days)
                   </Label>
                   <Input
@@ -263,13 +263,13 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
                     type="number"
                     value={p80CycleTime}
                     onChange={(e) => setP80CycleTime(parseFloat(e.target.value) || 0)}
-                    className="bg-white/50 border-slate-200 rounded-xl"
+                    className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                     placeholder="80th percentile"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="p95-cycle" className="text-sm font-medium text-slate-700">
+                  <Label htmlFor="p95-cycle" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     P95 (Days)
                   </Label>
                   <Input
@@ -277,7 +277,7 @@ export function ModernInputSection({ onSimulate, isCalculating }: ModernInputSec
                     type="number"
                     value={p95CycleTime}
                     onChange={(e) => setP95CycleTime(parseFloat(e.target.value) || 0)}
-                    className="bg-white/50 border-slate-200 rounded-xl"
+                    className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                     placeholder="95th percentile"
                   />
                 </div>

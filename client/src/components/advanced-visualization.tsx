@@ -148,49 +148,49 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     <div className="space-y-8">
       {/* Executive Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 border-blue-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600">Most Likely</p>
-                <p className="text-2xl font-bold text-blue-900">
+                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Most Likely</p>
+                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                   {Math.round(result.statistics.median)} days
                 </p>
-                <p className="text-xs text-blue-700">
+                <p className="text-xs text-blue-700 dark:text-blue-300">
                   {format(addDays(startDate, result.statistics.median), 'MMM d, yyyy')}
                 </p>
               </div>
-              <Target className="w-8 h-8 text-blue-600" />
+              <Target className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
+        <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border-amber-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-amber-600">Conservative</p>
-                <p className="text-2xl font-bold text-amber-900">
+                <p className="text-sm font-medium text-amber-600 dark:text-amber-400">Conservative</p>
+                <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                   {result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0} days
                 </p>
-                <p className="text-xs text-amber-700">80% confidence</p>
+                <p className="text-xs text-amber-700 dark:text-amber-300">80% confidence</p>
               </div>
-              <Calendar className="w-8 h-8 text-amber-600" />
+              <Calendar className="w-8 h-8 text-amber-600 dark:text-amber-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/20 dark:to-emerald-900/20 border-emerald-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-emerald-600">Worst Case</p>
-                <p className="text-2xl font-bold text-emerald-900">
+                <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Worst Case</p>
+                <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
                   {result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0} days
                 </p>
-                <p className="text-xs text-emerald-700">95% confidence</p>
+                <p className="text-xs text-emerald-700 dark:text-emerald-300">95% confidence</p>
               </div>
-              <TrendingUp className="w-8 h-8 text-emerald-600" />
+              <TrendingUp className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
             </div>
           </CardContent>
         </Card>
