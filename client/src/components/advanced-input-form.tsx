@@ -122,9 +122,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
       {/* Header */}
       <Card className="border-none bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
         <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-4">
-            <Calculator className="w-8 h-8 text-white" />
-          </div>
+          
           
           
         </CardHeader>
