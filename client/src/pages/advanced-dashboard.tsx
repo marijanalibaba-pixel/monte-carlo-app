@@ -176,7 +176,7 @@ export function AdvancedDashboard() {
               </h2>
               
               <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
-                Advanced Montecarlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
+                Advanced Monte Carlo modeling with lognormal distributions, bootstrap sampling, and comprehensive risk analysis
               </p>
 
               {/* Features */}
