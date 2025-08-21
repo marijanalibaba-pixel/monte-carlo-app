@@ -225,9 +225,12 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                   step={1000}
                   className="w-full"
                 />
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between items-center text-sm text-muted-foreground">
                   <span>1K</span>
-                  <span className="font-medium">{trials.toLocaleString()}</span>
+                  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg">
+                    <span className="text-lg font-bold">{trials.toLocaleString()}</span>
+                    <span className="text-xs ml-1 opacity-90">trials</span>
+                  </div>
                   <span>50K</span>
                 </div>
               </div>
@@ -381,9 +384,12 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                           max={80}
                           step={5}
                         />
-                        <div className="flex justify-between text-xs text-muted-foreground">
+                        <div className="flex justify-between items-center text-xs text-muted-foreground">
                           <span>Low (5%)</span>
-                          <span className="font-medium">{Math.round(throughputVariability * 100)}% CV</span>
+                          <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1.5 rounded-lg shadow-lg">
+                            <span className="text-base font-bold">{Math.round(throughputVariability * 100)}%</span>
+                            <span className="text-xs ml-1 opacity-90">CV</span>
+                          </div>
                           <span>High (80%)</span>
                         </div>
                       </div>
