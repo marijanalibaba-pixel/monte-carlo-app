@@ -16,6 +16,8 @@ import { format, addDays } from "date-fns";
 interface AdvancedVisualizationProps {
   result: ForecastResult;
   startDate: Date;
+  mode?: 'forecast' | 'probability' | 'target';
+  targetDate?: Date;
 }
 
 // Statistical explanation tooltips
@@ -43,7 +45,7 @@ const StatTooltip = ({ children, explanation }: { children: React.ReactNode; exp
   );
 };
 
-export function AdvancedVisualization({ result, startDate }: AdvancedVisualizationProps) {
+export function AdvancedVisualization({ result, startDate, mode = 'forecast', targetDate }: AdvancedVisualizationProps) {
   
   // Prepare histogram data with meaningful range only (95th percentile)
   const histogramData = useMemo(() => {
@@ -192,6 +194,122 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
 
   return (
     <div className="space-y-8 orientation-responsive">
+      {/* Mode-Specific Display */}
+      {mode === 'probability' && (result.statistics as any).probabilityPercentage !== undefined && (
+        <Card className="border-2 border-green-200 dark:border-green-800 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-2xl text-green-800 dark:text-green-200">Completion Probability</CardTitle>
+            <CardDescription>Likelihood of completing by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4">
+                <span className="text-4xl font-bold text-white">{(result.statistics as any).probabilityPercentage}%</span>
+              </div>
+              <p className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
+                {(result.statistics as any).successfulCompletions?.toLocaleString() || 0} out of {(result.statistics as any).totalSimulations?.toLocaleString() || 0} simulations
+              </p>
+              <p className="text-sm text-green-600 dark:text-green-400">
+                completed by the target date
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+              <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                <p className="font-semibold text-green-700 dark:text-green-300">Target Days</p>
+                <p className="text-green-600 dark:text-green-400">{(result.statistics as any).targetDays || 0} days</p>
+              </div>
+              <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                <p className="font-semibold text-green-700 dark:text-green-300">Success Rate</p>
+                <p className="text-green-600 dark:text-green-400">{(result.statistics as any).probabilityPercentage}%</p>
+              </div>
+              <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                <p className="font-semibold text-green-700 dark:text-green-300">Risk Level</p>
+                <p className="text-green-600 dark:text-green-400">
+                  {(result.statistics as any).probabilityPercentage >= 80 ? 'Low' : 
+                   (result.statistics as any).probabilityPercentage >= 60 ? 'Medium' : 'High'}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {mode === 'target' && (result.statistics as any).suggestions && (
+        <div className="space-y-4">
+          <Card className="border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-2xl text-purple-800 dark:text-purple-200">Target Analysis</CardTitle>
+              <CardDescription>Requirements to achieve completion by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 text-center">
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Target Date</p>
+                  <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
+                    {(result.statistics as any).targetDays || 0} days
+                  </p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">from start</p>
+                </div>
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Current P80</p>
+                  <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
+                    {(result.statistics as any).baselineP80Days || 0} days
+                  </p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">baseline estimate</p>
+                </div>
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Achievable</p>
+                  <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
+                    {(result.statistics as any).achievable ? 'Yes' : 'No'}
+                  </p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">
+                    {(result.statistics as any).achievable ? 'with current setup' : 'changes needed'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-purple-200 dark:border-purple-800">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2 text-purple-800 dark:text-purple-200">
+                <Award className="w-5 h-5" />
+                <span>Recommendations</span>
+              </CardTitle>
+              <CardDescription>Strategic options to achieve your target date</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {((result.statistics as any).suggestions || []).map((suggestion: any, index: number) => (
+                  <div key={index} className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-slate-900 dark:text-slate-100">{suggestion.description}</h3>
+                      <div className="flex space-x-2">
+                        <Badge variant="outline" className={
+                          suggestion.impact === 'High' ? 'border-red-200 text-red-700' :
+                          suggestion.impact === 'Medium' ? 'border-yellow-200 text-yellow-700' :
+                          'border-green-200 text-green-700'
+                        }>
+                          {suggestion.impact} Impact
+                        </Badge>
+                        <Badge variant="outline" className={
+                          suggestion.difficulty === 'High' ? 'border-red-200 text-red-700' :
+                          suggestion.difficulty === 'Medium' ? 'border-yellow-200 text-yellow-700' :
+                          'border-green-200 text-green-700'
+                        }>
+                          {suggestion.difficulty} Difficulty
+                        </Badge>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{suggestion.specifics}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Executive Summary Cards */}
       <div className="responsive-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 border-blue-200">

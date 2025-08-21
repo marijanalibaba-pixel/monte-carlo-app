@@ -29,15 +29,17 @@ import { format } from "date-fns";
 import { ThroughputConfig, CycleTimeConfig, SimulationConfig, RiskFactor } from "@/lib/monte-carlo-engine";
 
 interface AdvancedInputFormProps {
+  mode: 'forecast' | 'probability' | 'target';
   onForecast: (
     throughputConfig?: ThroughputConfig,
     cycleTimeConfig?: CycleTimeConfig,
-    simConfig?: SimulationConfig
+    simConfig?: SimulationConfig,
+    targetDate?: Date
   ) => void;
   isRunning: boolean;
 }
 
-export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormProps) {
+export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInputFormProps) {
   const [forecastType, setForecastType] = useState<'throughput' | 'cycletime'>('throughput');
   
   // Track forecast method changes
@@ -50,6 +52,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
   // Common parameters
   const [backlogSize, setBacklogSize] = useState(100);
   const [startDate, setStartDate] = useState<Date>(new Date());
+  const [targetDate, setTargetDate] = useState<Date>(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)); // 90 days from now
   const [trials, setTrials] = useState(10000);
   const [isTrialsTooltipOpen, setIsTrialsTooltipOpen] = useState(false);
   
@@ -116,7 +119,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
         weeklyCapacity: useCapacityLimit ? weeklyCapacity : undefined
       };
       
-      onForecast(throughputConfig, undefined, simConfig);
+      onForecast(throughputConfig, undefined, simConfig, mode !== 'forecast' ? targetDate : undefined);
     } else {
       const cycleTimeConfig: CycleTimeConfig = {
         backlogSize,
@@ -128,7 +131,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
         wipLimit
       };
       
-      onForecast(undefined, cycleTimeConfig, simConfig);
+      onForecast(undefined, cycleTimeConfig, simConfig, mode !== 'forecast' ? targetDate : undefined);
     }
   };
   
@@ -188,6 +191,32 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 </PopoverContent>
               </Popover>
             </div>
+            
+            {(mode === 'probability' || mode === 'target') && (
+              <div className="space-y-2">
+                <Label>Target Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-left">
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {targetDate ? format(targetDate, "PPP") : "Pick target date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={targetDate}
+                      onSelect={(date) => date && setTargetDate(date)}
+                      initialFocus
+                      disabled={(date) => date <= startDate}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {mode === 'probability' ? 'Check completion probability by this date' : 'Find requirements to hit this deadline'}
+                </p>
+              </div>
+            )}
             
             <div className="space-y-2">
               <div className="flex items-center space-x-2">

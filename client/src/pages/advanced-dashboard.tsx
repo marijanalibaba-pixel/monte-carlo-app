@@ -11,6 +11,7 @@ import { CalculationMethodology } from "@/components/calculation-methodology";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import forecastLogo from "@assets/ChatGPT Image Aug 18, 2025, 10_50_05 PM_1755599064681.png";
 import { 
@@ -27,10 +28,13 @@ import {
   Download,
   FileText,
   Image,
-  BookOpen
+  BookOpen,
+  Calendar,
+  Percent
 } from "lucide-react";
 
 export function AdvancedDashboard() {
+  const [mode, setMode] = useState<'forecast' | 'probability' | 'target'>('forecast');
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<ForecastResult | null>(null);
   const [scenarios, setScenarios] = useState<ForecastScenario[]>([]);
@@ -39,12 +43,15 @@ export function AdvancedDashboard() {
     type: 'throughput' | 'cycletime';
     startDate: Date;
     parameters?: any;
+    mode?: string;
+    targetDate?: Date;
   } | null>(null);
 
   const handleForecast = async (
     throughputConfig?: ThroughputConfig,
     cycleTimeConfig?: CycleTimeConfig,
-    simConfig?: SimulationConfig
+    simConfig?: SimulationConfig,
+    targetDate?: Date
   ) => {
     if (!simConfig) return;
     
@@ -56,46 +63,55 @@ export function AdvancedDashboard() {
       
       let forecastResult: ForecastResult;
       
-      if (throughputConfig) {
-        forecastResult = MonteCarloEngine.forecastByThroughput(throughputConfig, simConfig);
-        setLastConfig({ 
-          type: 'throughput', 
-          startDate: simConfig.startDate,
-          parameters: throughputConfig 
-        });
-        
-        // Track forecast completion
-        track('forecast_completed', {
-          model_type: 'throughput',
-          backlog_size: throughputConfig.backlogSize,
-          trials: simConfig.trials,
-          has_historical_data: !!throughputConfig.historicalThroughput,
-          has_capacity_limit: !!throughputConfig.weeklyCapacity,
-          has_risk_factors: (simConfig.riskFactors?.length || 0) > 0,
-          has_dependencies: !!simConfig.includeDependencies
-        });
-      } else if (cycleTimeConfig) {
-        forecastResult = MonteCarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
-        setLastConfig({ 
-          type: 'cycletime', 
-          startDate: simConfig.startDate,
-          parameters: cycleTimeConfig 
-        });
-        
-        // Track forecast completion
-        track('forecast_completed', {
-          model_type: 'cycletime',
-          backlog_size: cycleTimeConfig.backlogSize,
-          trials: simConfig.trials,
-          p50_cycle_time: cycleTimeConfig.p50CycleTime,
-          p80_cycle_time: cycleTimeConfig.p80CycleTime,
-          p95_cycle_time: cycleTimeConfig.p95CycleTime,
-          has_risk_factors: (simConfig.riskFactors?.length || 0) > 0,
-          has_dependencies: !!simConfig.includeDependencies
-        });
+      if (mode === 'forecast') {
+        // Standard forecasting mode
+        if (throughputConfig) {
+          forecastResult = MonteCarloEngine.forecastByThroughput(throughputConfig, simConfig);
+        } else if (cycleTimeConfig) {
+          forecastResult = MonteCarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
+        } else {
+          throw new Error('No configuration provided');
+        }
+      } else if (mode === 'probability' && targetDate) {
+        // Probability calculation mode
+        if (throughputConfig) {
+          forecastResult = MonteCarloEngine.calculateCompletionProbability(throughputConfig, undefined, simConfig, targetDate);
+        } else if (cycleTimeConfig) {
+          forecastResult = MonteCarloEngine.calculateCompletionProbability(undefined, cycleTimeConfig, simConfig, targetDate);
+        } else {
+          throw new Error('No configuration provided');
+        }
+      } else if (mode === 'target' && targetDate) {
+        // Reverse calculation mode
+        if (throughputConfig) {
+          forecastResult = MonteCarloEngine.calculateTargetRequirements(throughputConfig, undefined, simConfig, targetDate);
+        } else if (cycleTimeConfig) {
+          forecastResult = MonteCarloEngine.calculateTargetRequirements(undefined, cycleTimeConfig, simConfig, targetDate);
+        } else {
+          throw new Error('No configuration provided');
+        }
       } else {
-        throw new Error('No configuration provided');
+        throw new Error('Invalid mode or missing target date');
       }
+      
+      setLastConfig({ 
+        type: throughputConfig ? 'throughput' : 'cycletime',
+        startDate: simConfig.startDate,
+        parameters: throughputConfig || cycleTimeConfig,
+        mode,
+        targetDate
+      });
+      
+      // Track forecast completion
+      track('forecast_completed', {
+        mode,
+        model_type: throughputConfig ? 'throughput' : 'cycletime',
+        backlog_size: throughputConfig?.backlogSize || cycleTimeConfig?.backlogSize || 0,
+        trials: simConfig.trials,
+        has_target_date: !!targetDate,
+        has_risk_factors: (simConfig.riskFactors?.length || 0) > 0,
+        has_dependencies: !!simConfig.includeDependencies
+      });
       
       setResult(forecastResult);
     } catch (error) {
@@ -310,7 +326,54 @@ export function AdvancedDashboard() {
               </div>
             </div>
             {/* Input Form */}
-            <AdvancedInputForm onForecast={handleForecast} isRunning={isRunning} />
+            {/* Mode Selection */}
+            <Card className="border-2 border-dashed border-blue-200 dark:border-blue-800 bg-blue-50/30 dark:bg-blue-950/30">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-lg">Choose Analysis Mode</CardTitle>
+                <CardDescription>Select the type of analysis you want to perform</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={mode} onValueChange={(value) => setMode(value as 'forecast' | 'probability' | 'target')} className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="forecast" className="flex items-center space-x-2">
+                      <Calculator className="w-4 h-4" />
+                      <span>Forecast</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="probability" className="flex items-center space-x-2">
+                      <Percent className="w-4 h-4" />
+                      <span>Probability</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="target" className="flex items-center space-x-2">
+                      <Target className="w-4 h-4" />
+                      <span>Target</span>
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <div className="mt-6 text-center">
+                    {mode === 'forecast' && (
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-blue-700 dark:text-blue-300">Standard Forecasting</h3>
+                        <p className="text-sm text-blue-600 dark:text-blue-400">Predict when your project will complete based on current parameters</p>
+                      </div>
+                    )}
+                    {mode === 'probability' && (
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-green-700 dark:text-green-300">Completion Probability</h3>
+                        <p className="text-sm text-green-600 dark:text-green-400">Calculate the probability of completing by a specific target date</p>
+                      </div>
+                    )}
+                    {mode === 'target' && (
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-purple-700 dark:text-purple-300">Target Requirements</h3>
+                        <p className="text-sm text-purple-600 dark:text-purple-400">Find what needs to change to hit your target deadline</p>
+                      </div>
+                    )}
+                  </div>
+                </Tabs>
+              </CardContent>
+            </Card>
+
+            <AdvancedInputForm mode={mode} onForecast={handleForecast} isRunning={isRunning} />
           </div>)
         ) : (
           /* Results Phase */
@@ -352,7 +415,9 @@ export function AdvancedDashboard() {
             {/* Visualization */}
             <AdvancedVisualization 
               result={result} 
-              startDate={lastConfig?.startDate || new Date()} 
+              startDate={lastConfig?.startDate || new Date()}
+              mode={lastConfig?.mode as 'forecast' | 'probability' | 'target' || 'forecast'}
+              targetDate={lastConfig?.targetDate}
             />
             {/* Actions */}
             <div className="text-center pt-8 border-t border-slate-200 dark:border-slate-700">
