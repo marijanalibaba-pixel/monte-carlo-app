@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { track } from '@vercel/analytics';
 import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
 import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
@@ -55,12 +56,35 @@ export function AdvancedDashboard() {
           startDate: simConfig.startDate,
           parameters: throughputConfig 
         });
+        
+        // Track forecast completion
+        track('forecast_completed', {
+          model_type: 'throughput',
+          backlog_size: throughputConfig.backlogSize,
+          trials: simConfig.trials,
+          has_historical_data: !!throughputConfig.historicalThroughput,
+          has_capacity_limit: !!throughputConfig.weeklyCapacity,
+          has_risk_factors: (simConfig.riskFactors?.length || 0) > 0,
+          has_dependencies: !!simConfig.includeDependencies
+        });
       } else if (cycleTimeConfig) {
         forecastResult = MonteCarloEngine.forecastByCycleTime(cycleTimeConfig, simConfig);
         setLastConfig({ 
           type: 'cycletime', 
           startDate: simConfig.startDate,
           parameters: cycleTimeConfig 
+        });
+        
+        // Track forecast completion
+        track('forecast_completed', {
+          model_type: 'cycletime',
+          backlog_size: cycleTimeConfig.backlogSize,
+          trials: simConfig.trials,
+          p50_cycle_time: cycleTimeConfig.p50CycleTime,
+          p80_cycle_time: cycleTimeConfig.p80CycleTime,
+          p95_cycle_time: cycleTimeConfig.p95CycleTime,
+          has_risk_factors: (simConfig.riskFactors?.length || 0) > 0,
+          has_dependencies: !!simConfig.includeDependencies
         });
       } else {
         throw new Error('No configuration provided');
@@ -99,6 +123,13 @@ export function AdvancedDashboard() {
     
     setScenarios(prev => [...prev, newScenario]);
     setShowComparison(true);
+    
+    // Track scenario save
+    track('scenario_saved', {
+      model_type: lastConfig.type,
+      total_scenarios: scenarios.length + 1,
+      backlog_size: lastConfig.parameters?.backlogSize || 0
+    });
   };
 
   const removeScenario = (scenarioId: string) => {

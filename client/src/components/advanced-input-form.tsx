@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { track } from '@vercel/analytics';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,6 +37,13 @@ interface AdvancedInputFormProps {
 
 export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormProps) {
   const [forecastType, setForecastType] = useState<'throughput' | 'cycletime'>('throughput');
+  
+  // Track forecast method changes
+  useEffect(() => {
+    track('forecast_method_selected', {
+      method: forecastType
+    });
+  }, [forecastType]);
   
   // Common parameters
   const [backlogSize, setBacklogSize] = useState(100);
