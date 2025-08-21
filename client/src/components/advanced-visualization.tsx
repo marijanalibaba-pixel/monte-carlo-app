@@ -203,8 +203,19 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </CardHeader>
           <CardContent className="text-center">
             <div className="mb-6">
-              <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4">
-                <span className="text-4xl font-bold text-white">{(result.statistics as any).probabilityPercentage}%</span>
+              <div 
+                className="inline-flex items-center justify-center w-32 h-32 rounded-full mb-4"
+                style={{
+                  background: `linear-gradient(135deg, 
+                    rgb(${255 - (((result.statistics as any).probabilityPercentage || 0) * 2.55)}, 
+                        ${Math.min(255, ((result.statistics as any).probabilityPercentage || 0) * 2.55)}, 
+                        0), 
+                    rgb(${Math.max(0, 255 - (((result.statistics as any).probabilityPercentage || 0) * 3))}, 
+                        ${Math.min(255, ((result.statistics as any).probabilityPercentage || 0) * 2.2)}, 
+                        ${Math.min(100, ((result.statistics as any).probabilityPercentage || 0) * 0.5)}))`
+                }}
+              >
+                <span className="text-4xl font-bold text-white drop-shadow-lg">{(result.statistics as any).probabilityPercentage}%</span>
               </div>
               <p className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
                 {(result.statistics as any).successfulCompletions?.toLocaleString() || 0} out of {(result.statistics as any).totalSimulations?.toLocaleString() || 0} simulations
@@ -234,37 +245,35 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
         </Card>
       )}
 
-      {mode === 'target' && (result.statistics as any).suggestions && (
+      {mode === 'target' && (result.statistics as any).startDateOptions && (
         <div className="space-y-4">
           <Card className="border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl text-purple-800 dark:text-purple-200">Target Analysis</CardTitle>
-              <CardDescription>Requirements to achieve completion by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
+              <CardTitle className="text-2xl text-purple-800 dark:text-purple-200">Recommended Start Dates</CardTitle>
+              <CardDescription>When to start your project to complete by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 text-center">
                 <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
                   <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Target Date</p>
                   <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
-                    {(result.statistics as any).targetDays || 0} days
+                    {targetDate && format(targetDate, 'MMM d, yyyy')}
                   </p>
-                  <p className="text-xs text-purple-700 dark:text-purple-300">from start</p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">completion deadline</p>
                 </div>
                 <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
-                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Current P80</p>
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Project Duration</p>
                   <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
-                    {(result.statistics as any).baselineP80Days || 0} days
+                    {(result.statistics as any).projectDuration?.p80 || 0} days
                   </p>
-                  <p className="text-xs text-purple-700 dark:text-purple-300">baseline estimate</p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">80% confidence</p>
                 </div>
                 <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
-                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Achievable</p>
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Duration Range</p>
                   <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
-                    {(result.statistics as any).achievable ? 'Yes' : 'No'}
+                    {(result.statistics as any).projectDuration?.p50 || 0} - {(result.statistics as any).projectDuration?.p95 || 0}
                   </p>
-                  <p className="text-xs text-purple-700 dark:text-purple-300">
-                    {(result.statistics as any).achievable ? 'with current setup' : 'changes needed'}
-                  </p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">days (P50-P95)</p>
                 </div>
               </div>
             </CardContent>
@@ -273,35 +282,46 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           <Card className="border-purple-200 dark:border-purple-800">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2 text-purple-800 dark:text-purple-200">
-                <Award className="w-5 h-5" />
-                <span>Recommendations</span>
+                <Calendar className="w-5 h-5" />
+                <span>Start Date Options</span>
               </CardTitle>
-              <CardDescription>Strategic options to achieve your target date</CardDescription>
+              <CardDescription>Choose your start date based on risk tolerance</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {((result.statistics as any).suggestions || []).map((suggestion: any, index: number) => (
-                  <div key={index} className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-slate-900 dark:text-slate-100">{suggestion.description}</h3>
-                      <div className="flex space-x-2">
-                        <Badge variant="outline" className={
-                          suggestion.impact === 'High' ? 'border-red-200 text-red-700' :
-                          suggestion.impact === 'Medium' ? 'border-yellow-200 text-yellow-700' :
-                          'border-green-200 text-green-700'
-                        }>
-                          {suggestion.impact} Impact
-                        </Badge>
-                        <Badge variant="outline" className={
-                          suggestion.difficulty === 'High' ? 'border-red-200 text-red-700' :
-                          suggestion.difficulty === 'Medium' ? 'border-yellow-200 text-yellow-700' :
-                          'border-green-200 text-green-700'
-                        }>
-                          {suggestion.difficulty} Difficulty
+                {((result.statistics as any).startDateOptions || []).map((option: any, index: number) => (
+                  <div key={index} className={`rounded-lg p-6 border-2 ${option.color.includes('red') ? 'border-red-200' : option.color.includes('yellow') ? 'border-yellow-200' : 'border-green-200'}`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">{option.description}</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">{option.confidence} confidence level</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant="outline" className={option.color}>
+                          {option.riskLevel} Risk
                         </Badge>
                       </div>
                     </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">{suggestion.specifics}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Start Date</p>
+                        <p className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                          {format(option.startDate, 'MMM d, yyyy')}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {format(option.startDate, 'EEEE')}
+                        </p>
+                      </div>
+                      <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Duration</p>
+                        <p className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                          {option.days} days
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          ~{Math.round(option.days / 7)} weeks
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

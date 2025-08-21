@@ -213,7 +213,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   </PopoverContent>
                 </Popover>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {mode === 'probability' ? 'Check completion probability by this date' : 'Find requirements to hit this deadline'}
+                  {mode === 'probability' ? 'Check completion probability by this date' : 'Find recommended start dates for this deadline'}
                 </p>
               </div>
             )}

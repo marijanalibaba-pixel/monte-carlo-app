@@ -75,18 +75,18 @@ export function AdvancedDashboard() {
       } else if (mode === 'probability' && targetDate) {
         // Probability calculation mode
         if (throughputConfig) {
-          forecastResult = MonteCarloEngine.calculateCompletionProbability(throughputConfig, undefined, simConfig, targetDate);
+          forecastResult = MonteCarloEngine.calculateCompletionProbability(simConfig, targetDate, throughputConfig, undefined);
         } else if (cycleTimeConfig) {
-          forecastResult = MonteCarloEngine.calculateCompletionProbability(undefined, cycleTimeConfig, simConfig, targetDate);
+          forecastResult = MonteCarloEngine.calculateCompletionProbability(simConfig, targetDate, undefined, cycleTimeConfig);
         } else {
           throw new Error('No configuration provided');
         }
       } else if (mode === 'target' && targetDate) {
         // Reverse calculation mode
         if (throughputConfig) {
-          forecastResult = MonteCarloEngine.calculateTargetRequirements(throughputConfig, undefined, simConfig, targetDate);
+          forecastResult = MonteCarloEngine.calculateTargetRequirements(simConfig, targetDate, throughputConfig, undefined);
         } else if (cycleTimeConfig) {
-          forecastResult = MonteCarloEngine.calculateTargetRequirements(undefined, cycleTimeConfig, simConfig, targetDate);
+          forecastResult = MonteCarloEngine.calculateTargetRequirements(simConfig, targetDate, undefined, cycleTimeConfig);
         } else {
           throw new Error('No configuration provided');
         }
@@ -364,8 +364,8 @@ export function AdvancedDashboard() {
                     )}
                     {mode === 'target' && (
                       <div className="space-y-2">
-                        <h3 className="font-semibold text-purple-700 dark:text-purple-300">Target Requirements</h3>
-                        <p className="text-sm text-purple-600 dark:text-purple-400">Find what needs to change to hit your target deadline</p>
+                        <h3 className="font-semibold text-purple-700 dark:text-purple-300">Start Date Calculator</h3>
+                        <p className="text-sm text-purple-600 dark:text-purple-400">Find the best start date to hit your target deadline</p>
                       </div>
                     )}
                   </div>

@@ -497,10 +497,10 @@ export class MonteCarloEngine {
    * Runs simulation and determines what percentage complete by target
    */
   static calculateCompletionProbability(
-    throughputConfig?: ThroughputConfig,
-    cycleTimeConfig?: CycleTimeConfig,
     simConfig: SimulationConfig,
-    targetDate: Date
+    targetDate: Date,
+    throughputConfig?: ThroughputConfig,
+    cycleTimeConfig?: CycleTimeConfig
   ): ForecastResult {
     // Run the standard simulation first
     let standardResult: ForecastResult;
@@ -533,26 +533,23 @@ export class MonteCarloEngine {
         targetDays,
         successfulCompletions,
         totalSimulations: completionDays.length
-      }
+      } as any
     };
 
     return probabilityResult;
   }
 
   /**
-   * Calculate what needs to change to hit target date
-   * Provides recommendations for scope, team size, or velocity changes
+   * Calculate recommended start dates to hit target date
+   * Provides different start date options based on confidence levels
    */
   static calculateTargetRequirements(
-    throughputConfig?: ThroughputConfig,
-    cycleTimeConfig?: CycleTimeConfig,
     simConfig: SimulationConfig,
-    targetDate: Date
+    targetDate: Date,
+    throughputConfig?: ThroughputConfig,
+    cycleTimeConfig?: CycleTimeConfig
   ): ForecastResult {
-    // Calculate target days from start
-    const targetDays = Math.ceil((targetDate.getTime() - simConfig.startDate.getTime()) / (24 * 60 * 60 * 1000));
-    
-    // Run baseline simulation
+    // Run baseline simulation with today as start date
     let baselineResult: ForecastResult;
     if (throughputConfig) {
       baselineResult = this.forecastByThroughput(throughputConfig, simConfig);
@@ -562,85 +559,52 @@ export class MonteCarloEngine {
       throw new Error('No configuration provided');
     }
 
-    // Get baseline P80 completion (conservative estimate)
-    const baselineP80Days = Math.ceil((baselineResult.confidenceIntervals[1].completionDate.getTime() - simConfig.startDate.getTime()) / (24 * 60 * 60 * 1000));
-    
-    // Calculate what changes are needed
-    const suggestions: any[] = [];
-    
-    if (targetDays < baselineP80Days) {
-      // Need to accelerate - calculate requirements
-      const accelerationFactor = baselineP80Days / targetDays;
-      
-      if (throughputConfig) {
-        // Throughput-based suggestions
-        const newThroughput = Math.ceil((throughputConfig.averageThroughput || 12) * accelerationFactor);
-        const additionalThroughput = newThroughput - (throughputConfig.averageThroughput || 12);
-        
-        suggestions.push({
-          type: 'increase_velocity',
-          description: `Increase team velocity by ${Math.round((accelerationFactor - 1) * 100)}%`,
-          specifics: `From ${throughputConfig.averageThroughput || 12} to ${newThroughput} items/week`,
-          impact: 'High',
-          difficulty: 'Medium'
-        });
+    // Calculate baseline durations for different confidence levels
+    const p50Days = Math.ceil((baselineResult.confidenceIntervals[0].completionDate.getTime() - simConfig.startDate.getTime()) / (24 * 60 * 60 * 1000));
+    const p80Days = Math.ceil((baselineResult.confidenceIntervals[1].completionDate.getTime() - simConfig.startDate.getTime()) / (24 * 60 * 60 * 1000));
+    const p95Days = Math.ceil((baselineResult.confidenceIntervals[2].completionDate.getTime() - simConfig.startDate.getTime()) / (24 * 60 * 60 * 1000));
 
-        const scopeReduction = Math.round((1 - (1/accelerationFactor)) * 100);
-        const newBacklogSize = Math.ceil(throughputConfig.backlogSize / accelerationFactor);
-        
-        suggestions.push({
-          type: 'reduce_scope',
-          description: `Reduce scope by ${scopeReduction}%`,
-          specifics: `From ${throughputConfig.backlogSize} to ${newBacklogSize} items`,
-          impact: 'High',
-          difficulty: 'Low'
-        });
-      } else if (cycleTimeConfig) {
-        // Cycle time-based suggestions
-        const cycleTimeReduction = Math.round((1 - (1/accelerationFactor)) * 100);
-        const newP50 = Math.ceil(cycleTimeConfig.p50CycleTime / accelerationFactor);
-        
-        suggestions.push({
-          type: 'reduce_cycle_time',
-          description: `Reduce cycle times by ${cycleTimeReduction}%`,
-          specifics: `P50 from ${cycleTimeConfig.p50CycleTime} to ${newP50} days`,
-          impact: 'High',
-          difficulty: 'Medium'
-        });
-
-        const scopeReduction = Math.round((1 - (1/accelerationFactor)) * 100);
-        const newBacklogSize = Math.ceil(cycleTimeConfig.backlogSize / accelerationFactor);
-        
-        suggestions.push({
-          type: 'reduce_scope',
-          description: `Reduce scope by ${scopeReduction}%`,
-          specifics: `From ${cycleTimeConfig.backlogSize} to ${newBacklogSize} items`,
-          impact: 'High',
-          difficulty: 'Low'
-        });
+    // Calculate recommended start dates
+    const startDateOptions = [
+      {
+        confidence: '50%',
+        days: p50Days,
+        startDate: new Date(targetDate.getTime() - p50Days * 24 * 60 * 60 * 1000),
+        description: 'Optimistic start date',
+        riskLevel: 'High',
+        color: 'text-red-700 bg-red-50'
+      },
+      {
+        confidence: '80%',
+        days: p80Days,
+        startDate: new Date(targetDate.getTime() - p80Days * 24 * 60 * 60 * 1000),
+        description: 'Balanced start date',
+        riskLevel: 'Medium',
+        color: 'text-yellow-700 bg-yellow-50'
+      },
+      {
+        confidence: '95%',
+        days: p95Days,
+        startDate: new Date(targetDate.getTime() - p95Days * 24 * 60 * 60 * 1000),
+        description: 'Conservative start date',
+        riskLevel: 'Low',
+        color: 'text-green-700 bg-green-50'
       }
-    } else {
-      // Target is achievable with current parameters
-      suggestions.push({
-        type: 'achievable',
-        description: 'Target date is achievable with current parameters',
-        specifics: `${Math.round((targetDays / baselineP80Days) * 100)}% confidence with current setup`,
-        impact: 'None needed',
-        difficulty: 'None'
-      });
-    }
+    ];
 
-    // Create special result with target analysis
+    // Create special result with start date recommendations
     const targetResult: ForecastResult = {
       ...baselineResult,
       statistics: {
         ...baselineResult.statistics,
-        targetDays,
-        baselineP80Days,
-        accelerationNeeded: Math.max(1, accelerationFactor),
-        achievable: targetDays >= baselineP80Days,
-        suggestions
-      }
+        targetDate: targetDate,
+        startDateOptions,
+        projectDuration: {
+          p50: p50Days,
+          p80: p80Days,
+          p95: p95Days
+        }
+      } as any
     };
 
     return targetResult;
