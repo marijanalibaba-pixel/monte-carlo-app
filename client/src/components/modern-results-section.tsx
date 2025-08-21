@@ -127,7 +127,7 @@ export function ModernResultsSection({ results, startDate }: ModernResultsSectio
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               The range between P50 and P95 indicates {
-                (results.statistics.max - results.statistics.min) > 30 ? 'high' : 'moderate'
+                results.statistics.range > 30 ? 'high' : 'moderate'
               } uncertainty in your project timeline.
             </p>
           </div>
