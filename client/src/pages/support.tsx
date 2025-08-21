@@ -89,8 +89,8 @@ export function Support() {
               </CardContent>
             </Card>
 
-            {/* Support Development */}
-            <Card className="mt-6 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
+            {/* Support Development - Hidden for now */}
+            {/* <Card className="mt-6 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm text-amber-700 dark:text-amber-300 flex items-center space-x-2">
                   <span>☕</span>
@@ -122,7 +122,7 @@ export function Support() {
                   </a>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */
           </div>
 
           {/* Main Content */}
@@ -809,9 +809,10 @@ export function Support() {
       {/* Footer */}
       <div className="mt-20 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center space-y-4">
+          <div className="text-center">
             <p className="text-sm text-slate-500 dark:text-slate-400">Contact: flow.forecasting.app@gmail.com</p>
-            <div className="flex justify-center space-x-4">
+            {/* Donation links - Hidden for now */}
+            {/* <div className="flex justify-center space-x-4 mt-4">
               <a 
                 href="https://buymeacoffee.com/flowforcasting" 
                 target="_blank" 
@@ -829,7 +830,7 @@ export function Support() {
               >
                 💳 PayPal
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
