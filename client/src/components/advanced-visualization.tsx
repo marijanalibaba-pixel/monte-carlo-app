@@ -52,8 +52,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     }).sort((a, b) => a - b);
     
     const minDays = sortedDays[0];
-    // Use 95th percentile as max to match S-curve approach
-    const maxDays = sortedDays[Math.floor(sortedDays.length * 0.95)];
+    // Use full range (P100) but charts will still scale properly
+    const maxDays = sortedDays[sortedDays.length - 1];
     const binCount = 25; // Fixed number of evenly distributed bins
     const binWidth = (maxDays - minDays) / binCount;
     
@@ -95,8 +95,8 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     }).sort((a, b) => a - b);
     
     const minDays = sortedDays[0];
-    // Use 95th percentile as max instead of absolute max to avoid extreme outliers
-    const maxDays = sortedDays[Math.floor(sortedDays.length * 0.95)];
+    // Use full range (P100) to show all completion data
+    const maxDays = sortedDays[sortedDays.length - 1];
     const points = 50; // Number of points for smooth curve
     
     return Array(points).fill(0).map((_, index) => {
