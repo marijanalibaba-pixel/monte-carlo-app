@@ -281,7 +281,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
             Frequency of different completion times across {result.completionDates.length.toLocaleString()} simulations
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 pt-[20px] pb-[20px]">
           <div className="h-80 relative chart-container">
             {/* Percentile lines overlay for histogram - GUARANTEED VISIBILITY */}
             <div className="absolute inset-0 pointer-events-none z-10">
@@ -394,7 +394,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
             Likelihood of completing the project by each date
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 pt-[20px] pb-[20px]">
           <div className="h-80 relative chart-container">
             {/* Percentile lines overlay - DIRECT SVG APPROACH */}
             <div className="absolute inset-0 pointer-events-none z-10">

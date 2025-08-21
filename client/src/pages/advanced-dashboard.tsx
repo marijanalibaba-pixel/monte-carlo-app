@@ -115,9 +115,9 @@ export function AdvancedDashboard() {
       {/* Header */}
       <div className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center space-x-4">
-              <div className="relative">
+          <div className="flex items-center justify-between h-20 min-w-0">
+            <div className="flex items-center space-x-4 min-w-0 flex-1">
+              <div className="relative flex-shrink-0">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
                   <img src={forecastLogo} alt="Forecast Pro Logo" className="w-full h-full object-cover" />
                 </div>
@@ -125,32 +125,34 @@ export function AdvancedDashboard() {
                   <Sparkles className="w-3 h-3 text-white" />
                 </div>
               </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Flow Forecasting</h1>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Flow-based probabilistic dates with SLEs, histograms & S-curves</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent truncate">Flow Forecasting</h1>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 truncate">Flow-based probabilistic dates with SLEs, histograms & S-curves</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <Badge variant="outline" className="bg-emerald-50 border-emerald-200 text-emerald-700">
+            <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+              <Badge variant="outline" className="bg-emerald-50 border-emerald-200 text-emerald-700 hidden sm:flex">
                 <Activity className="w-3 h-3 mr-1" />
                 Real-time
               </Badge>
               {scenarios.length > 0 && (
-                <Badge variant="outline" className="bg-purple-50 border-purple-200 text-purple-700">
+                <Badge variant="outline" className="bg-purple-50 border-purple-200 text-purple-700 hidden md:flex">
                   <GitCompare className="w-3 h-3 mr-1" />
                   {scenarios.length} scenarios
                 </Badge>
               )}
               {result && (
-                <>
-                  <Button variant="outline" size="sm" onClick={saveAsScenario}>
-                    Save Scenario
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Button variant="outline" size="sm" onClick={saveAsScenario} className="text-xs sm:text-sm px-2 sm:px-3">
+                    <span className="hidden sm:inline">Save Scenario</span>
+                    <span className="sm:hidden">Save</span>
                   </Button>
-                  <Button variant="outline" size="sm" onClick={clearResults}>
-                    New Forecast
+                  <Button variant="outline" size="sm" onClick={clearResults} className="text-xs sm:text-sm px-2 sm:px-3">
+                    <span className="hidden sm:inline">New Forecast</span>
+                    <span className="sm:hidden">New</span>
                   </Button>
-                </>
+                </div>
               )}
             </div>
           </div>
