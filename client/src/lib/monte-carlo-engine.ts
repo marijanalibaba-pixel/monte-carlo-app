@@ -125,6 +125,8 @@ export interface CycleTimeConfig {
   p80CycleTime: number;  // 80th percentile
   p95CycleTime: number;  // 95th percentile
   workingDaysPerWeek?: number;  // Default 5
+  processingMode?: 'batch-max' | 'worker-scheduling';  // Default 'worker-scheduling'
+  wipLimit?: number;  // Work in Progress limit, default 7
 }
 
 export interface SimulationConfig {
@@ -248,8 +250,25 @@ export class MonteCarloEngine {
     config: CycleTimeConfig, 
     simConfig: SimulationConfig
   ): ForecastResult {
-    const completionWeeks: number[] = [];
-    const workingDaysPerWeek = config.workingDaysPerWeek || 5;
+    const processingMode = config.processingMode || 'worker-scheduling';
+    const wipLimit = config.wipLimit || 7;
+    
+    if (processingMode === 'batch-max') {
+      return this.forecastByCycleTimeBatchMax(config, simConfig, wipLimit);
+    } else {
+      return this.forecastByCycleTimeWorkerScheduling(config, simConfig, wipLimit);
+    }
+  }
+
+  /**
+   * Batch-Max approach: Process items in batches, wait for slowest in each batch
+   */
+  private static forecastByCycleTimeBatchMax(
+    config: CycleTimeConfig, 
+    simConfig: SimulationConfig,
+    wipLimit: number
+  ): ForecastResult {
+    const completionDays: number[] = [];
     
     // Derive lognormal parameters from three percentiles (P50, P80, P95)
     const p50 = config.p50CycleTime;
@@ -257,33 +276,31 @@ export class MonteCarloEngine {
     const p95 = config.p95CycleTime;
     
     // Fit lognormal distribution to the three percentiles
-    // Using method based on percentile equations: ln(X) ~ N(μ, σ²)
-    const z50 = 0.0;      // z-score for 50th percentile
-    const z80 = 0.8416;   // z-score for 80th percentile  
-    const z95 = 1.6449;   // z-score for 95th percentile
-    
-    // Solve system of equations for μ and σ
     const mu = Math.log(p50);
-    const sigma = (Math.log(p95) - Math.log(p50)) / z95;
+    const sigma = (Math.log(p95) - Math.log(p50)) / 1.6449;
     
     for (let trial = 0; trial < simConfig.trials; trial++) {
-      let totalWeeks = 0;
-      let remainingBacklog = config.backlogSize;
+      let totalDays = 0;
+      let remainingItems = config.backlogSize;
       
-      // Simulate week by week until backlog is complete
-      while (remainingBacklog > 0) {
-        // Draw cycle time for this week (working days per item)
-        const cycleTime = StatisticalUtils.lognormalRandom(mu, sigma);
+      // Process items in batches
+      while (remainingItems > 0) {
+        const batchSize = Math.min(wipLimit, remainingItems);
+        const batchCycleTimes: number[] = [];
         
-        // Calculate weekly throughput: working days / cycle time = items/week
-        const weeklyThroughput = workingDaysPerWeek / cycleTime;
+        // Generate cycle times for all items in this batch
+        for (let i = 0; i < batchSize; i++) {
+          const cycleTime = StatisticalUtils.lognormalRandom(mu, sigma);
+          batchCycleTimes.push(cycleTime);
+        }
         
-        // Reduce remaining backlog by this week's throughput
-        remainingBacklog -= weeklyThroughput;
-        totalWeeks++;
+        // Batch completes when the slowest item finishes
+        const batchCompletionTime = Math.max(...batchCycleTimes);
+        totalDays += batchCompletionTime;
+        remainingItems -= batchSize;
       }
       
-      // Apply risk factors (convert to weeks)
+      // Apply risk factors
       if (simConfig.riskFactors) {
         let riskDays = 0;
         for (const risk of simConfig.riskFactors) {
@@ -291,14 +308,65 @@ export class MonteCarloEngine {
             riskDays += risk.impactDays;
           }
         }
-        totalWeeks += riskDays / 7; // Convert risk days to weeks
+        totalDays += riskDays;
       }
       
-      completionWeeks.push(totalWeeks);
+      completionDays.push(Math.ceil(totalDays));
     }
     
-    // Convert weeks to calendar days (weeks * 7)
-    const completionDays = completionWeeks.map(weeks => Math.ceil(weeks * 7));
+    return this.processResults(completionDays, simConfig);
+  }
+
+  /**
+   * Worker-Scheduling approach: Assign items to earliest available worker
+   */
+  private static forecastByCycleTimeWorkerScheduling(
+    config: CycleTimeConfig, 
+    simConfig: SimulationConfig,
+    wipLimit: number
+  ): ForecastResult {
+    const completionDays: number[] = [];
+    
+    // Derive lognormal parameters from three percentiles (P50, P80, P95)
+    const p50 = config.p50CycleTime;
+    const p80 = config.p80CycleTime;
+    const p95 = config.p95CycleTime;
+    
+    // Fit lognormal distribution to the three percentiles
+    const mu = Math.log(p50);
+    const sigma = (Math.log(p95) - Math.log(p50)) / 1.6449;
+    
+    for (let trial = 0; trial < simConfig.trials; trial++) {
+      // Track when each worker becomes available
+      const workerAvailability: number[] = new Array(wipLimit).fill(0);
+      
+      // Assign each backlog item to the earliest available worker
+      for (let item = 0; item < config.backlogSize; item++) {
+        const cycleTime = StatisticalUtils.lognormalRandom(mu, sigma);
+        
+        // Find the worker who becomes available earliest
+        const earliestWorkerIndex = workerAvailability.indexOf(Math.min(...workerAvailability));
+        
+        // Assign this item to that worker
+        workerAvailability[earliestWorkerIndex] += cycleTime;
+      }
+      
+      // Project completes when the last worker finishes
+      let projectCompletionTime = Math.max(...workerAvailability);
+      
+      // Apply risk factors
+      if (simConfig.riskFactors) {
+        let riskDays = 0;
+        for (const risk of simConfig.riskFactors) {
+          if (Math.random() < risk.probability) {
+            riskDays += risk.impactDays;
+          }
+        }
+        projectCompletionTime += riskDays;
+      }
+      
+      completionDays.push(Math.ceil(projectCompletionTime));
+    }
     
     return this.processResults(completionDays, simConfig);
   }

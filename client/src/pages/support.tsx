@@ -473,18 +473,66 @@ export function Support() {
 
                         <Card>
                           <CardHeader>
+                            <CardTitle className="text-lg">Processing Modes</CardTitle>
+                            <CardDescription>Choose how to model parallel work within your team</CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <Card className="border-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/20">
+                                <CardHeader className="pb-3">
+                                  <CardTitle className="text-sm text-emerald-700 dark:text-emerald-300">Worker Scheduling (Recommended)</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <p className="text-xs text-emerald-600 dark:text-emerald-400 mb-2">Items are assigned to the earliest available team member among parallel workers.</p>
+                                  <ul className="list-disc list-inside text-xs space-y-1 text-emerald-600 dark:text-emerald-400">
+                                    <li>More realistic team dynamics</li>
+                                    <li>Faster workers can start new items earlier</li>
+                                    <li>Usually produces shorter, more accurate forecasts</li>
+                                  </ul>
+                                </CardContent>
+                              </Card>
+                              <Card className="border-orange-200 bg-orange-50/50 dark:bg-orange-950/20">
+                                <CardHeader className="pb-3">
+                                  <CardTitle className="text-sm text-orange-700 dark:text-orange-300">Batch Processing</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <p className="text-xs text-orange-600 dark:text-orange-400 mb-2">Items are processed in batches, with each batch completing when the slowest item finishes.</p>
+                                  <ul className="list-disc list-inside text-xs space-y-1 text-orange-600 dark:text-orange-400">
+                                    <li>More conservative estimates</li>
+                                    <li>Built-in buffer for delays</li>
+                                    <li>Simpler mental model</li>
+                                  </ul>
+                                </CardContent>
+                              </Card>
+                            </div>
+                            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                              <p className="text-sm text-blue-700 dark:text-blue-300">
+                                <strong>WIP Limit:</strong> Both modes use a Work In Progress limit (default: 7) to represent team capacity. This determines how many items can be worked on simultaneously.
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
                             <CardTitle className="text-lg">How It Works</CardTitle>
                           </CardHeader>
                           <CardContent className="space-y-3">
                             <ol className="list-decimal list-inside space-y-2 text-sm">
-                              <li>Fits log-normal distribution to percentile data</li>
-                              <li>Simulates completion time for each backlog item</li>
-                              <li>Assumes parallel work streams (multiple items in progress)</li>
-                              <li>Tracks when the last item completes</li>
-                              <li>Accounts for variability in individual item complexity</li>
+                              <li>Fits log-normal distribution to percentile data (P50, P80, P95)</li>
+                              <li>Generates cycle time for each backlog item from the distribution</li>
+                              <li>Models parallel work using WIP limit (team capacity)</li>
+                              <li><strong>Worker Scheduling:</strong> Assigns items to earliest available worker</li>
+                              <li><strong>Batch Processing:</strong> Groups items, waits for slowest in each batch</li>
+                              <li>Project completes when the last item/batch finishes</li>
                             </ol>
-                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3">
-                              <p className="text-sm font-mono">Completion Time = MAX(Individual Item Cycle Times)</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-lg p-3">
+                                <p className="text-sm font-mono text-emerald-700 dark:text-emerald-300">Worker Scheduling:<br/>Time = MAX(worker finish times)</p>
+                              </div>
+                              <div className="bg-orange-50 dark:bg-orange-950/20 rounded-lg p-3">
+                                <p className="text-sm font-mono text-orange-700 dark:text-orange-300">Batch Processing:<br/>Time = SUM(batch completion times)</p>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>

@@ -66,6 +66,8 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
   const [p80CycleTime, setP80CycleTime] = useState(7);
   const [p95CycleTime, setP95CycleTime] = useState(14);
   const [workingDaysPerWeek, setWorkingDaysPerWeek] = useState(5);
+  const [processingMode, setProcessingMode] = useState<'batch-max' | 'worker-scheduling'>('worker-scheduling');
+  const [wipLimit, setWipLimit] = useState(7);
   
   // Advanced options
   const [includeDependencies, setIncludeDependencies] = useState(false);
@@ -121,7 +123,9 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
         p50CycleTime,
         p80CycleTime,
         p95CycleTime,
-        workingDaysPerWeek
+        workingDaysPerWeek,
+        processingMode,
+        wipLimit
       };
       
       onForecast(undefined, cycleTimeConfig, simConfig);
@@ -424,49 +428,114 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label>P50 Cycle Time (days)</Label>
-                  <Input
-                    type="number"
-                    step="0.5"
-                    value={p50CycleTime}
-                    onChange={(e) => setP50CycleTime(parseFloat(e.target.value) || 0)}
-                  />
-                  <p className="text-xs text-muted-foreground">Median time</p>
+              {/* Processing Mode Selection */}
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card 
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'worker-scheduling' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    onClick={() => setProcessingMode('worker-scheduling')}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${processingMode === 'worker-scheduling' ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`} />
+                        <h4 className="font-semibold">Worker Scheduling</h4>
+                        <Badge variant="outline" className="text-xs">Recommended</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Items assigned to earliest available team member. More realistic and faster results.
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card 
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'batch-max' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    onClick={() => setProcessingMode('batch-max')}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${processingMode === 'batch-max' ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`} />
+                        <h4 className="font-semibold">Batch Processing</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Process items in batches, wait for slowest. More conservative estimates.
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>P80 Cycle Time (days)</Label>
-                  <Input
-                    type="number"
-                    step="0.5"
-                    value={p80CycleTime}
-                    onChange={(e) => setP80CycleTime(parseFloat(e.target.value) || 0)}
-                  />
-                  <p className="text-xs text-muted-foreground">80th percentile</p>
+                {/* Current Processing Mode Indicator */}
+                <div className={`p-4 rounded-lg border-l-4 ${processingMode === 'worker-scheduling' ? 'border-l-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className={`w-3 h-3 rounded-full ${processingMode === 'worker-scheduling' ? 'bg-emerald-500' : 'bg-orange-500'}`} />
+                    <h4 className="font-semibold">
+                      {processingMode === 'worker-scheduling' ? 'Using Worker Scheduling' : 'Using Batch Processing'}
+                    </h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {processingMode === 'worker-scheduling'
+                      ? `Items are assigned to the earliest available team member among ${wipLimit} parallel workers. This models realistic team dynamics where faster workers can start new items earlier.`
+                      : `Items are processed in batches of ${wipLimit}, with each batch completing when the slowest item finishes. This provides conservative estimates with built-in buffers.`
+                    }
+                  </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>P95 Cycle Time (days)</Label>
-                  <Input
-                    type="number"
-                    step="0.5"
-                    value={p95CycleTime}
-                    onChange={(e) => setP95CycleTime(parseFloat(e.target.value) || 0)}
-                  />
-                  <p className="text-xs text-muted-foreground">95th percentile</p>
-                </div>
+                {/* WIP Limit and Cycle Time Parameters */}
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div className="space-y-2">
+                    <Label>WIP Limit</Label>
+                    <Input
+                      type="number"
+                      value={wipLimit}
+                      onChange={(e) => setWipLimit(parseInt(e.target.value) || 7)}
+                      min={1}
+                      max={20}
+                    />
+                    <p className="text-xs text-muted-foreground">Team capacity</p>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label>Working Days/Week</Label>
-                  <Input
-                    type="number"
-                    value={workingDaysPerWeek}
-                    onChange={(e) => setWorkingDaysPerWeek(parseInt(e.target.value) || 5)}
-                    min={1}
-                    max={7}
-                  />
+                  <div className="space-y-2">
+                    <Label>P50 Cycle Time (days)</Label>
+                    <Input
+                      type="number"
+                      step="0.5"
+                      value={p50CycleTime}
+                      onChange={(e) => setP50CycleTime(parseFloat(e.target.value) || 0)}
+                    />
+                    <p className="text-xs text-muted-foreground">Median time</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>P80 Cycle Time (days)</Label>
+                    <Input
+                      type="number"
+                      step="0.5"
+                      value={p80CycleTime}
+                      onChange={(e) => setP80CycleTime(parseFloat(e.target.value) || 0)}
+                    />
+                    <p className="text-xs text-muted-foreground">80th percentile</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>P95 Cycle Time (days)</Label>
+                    <Input
+                      type="number"
+                      step="0.5"
+                      value={p95CycleTime}
+                      onChange={(e) => setP95CycleTime(parseFloat(e.target.value) || 0)}
+                    />
+                    <p className="text-xs text-muted-foreground">95th percentile</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Working Days/Week</Label>
+                    <Input
+                      type="number"
+                      value={workingDaysPerWeek}
+                      onChange={(e) => setWorkingDaysPerWeek(parseInt(e.target.value) || 5)}
+                      min={1}
+                      max={7}
+                    />
+                  </div>
                 </div>
               </div>
             </TabsContent>
