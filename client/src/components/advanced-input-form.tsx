@@ -160,7 +160,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className={`grid grid-cols-1 ${mode === 'target' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-6`}>
             <div className="space-y-2">
               <Label>Backlog Size</Label>
               <Input
@@ -172,25 +172,27 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               <p className="text-sm text-muted-foreground">Total items to complete</p>
             </div>
             
-            <div className="space-y-2">
-              <Label>Start Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={(date) => date && setStartDate(date)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+            {mode !== 'target' && (
+              <div className="space-y-2">
+                <Label>Start Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-left">
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={(date) => date && setStartDate(date)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            )}
             
             {(mode === 'probability' || mode === 'target') && (
               <div className="space-y-2">
@@ -208,7 +210,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       selected={targetDate}
                       onSelect={(date) => date && setTargetDate(date)}
                       initialFocus
-                      disabled={(date) => date <= startDate}
+                      disabled={mode === 'probability' ? (date) => date <= startDate : undefined}
                     />
                   </PopoverContent>
                 </Popover>
