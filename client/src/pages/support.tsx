@@ -88,42 +88,6 @@ export function Support() {
                 })}
               </CardContent>
             </Card>
-
-            {/* Support Development - Hidden for now
-            <Card className="mt-6 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-amber-700 dark:text-amber-300 flex items-center space-x-2">
-                  <span>☕</span>
-                  <span>Support Development</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-xs text-amber-600 dark:text-amber-400 leading-relaxed">
-                  If you like this little app and want to see more experiments like this, consider buying me a coffee. Every small support helps me keep building cool and free stuff that (hopefully) makes life a bit easier.
-                </p>
-                <div className="flex flex-col space-y-2">
-                  <a 
-                    href="https://buymeacoffee.com/flowforcasting" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center space-x-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors"
-                  >
-                    <span>☕</span>
-                    <span>Buy me a coffee</span>
-                  </a>
-                  <a 
-                    href="https://paypal.me/mtrnski" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors"
-                  >
-                    <span>💳</span>
-                    <span>PayPal</span>
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-            */}
           </div>
 
           {/* Main Content */}
@@ -812,26 +776,6 @@ export function Support() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <p className="text-sm text-slate-500 dark:text-slate-400">Contact: flow.forecasting.app@gmail.com</p>
-            {/* Donation links - Hidden for now */}
-            {/* <div className="flex justify-center space-x-4 mt-4">
-              <a 
-                href="https://buymeacoffee.com/flowforcasting" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-xs text-slate-400 hover:text-amber-500 transition-colors"
-              >
-                ☕ Buy me a coffee
-              </a>
-              <span className="text-slate-300 dark:text-slate-600">•</span>
-              <a 
-                href="https://paypal.me/mtrnski" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-xs text-slate-400 hover:text-blue-500 transition-colors"
-              >
-                💳 PayPal
-              </a>
-            </div> */}
           </div>
         </div>
       </div>

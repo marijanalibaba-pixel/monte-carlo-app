@@ -220,7 +220,7 @@ export function AdvancedDashboard() {
               <Link href="/support">
                 <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
                   <BookOpen className="w-3 h-3 mr-1" />
-                  <span className="hidden sm:inline">Help</span>
+                  <span className="hidden sm:inline">Support</span>
                   <span className="sm:hidden">Help</span>
                 </Button>
               </Link>
