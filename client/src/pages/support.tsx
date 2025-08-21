@@ -58,14 +58,13 @@ export function Support() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Support & Documentation</h1>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">Complete guide to Monte Carlo forecasting</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Complete guide to Flow Forecasting</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Navigation Sidebar */}
@@ -775,7 +774,6 @@ export function Support() {
           </div>
         </div>
       </div>
-
       {/* Footer */}
       <div className="mt-20 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
