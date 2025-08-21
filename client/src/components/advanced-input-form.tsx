@@ -257,7 +257,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
               </TabsTrigger>
               <TabsTrigger value="cycletime" className="flex items-center space-x-2">
                 <Clock className="w-4 h-4" />
-                <span>Cycle Time Analysis</span>
+                <span className="text-[13px]">Cycle Time Analysis  </span>
               </TabsTrigger>
             </TabsList>
 
