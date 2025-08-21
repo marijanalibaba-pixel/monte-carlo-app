@@ -223,6 +223,18 @@ export function AdvancedDashboard() {
         ) : (
           /* Results Phase */
           (<div className="space-y-8">
+            {/* Mobile Landscape Tip */}
+            <div className="sm:hidden bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+              <div className="flex items-center space-x-2 text-amber-800 dark:text-amber-200">
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-sm font-medium">
+                  For the best viewing experience of charts and data, try rotating to landscape mode
+                </p>
+              </div>
+            </div>
+            
             {/* Results Header */}
             <Card className="border-none bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
               <CardHeader className="text-center">

@@ -127,6 +127,19 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
           
         </CardHeader>
       </Card>
+      
+      {/* Getting Started Info */}
+      <div className="text-center mb-8">
+        <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+            Create Multiple Forecasts
+          </h3>
+          <p className="text-sm text-blue-700 dark:text-blue-300">
+            Run single or multiple forecasts with different scenarios. Save your results and compare them side-by-side to make better-informed decisions.
+          </p>
+        </div>
+      </div>
+      
       {/* Core Configuration */}
       <Card>
         <CardHeader>
