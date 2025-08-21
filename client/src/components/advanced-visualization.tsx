@@ -416,10 +416,18 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                       const today = new Date();
                       const targetDays = targetDate ? Math.round((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) : 0;
                       
-                      // Calculate baseline completion times from the simulation
+                      // Calculate baseline completion times from the simulation with better fallbacks
                       const p50Days = Math.round(result.statistics.median);
-                      const p80Days = result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0;
-                      const p95Days = result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0;
+                      const p80CI = result.confidenceIntervals.find(ci => ci.level === 0.8);
+                      const p95CI = result.confidenceIntervals.find(ci => ci.level === 0.95);
+                      
+                      // Use better fallback values and ensure proper ordering
+                      let p80Days = p80CI?.daysFromStart || Math.round(p50Days * 1.3);
+                      let p95Days = p95CI?.daysFromStart || Math.round(p50Days * 1.6);
+                      
+                      // Ensure proper ordering: p50 < p80 < p95
+                      if (p80Days <= p50Days) p80Days = p50Days + Math.max(1, Math.round(p50Days * 0.2));
+                      if (p95Days <= p80Days) p95Days = p80Days + Math.max(1, Math.round(p80Days * 0.2));
                       
                       // Generate data points from today backwards to 2x the P95 duration
                       const maxLookback = Math.min(p95Days * 2, 365); // Cap at 1 year
@@ -429,22 +437,38 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                         const startDate = new Date(today.getTime() - daysBack * 24 * 60 * 60 * 1000);
                         const availableDays = targetDays + daysBack;
                         
-                        // Calculate probability based on how much time is available vs typical completion times
+                        // Calculate probability using a more robust approach
                         let probability = 0;
-                        if (availableDays >= p95Days) {
-                          probability = 95;
+                        
+                        if (availableDays <= 0) {
+                          probability = 0;
+                        } else if (availableDays >= p95Days) {
+                          // High confidence zone - asymptotic approach to 95%
+                          const excess = availableDays - p95Days;
+                          const maxProb = 98; // Cap at 98% to be realistic
+                          probability = 95 + (maxProb - 95) * (1 - Math.exp(-excess / (p95Days * 0.2)));
                         } else if (availableDays >= p80Days) {
                           // Linear interpolation between P80 and P95
-                          const ratio = (availableDays - p80Days) / (p95Days - p80Days);
-                          probability = 80 + (ratio * 15);
+                          const range = p95Days - p80Days;
+                          if (range > 0) {
+                            const ratio = (availableDays - p80Days) / range;
+                            probability = 80 + (ratio * 15);
+                          } else {
+                            probability = 87.5; // Average of 80 and 95
+                          }
                         } else if (availableDays >= p50Days) {
-                          // Linear interpolation between P50 and P80  
-                          const ratio = (availableDays - p50Days) / (p80Days - p50Days);
-                          probability = 50 + (ratio * 30);
-                        } else if (availableDays > 0) {
-                          // Linear decrease from P50 to 0
+                          // Linear interpolation between P50 and P80
+                          const range = p80Days - p50Days;
+                          if (range > 0) {
+                            const ratio = (availableDays - p50Days) / range;
+                            probability = 50 + (ratio * 30);
+                          } else {
+                            probability = 65; // Average of 50 and 80
+                          }
+                        } else {
+                          // Below median - exponential decay approach
                           const ratio = availableDays / p50Days;
-                          probability = ratio * 50;
+                          probability = 50 * Math.pow(ratio, 0.7); // Slight curve for realism
                         }
                         
                         points.push({
@@ -452,7 +476,12 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                           fullDate: format(startDate, 'MMM d, yyyy'),
                           daysBack,
                           availableDays,
-                          probability: Math.round(probability)
+                          probability: Math.round(Math.max(0, Math.min(100, probability))),
+                          // Debug info for troubleshooting
+                          p50Days,
+                          p80Days, 
+                          p95Days,
+                          targetDays
                         });
                       }
                       
