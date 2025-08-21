@@ -89,8 +89,8 @@ export function Support() {
               </CardContent>
             </Card>
 
-            {/* Support Development - Hidden for now */}
-            {/* <Card className="mt-6 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
+            {/* Support Development - Hidden for now
+            <Card className="mt-6 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm text-amber-700 dark:text-amber-300 flex items-center space-x-2">
                   <span>☕</span>
@@ -122,7 +122,8 @@ export function Support() {
                   </a>
                 </div>
               </CardContent>
-            </Card> */
+            </Card>
+            */}
           </div>
 
           {/* Main Content */}
