@@ -328,6 +328,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
                 <XAxis 
                   dataKey="days"
+                  domain={[(dataMin) => Math.max(0, dataMin - 10), (dataMax) => dataMax + 10]}
                   tick={{ fontSize: 12 }}
                   tickFormatter={(value) => `${value}d`}
                 />
@@ -441,6 +442,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
                 <XAxis 
                   dataKey="days"
+                  domain={[(dataMin) => Math.max(0, dataMin - 10), (dataMax) => dataMax + 10]}
                   tick={{ fontSize: 12 }}
                   tickFormatter={(value) => `${value}d`}
                 />
