@@ -211,7 +211,7 @@ export function AdvancedDashboard() {
               </div>
               <div className="min-w-0 flex-1">
                 <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent truncate">Flow Forecasting</h1>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 truncate">Flow-based probabilistic dates 
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 truncate pt-[2px] pb-[2px]">Flow-based probabilistic dates 
                 with SLEs, histograms & S-curves</p>
               </div>
             </div>
