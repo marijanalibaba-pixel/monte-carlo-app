@@ -196,53 +196,122 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
     <div className="space-y-8 orientation-responsive">
       {/* Mode-Specific Display */}
       {mode === 'probability' && (result.statistics as any).probabilityPercentage !== undefined && (
-        <Card className="border-2 border-green-200 dark:border-green-800 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
-          <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl text-green-800 dark:text-green-200">Completion Probability</CardTitle>
-            <CardDescription>Likelihood of completing by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <div className="mb-6">
-              <div 
-                className="inline-flex items-center justify-center w-32 h-32 rounded-full mb-4"
-                style={{
-                  background: `linear-gradient(135deg, 
-                    rgb(${255 - (((result.statistics as any).probabilityPercentage || 0) * 2.55)}, 
-                        ${Math.min(255, ((result.statistics as any).probabilityPercentage || 0) * 2.55)}, 
-                        0), 
-                    rgb(${Math.max(0, 255 - (((result.statistics as any).probabilityPercentage || 0) * 3))}, 
-                        ${Math.min(255, ((result.statistics as any).probabilityPercentage || 0) * 2.2)}, 
-                        ${Math.min(100, ((result.statistics as any).probabilityPercentage || 0) * 0.5)}))`
-                }}
-              >
-                <span className="text-4xl font-bold text-white drop-shadow-lg">{(result.statistics as any).probabilityPercentage}%</span>
-              </div>
-              <p className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
-                {(result.statistics as any).successfulCompletions?.toLocaleString() || 0} out of {(result.statistics as any).totalSimulations?.toLocaleString() || 0} simulations
-              </p>
-              <p className="text-sm text-green-600 dark:text-green-400">
-                completed by the target date
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-              <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
-                <p className="font-semibold text-green-700 dark:text-green-300">Target Days</p>
-                <p className="text-green-600 dark:text-green-400">{(result.statistics as any).targetDays || 0} days</p>
-              </div>
-              <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
-                <p className="font-semibold text-green-700 dark:text-green-300">Success Rate</p>
-                <p className="text-green-600 dark:text-green-400">{(result.statistics as any).probabilityPercentage}%</p>
-              </div>
-              <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
-                <p className="font-semibold text-green-700 dark:text-green-300">Risk Level</p>
-                <p className="text-green-600 dark:text-green-400">
-                  {(result.statistics as any).probabilityPercentage >= 80 ? 'Low' : 
-                   (result.statistics as any).probabilityPercentage >= 60 ? 'Medium' : 'High'}
+        <div className="space-y-6">
+          <Card className="border-2 border-green-200 dark:border-green-800 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-2xl text-green-800 dark:text-green-200">Completion Probability</CardTitle>
+              <CardDescription>Likelihood of completing by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
+            </CardHeader>
+            <CardContent className="text-center">
+              <div className="mb-6">
+                <div 
+                  className="inline-flex items-center justify-center w-32 h-32 rounded-full mb-4"
+                  style={{
+                    background: `linear-gradient(135deg, 
+                      rgb(${255 - (((result.statistics as any).probabilityPercentage || 0) * 2.55)}, 
+                          ${Math.min(255, ((result.statistics as any).probabilityPercentage || 0) * 2.55)}, 
+                          0), 
+                      rgb(${Math.max(0, 255 - (((result.statistics as any).probabilityPercentage || 0) * 3))}, 
+                          ${Math.min(255, ((result.statistics as any).probabilityPercentage || 0) * 2.2)}, 
+                          ${Math.min(100, ((result.statistics as any).probabilityPercentage || 0) * 0.5)}))`
+                  }}
+                >
+                  <span className="text-4xl font-bold text-white drop-shadow-lg">{(result.statistics as any).probabilityPercentage}%</span>
+                </div>
+                <p className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
+                  {(result.statistics as any).successfulCompletions?.toLocaleString() || 0} out of {(result.statistics as any).totalSimulations?.toLocaleString() || 0} simulations
+                </p>
+                <p className="text-sm text-green-600 dark:text-green-400">
+                  completed by the target date
                 </p>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                  <p className="font-semibold text-green-700 dark:text-green-300">Target Days</p>
+                  <p className="text-green-600 dark:text-green-400">{(result.statistics as any).targetDays || 0} days</p>
+                </div>
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                  <p className="font-semibold text-green-700 dark:text-green-300">Success Rate</p>
+                  <p className="text-green-600 dark:text-green-400">{(result.statistics as any).probabilityPercentage}%</p>
+                </div>
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                  <p className="font-semibold text-green-700 dark:text-green-300">Risk Level</p>
+                  <p className="text-green-600 dark:text-green-400">
+                    {(result.statistics as any).probabilityPercentage >= 80 ? 'Low' : 
+                     (result.statistics as any).probabilityPercentage >= 60 ? 'Medium' : 'High'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* How does your target compare to typical completion times? */}
+          <Card className="border-blue-200 dark:border-blue-800">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2 text-blue-800 dark:text-blue-200">
+                <TrendingUp className="w-5 h-5" />
+                <span>Target vs Typical Completion</span>
+              </CardTitle>
+              <CardDescription>How your target compares to expected project duration</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 text-center">
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">Most Likely</p>
+                  <p className="text-2xl font-bold text-blue-900 dark:text-blue-100 mb-1">
+                    {Math.round(result.statistics.median)} days
+                  </p>
+                  <p className="text-xs text-blue-700 dark:text-blue-300 mb-2">
+                    {format(addDays(startDate, result.statistics.median), 'MMM d, yyyy')}
+                  </p>
+                  <div className="text-xs">
+                    {((result.statistics as any).targetDays || 0) < result.statistics.median ? (
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold">Target is {result.statistics.median - ((result.statistics as any).targetDays || 0)} days earlier</span>
+                    ) : ((result.statistics as any).targetDays || 0) > result.statistics.median ? (
+                      <span className="text-green-600 dark:text-green-400 font-semibold">Target is {((result.statistics as any).targetDays || 0) - result.statistics.median} days later</span>
+                    ) : (
+                      <span className="text-blue-600 dark:text-blue-400 font-semibold">Target matches most likely</span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="bg-amber-50 dark:bg-amber-950/20 rounded-lg p-4 text-center">
+                  <p className="text-sm font-medium text-amber-600 dark:text-amber-400 mb-2">Conservative</p>
+                  <p className="text-2xl font-bold text-amber-900 dark:text-amber-100 mb-1">
+                    {result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0} days
+                  </p>
+                  <p className="text-xs text-amber-700 dark:text-amber-300 mb-2">80% confidence</p>
+                  <div className="text-xs">
+                    {((result.statistics as any).targetDays || 0) < (result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0) ? (
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold">Target is {(result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0) - ((result.statistics as any).targetDays || 0)} days earlier</span>
+                    ) : ((result.statistics as any).targetDays || 0) > (result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0) ? (
+                      <span className="text-green-600 dark:text-green-400 font-semibold">Target is {((result.statistics as any).targetDays || 0) - (result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0)} days later</span>
+                    ) : (
+                      <span className="text-amber-600 dark:text-amber-400 font-semibold">Target matches conservative</span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-lg p-4 text-center">
+                  <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-2">Worst Case</p>
+                  <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-100 mb-1">
+                    {result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0} days
+                  </p>
+                  <p className="text-xs text-emerald-700 dark:text-emerald-300 mb-2">95% confidence</p>
+                  <div className="text-xs">
+                    {((result.statistics as any).targetDays || 0) < (result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0) ? (
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold">Target is {(result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0) - ((result.statistics as any).targetDays || 0)} days earlier</span>
+                    ) : ((result.statistics as any).targetDays || 0) > (result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0) ? (
+                      <span className="text-green-600 dark:text-green-400 font-semibold">Target is {((result.statistics as any).targetDays || 0) - (result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0)} days later</span>
+                    ) : (
+                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Target matches worst case</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       {mode === 'target' && (result.statistics as any).startDateOptions && (
@@ -327,10 +396,138 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
               </div>
             </CardContent>
           </Card>
+          
+          {/* Probability vs Start Date Chart */}
+          <Card className="border-purple-200 dark:border-purple-800">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2 text-purple-800 dark:text-purple-200">
+                <TrendingUp className="w-5 h-5" />
+                <span>Success Probability by Start Date</span>
+              </CardTitle>
+              <CardDescription>How your success probability changes with different start dates</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80 relative">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart 
+                    data={(() => {
+                      // Generate probability data for different start dates
+                      const points = [];
+                      const today = new Date();
+                      const targetDays = targetDate ? Math.round((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+                      
+                      // Calculate baseline completion times from the simulation
+                      const p50Days = Math.round(result.statistics.median);
+                      const p80Days = result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0;
+                      const p95Days = result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0;
+                      
+                      // Generate data points from today backwards to 2x the P95 duration
+                      const maxLookback = Math.min(p95Days * 2, 365); // Cap at 1 year
+                      const stepSize = Math.max(1, Math.floor(maxLookback / 30)); // ~30 data points
+                      
+                      for (let daysBack = 0; daysBack <= maxLookback; daysBack += stepSize) {
+                        const startDate = new Date(today.getTime() - daysBack * 24 * 60 * 60 * 1000);
+                        const availableDays = targetDays + daysBack;
+                        
+                        // Calculate probability based on how much time is available vs typical completion times
+                        let probability = 0;
+                        if (availableDays >= p95Days) {
+                          probability = 95;
+                        } else if (availableDays >= p80Days) {
+                          // Linear interpolation between P80 and P95
+                          const ratio = (availableDays - p80Days) / (p95Days - p80Days);
+                          probability = 80 + (ratio * 15);
+                        } else if (availableDays >= p50Days) {
+                          // Linear interpolation between P50 and P80  
+                          const ratio = (availableDays - p50Days) / (p80Days - p50Days);
+                          probability = 50 + (ratio * 30);
+                        } else if (availableDays > 0) {
+                          // Linear decrease from P50 to 0
+                          const ratio = availableDays / p50Days;
+                          probability = ratio * 50;
+                        }
+                        
+                        points.push({
+                          startDate: format(startDate, 'MMM d'),
+                          fullDate: format(startDate, 'MMM d, yyyy'),
+                          daysBack,
+                          availableDays,
+                          probability: Math.round(probability)
+                        });
+                      }
+                      
+                      return points.reverse(); // Show earliest dates first
+                    })()}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
+                    <XAxis 
+                      dataKey="startDate"
+                      tick={{ fontSize: 11 }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis 
+                      domain={[0, 100]}
+                      tick={{ fontSize: 12 }}
+                      tickFormatter={(value) => `${value}%`}
+                    />
+                    <Tooltip 
+                      formatter={(value: any) => [`${value}%`, 'Success Probability']}
+                      labelFormatter={(label: any, payload: any) => {
+                        if (payload && payload[0]) {
+                          return `Start: ${payload[0].payload.fullDate}`;
+                        }
+                        return label;
+                      }}
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--popover))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="probability" 
+                      stroke="#8b5cf6"
+                      strokeWidth={3}
+                      dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, stroke: '#8b5cf6', strokeWidth: 2 }}
+                    />
+                    
+                    {/* Reference lines for probability levels */}
+                    <ReferenceLine y={50} stroke="#f59e0b" strokeDasharray="5 5" strokeOpacity={0.7} />
+                    <ReferenceLine y={80} stroke="#10b981" strokeDasharray="5 5" strokeOpacity={0.7} />
+                    <ReferenceLine y={95} stroke="#059669" strokeDasharray="5 5" strokeOpacity={0.7} />
+                  </LineChart>
+                </ResponsiveContainer>
+                
+                {/* Legend */}
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-1">
+                  <div className="flex space-x-4 text-xs">
+                    <div className="flex items-center space-x-1">
+                      <div className="w-3 h-0.5" style={{borderTop: '2px dashed #f59e0b'}}></div>
+                      <span className="text-muted-foreground">50%</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-3 h-0.5" style={{borderTop: '2px dashed #10b981'}}></div>
+                      <span className="text-muted-foreground">80%</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-3 h-0.5" style={{borderTop: '2px dashed #059669'}}></div>
+                      <span className="text-muted-foreground">95%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 
-      {/* Executive Summary Cards */}
+      {/* Executive Summary Cards - Only show for forecast mode */}
+      {mode === 'forecast' && (
       <div className="responsive-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 border-blue-200">
           <CardContent className="p-6">
@@ -392,7 +589,9 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </CardContent>
         </Card>
       </div>
-      {/* Confidence Intervals Table */}
+      )}
+      {/* Confidence Intervals Table - Only show for forecast mode */}
+      {mode === 'forecast' && (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -434,7 +633,9 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </div>
         </CardContent>
       </Card>
-      {/* Distribution Histogram */}
+      )}
+      {/* Distribution Histogram - Only show for forecast mode */}
+      {mode === 'forecast' && (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -548,7 +749,10 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </div>
         </CardContent>
       </Card>
-      {/* S-Curve (Cumulative Probability) */}
+      )}
+      
+      {/* S-Curve (Cumulative Probability) - Only show for forecast mode */}
+      {mode === 'forecast' && (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -654,7 +858,10 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </div>
         </CardContent>
       </Card>
-      {/* Statistical Summary */}
+      )}
+      
+      {/* Statistical Summary - Only show for forecast mode */}
+      {mode === 'forecast' && (
       <Card>
         <CardHeader className="flex flex-col space-y-1.5 p-6 pt-[26px] pb-[26px]">
           <CardTitle className="flex items-center space-x-2">
@@ -716,6 +923,7 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </div>
         </CardContent>
       </Card>
+      )}
     </div>
   );
 }
