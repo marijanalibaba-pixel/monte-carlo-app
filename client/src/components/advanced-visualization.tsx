@@ -523,7 +523,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
             </div>
 
             <div className="space-y-4">
-              <h4 className="font-semibold text-lg">Variability</h4>
+              <h4 className="font-semibold text-lg text-center">Variability</h4>
               <div className="space-y-2 ml-[80px] mr-[80px]">
                 <div className="flex justify-between">
                   <StatTooltip explanation="Standard Deviation measures how spread out the completion times are. Lower values indicate more predictable outcomes.">
