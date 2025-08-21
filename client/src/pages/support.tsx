@@ -775,9 +775,7 @@ export function Support() {
       <div className="mt-20 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Monte Carlo Forecasting • Professional Statistical Analysis • Built for Project Success
-            </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Contact: flow.forecasting.app@gmail.com</p>
           </div>
         </div>
       </div>
