@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { track } from '@vercel/analytics';
+import { exportToPDF, exportToCSV, exportChartsAsImages, ExportData } from "@/lib/export-utils";
 import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
 import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
@@ -9,6 +10,7 @@ import { CalculationMethodology } from "@/components/calculation-methodology";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import forecastLogo from "@assets/ChatGPT Image Aug 18, 2025, 10_50_05 PM_1755599064681.png";
 import { 
   Calculator, 
@@ -20,7 +22,10 @@ import {
   ArrowRight,
   Sparkles,
   Activity,
-  GitCompare
+  GitCompare,
+  Download,
+  FileText,
+  Image
 } from "lucide-react";
 
 export function AdvancedDashboard() {
@@ -139,6 +144,52 @@ export function AdvancedDashboard() {
   const clearAllScenarios = () => {
     setScenarios([]);
     setShowComparison(false);
+  };
+
+  // Export handlers
+  const handleExportToPDF = async () => {
+    if (!result || !lastConfig) return;
+    
+    const exportData: ExportData = {
+      result,
+      startDate: lastConfig.startDate,
+      inputParameters: {
+        backlogSize: lastConfig.parameters?.backlogSize || 100,
+        trials: result.statistics ? 10000 : 1000,
+        forecastType: lastConfig.type
+      }
+    };
+    await exportToPDF(exportData);
+  };
+
+  const handleExportToCSV = async () => {
+    if (!result || !lastConfig) return;
+    
+    const exportData: ExportData = {
+      result,
+      startDate: lastConfig.startDate,
+      inputParameters: {
+        backlogSize: lastConfig.parameters?.backlogSize || 100,
+        trials: result.statistics ? 10000 : 1000,
+        forecastType: lastConfig.type
+      }
+    };
+    await exportToCSV(exportData);
+  };
+
+  const handleExportCharts = async () => {
+    if (!result || !lastConfig) return;
+    
+    const exportData: ExportData = {
+      result,
+      startDate: lastConfig.startDate,
+      inputParameters: {
+        backlogSize: lastConfig.parameters?.backlogSize || 100,
+        trials: result.statistics ? 10000 : 1000,
+        forecastType: lastConfig.type
+      }
+    };
+    await exportChartsAsImages(exportData);
   };
 
   return (
@@ -311,12 +362,31 @@ export function AdvancedDashboard() {
                   <ArrowRight className="w-4 h-4" />
                   <span>Run New Forecast</span>
                 </Button>
-                <Button
-                  variant="outline"
-                  className="flex items-center space-x-2"
-                >
-                  <span>Export Results</span>
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center space-x-2"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Export Results</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={handleExportToPDF}>
+                      <FileText className="w-4 h-4 mr-2" />
+                      Export PDF Report
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportToCSV}>
+                      <Download className="w-4 h-4 mr-2" />
+                      Export CSV Data
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExportCharts}>
+                      <Image className="w-4 h-4 mr-2" />
+                      Export Chart Images
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>)

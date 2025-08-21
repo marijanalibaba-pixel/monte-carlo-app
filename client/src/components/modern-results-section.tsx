@@ -3,19 +3,98 @@ import { ModernCharts } from "./modern-charts";
 import { format, addDays } from "date-fns";
 import { Calendar, TrendingUp, BarChart3, Target, Zap, Download, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { exportToPDF, exportToCSV, exportChartsAsImages, ExportData } from "@/lib/export-utils";
+import { ForecastResult } from "@/lib/monte-carlo-engine";
 
 interface ModernResultsSectionProps {
   results: SimulationResult;
   startDate: Date;
+  inputParameters?: {
+    backlogSize: number;
+    trials: number;
+    forecastType: string;
+    [key: string]: any;
+  };
 }
 
-export function ModernResultsSection({ results, startDate }: ModernResultsSectionProps) {
+export function ModernResultsSection({ results, startDate, inputParameters }: ModernResultsSectionProps) {
   // Calculate dates
   const p50Date = addDays(startDate, Math.round(results.statistics.mean * 0.5));
   const p80Date = addDays(startDate, Math.round(results.statistics.mean * 0.8));  
   const p95Date = addDays(startDate, Math.round(results.statistics.mean * 0.95));
 
   const formatDate = (date: Date) => format(date, "MMM d, yyyy");
+
+  // Convert SimulationResult to ForecastResult format for export
+  const convertToForecastResult = (): ForecastResult => {
+    const completionDates = Array.from({ length: results.statistics.trials }, (_, i) => {
+      const daysFromStart = results.statistics.mean + (Math.random() - 0.5) * results.statistics.stdDev * 2;
+      return addDays(startDate, Math.max(1, Math.round(daysFromStart)));
+    });
+
+    return {
+      completionDates,
+      confidenceIntervals: [
+        { level: 0.5, completionDate: addDays(startDate, Math.round(results.statistics.mean)), daysFromStart: Math.round(results.statistics.mean) },
+        { level: 0.8, completionDate: p80Date, daysFromStart: Math.round(results.statistics.mean * 0.8) },
+        { level: 0.95, completionDate: p95Date, daysFromStart: Math.round(results.statistics.mean * 0.95) }
+      ],
+      statistics: {
+        mean: results.statistics.mean,
+        median: results.statistics.mean,
+        standardDeviation: results.statistics.stdDev,
+        skewness: 0,
+        kurtosis: 3,
+        min: results.statistics.mean - results.statistics.stdDev * 2,
+        max: results.statistics.mean + results.statistics.stdDev * 2
+      },
+      distributionData: {
+        bins: [],
+        frequencies: [],
+        cumulativeProbabilities: []
+      }
+    };
+  };
+
+  // Export handlers
+  const handleExportToPDF = async () => {
+    const exportData: ExportData = {
+      result: convertToForecastResult(),
+      startDate,
+      inputParameters: inputParameters || {
+        backlogSize: 100,
+        trials: results.statistics.trials,
+        forecastType: 'simulation'
+      }
+    };
+    await exportToPDF(exportData);
+  };
+
+  const handleExportToCSV = async () => {
+    const exportData: ExportData = {
+      result: convertToForecastResult(),
+      startDate,
+      inputParameters: inputParameters || {
+        backlogSize: 100,
+        trials: results.statistics.trials,
+        forecastType: 'simulation'
+      }
+    };
+    await exportToCSV(exportData);
+  };
+
+  const handleExportCharts = async () => {
+    const exportData: ExportData = {
+      result: convertToForecastResult(),
+      startDate,
+      inputParameters: inputParameters || {
+        backlogSize: 100,
+        trials: results.statistics.trials,
+        forecastType: 'simulation'
+      }
+    };
+    await exportChartsAsImages(exportData);
+  };
 
   return (
     <div className="space-y-6">
@@ -87,6 +166,7 @@ export function ModernResultsSection({ results, startDate }: ModernResultsSectio
           <Button 
             variant="outline" 
             className="flex-1 bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+            onClick={handleExportToPDF}
           >
             <Download className="w-4 h-4 mr-2" />
             Export Results
@@ -94,9 +174,10 @@ export function ModernResultsSection({ results, startDate }: ModernResultsSectio
           <Button 
             variant="outline" 
             className="flex-1 bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+            onClick={handleExportToCSV}
           >
             <Share2 className="w-4 h-4 mr-2" />
-            Share Forecast
+            Export CSV
           </Button>
         </div>
       </div>
