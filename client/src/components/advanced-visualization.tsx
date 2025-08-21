@@ -45,14 +45,15 @@ const StatTooltip = ({ children, explanation }: { children: React.ReactNode; exp
 
 export function AdvancedVisualization({ result, startDate }: AdvancedVisualizationProps) {
   
-  // Prepare histogram data with evenly distributed bins
+  // Prepare histogram data with meaningful range only (95th percentile)
   const histogramData = useMemo(() => {
     const sortedDays = result.completionDates.map(date => {
       return Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     }).sort((a, b) => a - b);
     
     const minDays = sortedDays[0];
-    const maxDays = sortedDays[sortedDays.length - 1];
+    // Use 95th percentile as max to match S-curve approach
+    const maxDays = sortedDays[Math.floor(sortedDays.length * 0.95)];
     const binCount = 25; // Fixed number of evenly distributed bins
     const binWidth = (maxDays - minDays) / binCount;
     
