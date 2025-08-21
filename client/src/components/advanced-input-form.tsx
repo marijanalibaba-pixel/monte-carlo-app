@@ -253,7 +253,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="throughput" className="flex items-center space-x-2">
                 <TrendingUp className="w-4 h-4" />
-                <span>Throughput Analysis </span>
+                <span className="text-[13px]">Throughput Analysis  </span>
               </TabsTrigger>
               <TabsTrigger value="cycletime" className="flex items-center space-x-2">
                 <Clock className="w-4 h-4" />
