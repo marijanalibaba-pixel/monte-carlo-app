@@ -192,7 +192,12 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help" />
+                      <button 
+                        type="button"
+                        className="p-1 rounded hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        <Info className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                      </button>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="max-w-xs p-3">
                       <div className="space-y-2 text-sm">

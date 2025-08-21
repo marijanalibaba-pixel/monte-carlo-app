@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   TrendingUp, BarChart3, Target, Calendar, AlertTriangle, 
-  Activity, Gauge, PieChart, Zap, Award, HelpCircle
+  Activity, Gauge, PieChart, Zap, Award, Info
 } from "lucide-react";
 import { format, addDays } from "date-fns";
 
@@ -23,10 +23,13 @@ const StatTooltip = ({ children, explanation }: { children: React.ReactNode; exp
   <TooltipProvider>
     <UITooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center space-x-1 cursor-help">
+        <button 
+          type="button"
+          className="flex items-center space-x-1 cursor-help hover:bg-muted/50 rounded px-1 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
+        >
           {children}
-          <HelpCircle className="w-3 h-3 text-muted-foreground" />
-        </div>
+          <Info className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+        </button>
       </TooltipTrigger>
       <TooltipContent className="max-w-xs p-3">
         <p className="text-sm">{explanation}</p>
