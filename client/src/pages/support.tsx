@@ -33,10 +33,10 @@ export function Support() {
 
   const categories = [
     { id: "getting-started", label: "Getting Started", icon: BookOpen },
+    { id: "analysis-modes", label: "Analysis Modes", icon: Target },
+    { id: "forecasting-methods", label: "Forecasting Methods", icon: Calculator },
     { id: "data-requirements", label: "Data Requirements", icon: FileText },
     { id: "understanding-results", label: "Understanding Results", icon: BarChart3 },
-    { id: "forecasting-methods", label: "Forecasting Methods", icon: Calculator },
-    { id: "advanced-analysis", label: "Advanced Analysis", icon: Target },
     { id: "export-features", label: "Export Features", icon: Download },
     { id: "terminology", label: "Terminology", icon: HelpCircle }
   ];
@@ -569,22 +569,61 @@ export function Support() {
               </div>
             )}
 
-            {activeCategory === "advanced-analysis" && (
+            {activeCategory === "analysis-modes" && (
               <div className="space-y-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
                       <Target className="w-5 h-5" />
-                      <span>Advanced Analysis Modes</span>
+                      <span>Analysis Modes</span>
                     </CardTitle>
-                    <CardDescription>Probability and Target analysis for strategic planning</CardDescription>
+                    <CardDescription>Choose between Forecast, Probability, and Target analysis</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Tabs defaultValue="probability" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="probability">Probability Analysis</TabsTrigger>
-                        <TabsTrigger value="target">Target Analysis</TabsTrigger>
+                    <Tabs defaultValue="forecast" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="forecast">Forecast</TabsTrigger>
+                        <TabsTrigger value="probability">Probability</TabsTrigger>
+                        <TabsTrigger value="target">Target</TabsTrigger>
                       </TabsList>
+                      
+                      <TabsContent value="forecast" className="space-y-4">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg flex items-center space-x-2">
+                              <Calculator className="w-5 h-5" />
+                              <span>Standard Forecast Analysis</span>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">The default mode for project forecasting when you:</p>
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li>Want to predict when your project will complete</li>
+                              <li>Need confidence intervals and completion dates</li>
+                              <li>Have no fixed deadline constraints</li>
+                              <li>Want comprehensive statistical analysis</li>
+                            </ul>
+                            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                              <p className="text-sm text-blue-700 dark:text-blue-300"><strong>Result:</strong> Shows completion date ranges with 50%, 80%, and 95% confidence levels, plus detailed statistical breakdown and visualizations.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">What You Get</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li><strong>Confidence Intervals:</strong> 50%, 80%, and 95% completion dates</li>
+                              <li><strong>Statistical Analysis:</strong> Mean, median, standard deviation</li>
+                              <li><strong>Histogram:</strong> Distribution of possible completion times</li>
+                              <li><strong>S-Curve:</strong> Cumulative probability over time</li>
+                              <li><strong>Export Options:</strong> Save charts and data for reporting</li>
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
                       
                       <TabsContent value="probability" className="space-y-4">
                         <Card>
