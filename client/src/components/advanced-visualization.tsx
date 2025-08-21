@@ -429,6 +429,15 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                       if (p80Days <= p50Days) p80Days = p50Days + Math.max(1, Math.round(p50Days * 0.2));
                       if (p95Days <= p80Days) p95Days = p80Days + Math.max(1, Math.round(p80Days * 0.2));
                       
+                      // Debug info
+                      console.log('DEBUG Target Analysis:', {
+                        targetDays,
+                        p50Days,
+                        p80Days,
+                        p95Days,
+                        targetDate: targetDate?.toISOString()
+                      });
+                      
                       // Generate data points from today backwards to 2x the P95 duration
                       const maxLookback = Math.min(p95Days * 2, 365); // Cap at 1 year
                       const stepSize = Math.max(1, Math.floor(maxLookback / 30)); // ~30 data points
