@@ -133,7 +133,6 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
       {/* Header */}
       <Card className="border-none bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
       </Card>
-      
       {/* Getting Started Info */}
       <div className="text-center mb-8">
         <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
@@ -145,7 +144,6 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
           </p>
         </div>
       </div>
-      
       {/* Core Configuration */}
       <Card>
         <CardHeader>
@@ -227,7 +225,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 />
                 <div className="flex justify-between items-center text-sm text-muted-foreground">
                   <span>1K</span>
-                  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg">
+                  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg pt-[0px] pb-[0px] text-[14px]">
                     <span className="text-lg font-bold">{trials.toLocaleString()}</span>
                     <span className="text-xs ml-1 opacity-90">trials</span>
                   </div>
