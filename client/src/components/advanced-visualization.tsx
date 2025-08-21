@@ -429,22 +429,17 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                       if (p80Days <= p50Days) p80Days = p50Days + Math.max(1, Math.round(p50Days * 0.2));
                       if (p95Days <= p80Days) p95Days = p80Days + Math.max(1, Math.round(p80Days * 0.2));
                       
-                      // Debug info
-                      console.log('DEBUG Target Analysis:', {
-                        targetDays,
-                        p50Days,
-                        p80Days,
-                        p95Days,
-                        targetDate: targetDate?.toISOString()
-                      });
+                      // Generate data points showing meaningful probability range (0% to ~98%)
+                      // Start from dates that would give very low probability and work towards high probability
+                      const minDaysForProject = Math.max(1, p50Days * 0.3); // Minimum realistic time
+                      const maxDaysForProject = targetDays; // Maximum is target days (starting today)
                       
-                      // Generate data points from today backwards to 2x the P95 duration
-                      const maxLookback = Math.min(p95Days * 2, 365); // Cap at 1 year
-                      const stepSize = Math.max(1, Math.floor(maxLookback / 30)); // ~30 data points
+                      const stepSize = Math.max(1, Math.floor((maxDaysForProject - minDaysForProject) / 25)); // ~25 data points
                       
-                      for (let daysBack = 0; daysBack <= maxLookback; daysBack += stepSize) {
-                        const startDate = new Date(today.getTime() - daysBack * 24 * 60 * 60 * 1000);
-                        const availableDays = targetDays + daysBack;
+                      for (let availableDays = minDaysForProject; availableDays <= maxDaysForProject; availableDays += stepSize) {
+                        // Calculate when to start to have exactly 'availableDays' until target
+                        const daysFromToday = targetDays - availableDays;
+                        const startDate = new Date(today.getTime() + daysFromToday * 24 * 60 * 60 * 1000);
                         
                         // Calculate probability using a more robust approach
                         let probability = 0;
@@ -483,14 +478,9 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                         points.push({
                           startDate: format(startDate, 'MMM d'),
                           fullDate: format(startDate, 'MMM d, yyyy'),
-                          daysBack,
+                          daysFromToday,
                           availableDays,
-                          probability: Math.round(Math.max(0, Math.min(100, probability))),
-                          // Debug info for troubleshooting
-                          p50Days,
-                          p80Days, 
-                          p95Days,
-                          targetDays
+                          probability: Math.round(Math.max(0, Math.min(100, probability)))
                         });
                       }
                       
