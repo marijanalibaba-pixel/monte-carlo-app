@@ -490,7 +490,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
       </Card>
       {/* Statistical Summary */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-col space-y-1.5 p-6 pt-[26px] pb-[26px]">
           <CardTitle className="flex items-center space-x-2">
             <Gauge className="w-5 h-5" />
             <span>Statistical Analysis</span>
