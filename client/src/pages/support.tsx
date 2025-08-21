@@ -54,7 +54,6 @@ export function Support() {
               </Link>
               <div className="flex items-center space-x-4">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
-                  <img src={forecastLogo} alt="Forecast Pro Logo" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Support & Documentation</h1>
