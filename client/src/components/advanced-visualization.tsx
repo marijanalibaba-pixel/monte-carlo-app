@@ -499,7 +499,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
         <CardContent>
           <div className="responsive-grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <h4 className="font-semibold text-lg">Central Tendency</h4>
+              <h4 className="font-semibold text-lg text-center">Central Tendency</h4>
               <div className="space-y-2 ml-[80px] mr-[80px]">
                 <div className="flex justify-between">
                   <StatTooltip explanation="Average completion time across all simulation trials. Can be affected by extreme values.">
