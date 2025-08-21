@@ -79,6 +79,16 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     return histogram;
   }, [result, startDate]);
 
+  // Calculate meaningful data range for histogram
+  const histogramDomain = useMemo(() => {
+    if (histogramData.length === 0) return [0, 100];
+    const minDay = Math.min(...histogramData.map(d => d.days));
+    // Find last bin with meaningful data (> 0.1% frequency)
+    const lastMeaningfulBin = histogramData.slice().reverse().find(d => d.frequency > 0.1);
+    const maxDay = lastMeaningfulBin ? lastMeaningfulBin.days + 10 : Math.max(...histogramData.map(d => d.days));
+    return [Math.max(0, minDay - 5), maxDay];
+  }, [histogramData]);
+
   // Prepare S-curve data with smooth distribution
   const scurveData = useMemo(() => {
     const sortedDays = result.completionDates.map(date => {
@@ -101,6 +111,16 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
       };
     });
   }, [result, startDate]);
+
+  // Calculate meaningful data range for S-curve  
+  const scurveDomain = useMemo(() => {
+    if (scurveData.length === 0) return [0, 100];
+    const minDay = Math.min(...scurveData.map(d => d.days));
+    // Find where probability reaches 99.5% (essentially complete)
+    const lastMeaningfulPoint = scurveData.slice().reverse().find(d => d.probability < 99.5);
+    const maxDay = lastMeaningfulPoint ? lastMeaningfulPoint.days + 15 : Math.max(...scurveData.map(d => d.days));
+    return [Math.max(0, minDay - 5), maxDay];
+  }, [scurveData]);
 
   // Enhanced confidence intervals with color coding
   const confidenceColors = {
@@ -328,7 +348,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
                 <XAxis 
                   dataKey="days"
-                  domain={[(dataMin) => Math.max(0, dataMin - 10), (dataMax) => dataMax + 10]}
+                  domain={histogramDomain}
                   tick={{ fontSize: 12 }}
                   tickFormatter={(value) => `${value}d`}
                 />
@@ -442,7 +462,7 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.5} />
                 <XAxis 
                   dataKey="days"
-                  domain={[(dataMin) => Math.max(0, dataMin - 10), (dataMax) => dataMax + 10]}
+                  domain={scurveDomain}
                   tick={{ fontSize: 12 }}
                   tickFormatter={(value) => `${value}d`}
                 />
