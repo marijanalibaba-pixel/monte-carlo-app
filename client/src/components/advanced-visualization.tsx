@@ -79,15 +79,17 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     return histogram;
   }, [result, startDate]);
 
-  // Calculate meaningful data range for histogram
+  // Calculate meaningful data range for histogram based on actual completion dates
   const histogramDomain = useMemo(() => {
-    if (histogramData.length === 0) return [0, 100];
-    const minDay = Math.min(...histogramData.map(d => d.days));
-    // Find last bin with meaningful data (> 0.1% frequency)
-    const lastMeaningfulBin = histogramData.slice().reverse().find(d => d.frequency > 0.1);
-    const maxDay = lastMeaningfulBin ? lastMeaningfulBin.days + 10 : Math.max(...histogramData.map(d => d.days));
-    return [Math.max(0, minDay - 5), maxDay];
-  }, [histogramData]);
+    if (result.completionDates.length === 0) return [0, 100];
+    const actualDays = result.completionDates.map(date => 
+      Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+    ).sort((a, b) => a - b);
+    
+    const minDay = actualDays[0];
+    const maxDay = actualDays[Math.floor(actualDays.length * 0.99)]; // Use 99th percentile as max
+    return [Math.max(0, minDay - 5), maxDay + 10];
+  }, [result.completionDates, startDate]);
 
   // Prepare S-curve data with smooth distribution
   const scurveData = useMemo(() => {
@@ -112,15 +114,17 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     });
   }, [result, startDate]);
 
-  // Calculate meaningful data range for S-curve  
+  // Calculate meaningful data range for S-curve based on actual completion dates
   const scurveDomain = useMemo(() => {
-    if (scurveData.length === 0) return [0, 100];
-    const minDay = Math.min(...scurveData.map(d => d.days));
-    // Find where probability reaches 99.5% (essentially complete)
-    const lastMeaningfulPoint = scurveData.slice().reverse().find(d => d.probability < 99.5);
-    const maxDay = lastMeaningfulPoint ? lastMeaningfulPoint.days + 15 : Math.max(...scurveData.map(d => d.days));
-    return [Math.max(0, minDay - 5), maxDay];
-  }, [scurveData]);
+    if (result.completionDates.length === 0) return [0, 100];
+    const actualDays = result.completionDates.map(date => 
+      Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+    ).sort((a, b) => a - b);
+    
+    const minDay = actualDays[0];
+    const maxDay = actualDays[Math.floor(actualDays.length * 0.99)]; // Use 99th percentile as max
+    return [Math.max(0, minDay - 5), maxDay + 10];
+  }, [result.completionDates, startDate]);
 
   // Enhanced confidence intervals with color coding
   const confidenceColors = {
