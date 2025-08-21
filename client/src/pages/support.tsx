@@ -58,7 +58,7 @@ export function Support() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Support & Documentation</h1>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">Complete guide to Flow Forecasting</p>
+                  <p className="text-slate-600 dark:text-slate-400 text-[12px] font-normal">Complete guide to Flow Forecasting</p>
                 </div>
               </div>
             </div>
