@@ -51,6 +51,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
   const [backlogSize, setBacklogSize] = useState(100);
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [trials, setTrials] = useState(10000);
+  const [isTrialsTooltipOpen, setIsTrialsTooltipOpen] = useState(false);
   
   // Throughput parameters
   const [averageThroughput, setAverageThroughput] = useState(12);
@@ -190,16 +191,17 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
               <div className="flex items-center space-x-2">
                 <Label>Simulation Trials</Label>
                 <TooltipProvider>
-                  <Tooltip>
+                  <Tooltip open={isTrialsTooltipOpen} onOpenChange={setIsTrialsTooltipOpen}>
                     <TooltipTrigger asChild>
                       <button 
                         type="button"
+                        onClick={() => setIsTrialsTooltipOpen(!isTrialsTooltipOpen)}
                         className="p-1 rounded hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
                       >
                         <Info className="w-4 h-4 text-muted-foreground hover:text-foreground" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-xs p-3">
+                    <TooltipContent side="top" className="max-w-xs p-3" onPointerDownOutside={() => setIsTrialsTooltipOpen(false)}>
                       <div className="space-y-2 text-sm">
                         <p className="font-semibold">What are Simulation Trials?</p>
                         <p>Each trial runs your project through different random scenarios to predict completion dates.</p>

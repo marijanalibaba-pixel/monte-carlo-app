@@ -19,24 +19,29 @@ interface AdvancedVisualizationProps {
 }
 
 // Statistical explanation tooltips
-const StatTooltip = ({ children, explanation }: { children: React.ReactNode; explanation: string }) => (
-  <TooltipProvider>
-    <UITooltip>
-      <TooltipTrigger asChild>
-        <button 
-          type="button"
-          className="flex items-center space-x-1 cursor-help hover:bg-muted/50 rounded px-1 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
-        >
-          {children}
-          <Info className="w-3 h-3 text-muted-foreground hover:text-foreground" />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent className="max-w-xs p-3">
-        <p className="text-sm">{explanation}</p>
-      </TooltipContent>
-    </UITooltip>
-  </TooltipProvider>
-);
+const StatTooltip = ({ children, explanation }: { children: React.ReactNode; explanation: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <TooltipProvider>
+      <UITooltip open={isOpen} onOpenChange={setIsOpen}>
+        <TooltipTrigger asChild>
+          <button 
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex items-center space-x-1 cursor-help hover:bg-muted/50 rounded px-1 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
+          >
+            {children}
+            <Info className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-xs p-3" onPointerDownOutside={() => setIsOpen(false)}>
+          <p className="text-sm">{explanation}</p>
+        </TooltipContent>
+      </UITooltip>
+    </TooltipProvider>
+  );
+};
 
 export function AdvancedVisualization({ result, startDate }: AdvancedVisualizationProps) {
   
