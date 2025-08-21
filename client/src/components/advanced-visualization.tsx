@@ -79,26 +79,23 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     return histogram;
   }, [result, startDate]);
 
-  // Calculate meaningful data range for histogram based on actual completion dates
+  // Calculate domain to match the histogram data range
   const histogramDomain = useMemo(() => {
-    if (result.completionDates.length === 0) return [0, 100];
-    const actualDays = result.completionDates.map(date => 
-      Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-    ).sort((a, b) => a - b);
-    
-    const minDay = actualDays[0];
-    const maxDay = actualDays[Math.floor(actualDays.length * 0.99)]; // Use 99th percentile as max
-    return [Math.max(0, minDay - 5), maxDay + 10];
-  }, [result.completionDates, startDate]);
+    if (histogramData.length === 0) return [0, 100];
+    const minDay = Math.min(...histogramData.map(d => d.days));
+    const maxDay = Math.max(...histogramData.map(d => d.days));
+    return [Math.max(0, minDay - 5), maxDay + 5];
+  }, [histogramData]);
 
-  // Prepare S-curve data with smooth distribution
+  // Prepare S-curve data with meaningful range only
   const scurveData = useMemo(() => {
     const sortedDays = result.completionDates.map(date => {
       return Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     }).sort((a, b) => a - b);
     
     const minDays = sortedDays[0];
-    const maxDays = sortedDays[sortedDays.length - 1];
+    // Use 95th percentile as max instead of absolute max to avoid extreme outliers
+    const maxDays = sortedDays[Math.floor(sortedDays.length * 0.95)];
     const points = 50; // Number of points for smooth curve
     
     return Array(points).fill(0).map((_, index) => {
@@ -114,17 +111,13 @@ export function AdvancedVisualization({ result, startDate }: AdvancedVisualizati
     });
   }, [result, startDate]);
 
-  // Calculate meaningful data range for S-curve based on actual completion dates
+  // Calculate domain to match the S-curve data range
   const scurveDomain = useMemo(() => {
-    if (result.completionDates.length === 0) return [0, 100];
-    const actualDays = result.completionDates.map(date => 
-      Math.round((date.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-    ).sort((a, b) => a - b);
-    
-    const minDay = actualDays[0];
-    const maxDay = actualDays[Math.floor(actualDays.length * 0.99)]; // Use 99th percentile as max
-    return [Math.max(0, minDay - 5), maxDay + 10];
-  }, [result.completionDates, startDate]);
+    if (scurveData.length === 0) return [0, 100];
+    const minDay = Math.min(...scurveData.map(d => d.days));
+    const maxDay = Math.max(...scurveData.map(d => d.days));
+    return [Math.max(0, minDay - 5), maxDay + 5];
+  }, [scurveData]);
 
   // Enhanced confidence intervals with color coding
   const confidenceColors = {
