@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { 
   Calculator, 
@@ -21,7 +22,8 @@ import {
   BarChart3,
   Settings,
   Target,
-  Zap
+  Zap,
+  Info
 } from "lucide-react";
 import { format } from "date-fns";
 import { ThroughputConfig, CycleTimeConfig, SimulationConfig, RiskFactor } from "@/lib/monte-carlo-engine";
@@ -185,7 +187,28 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
             </div>
             
             <div className="space-y-2">
-              <Label>Simulation Trials</Label>
+              <div className="flex items-center space-x-2">
+                <Label>Simulation Trials</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs p-3">
+                      <div className="space-y-2 text-sm">
+                        <p className="font-semibold">What are Simulation Trials?</p>
+                        <p>Each trial runs your project through different random scenarios to predict completion dates.</p>
+                        <div className="space-y-1">
+                          <p><strong>• 1K trials:</strong> Fast but less precise</p>
+                          <p><strong>• 10K trials:</strong> Good balance of speed and accuracy</p> 
+                          <p><strong>• 50K trials:</strong> Most accurate but slower</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">More trials = more reliable confidence intervals and percentiles</p>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <div className="space-y-2">
                 <Slider
                   value={[trials]}
