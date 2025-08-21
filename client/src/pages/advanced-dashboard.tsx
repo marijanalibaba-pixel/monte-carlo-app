@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { track } from '@vercel/analytics';
+import { Link } from "wouter";
 import { exportToPDF, exportToCSV, exportChartsAsImages, ExportData } from "@/lib/export-utils";
 import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
 import { ForecastScenario } from "@/lib/forecast-comparison";
@@ -25,7 +26,8 @@ import {
   GitCompare,
   Download,
   FileText,
-  Image
+  Image,
+  BookOpen
 } from "lucide-react";
 
 export function AdvancedDashboard() {
@@ -214,6 +216,13 @@ export function AdvancedDashboard() {
             </div>
             
             <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+              <Link href="/support">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
+                  <BookOpen className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Support</span>
+                  <span className="sm:hidden">Help</span>
+                </Button>
+              </Link>
               <Badge variant="outline" className="bg-emerald-50 border-emerald-200 text-emerald-700 hidden sm:flex">
                 <Activity className="w-3 h-3 mr-1" />
                 Real-time
