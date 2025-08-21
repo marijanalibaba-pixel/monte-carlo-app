@@ -225,7 +225,7 @@ export function AdvancedInputForm({ onForecast, isRunning }: AdvancedInputFormPr
                 />
                 <div className="flex justify-between items-center text-sm text-muted-foreground">
                   <span>1K</span>
-                  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg pt-[0px] pb-[0px] text-[14px]">
+                  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg text-[14px] pl-[9px] pr-[9px] pt-[1px] pb-[1px]">
                     <span className="font-bold text-[14px]">{trials.toLocaleString()}</span>
                     <span className="text-xs ml-1 opacity-90">trials</span>
                   </div>
