@@ -114,6 +114,17 @@ export function AdvancedDashboard() {
       });
       
       setResult(forecastResult);
+      
+      // Scroll to top of results section after forecast completes
+      setTimeout(() => {
+        const resultsElement = document.getElementById('forecast-results');
+        if (resultsElement) {
+          resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          // Fallback to scrolling to top if element not found
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 150); // Small delay to ensure results are rendered
     } catch (error) {
       console.error('Forecast error:', error);
     } finally {
@@ -363,7 +374,7 @@ export function AdvancedDashboard() {
           </div>)
         ) : (
           /* Results Phase */
-          (<div className="space-y-8">
+          (<div id="forecast-results" className="space-y-8">
             {/* Mobile Landscape Tip */}
             <div className="sm:hidden bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
               <div className="flex items-center space-x-2 text-amber-800 dark:text-amber-200">
