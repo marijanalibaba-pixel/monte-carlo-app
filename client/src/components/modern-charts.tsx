@@ -141,16 +141,16 @@ export function ModernCharts({ results, startDate }: ModernChartsProps) {
       </div>
 
       {/* Histogram Chart */}
-      <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 shadow-xl">
+      <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-3xl p-6 shadow-xl">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-900
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
               Completion Distribution
             </h3>
-            <p className="text-sm text-slate-600
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Frequency of completion times
             </p>
           </div>
@@ -231,30 +231,30 @@ export function ModernCharts({ results, startDate }: ModernChartsProps) {
         <div className="flex flex-wrap gap-4 mt-4 text-sm">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-1 bg-blue-500 rounded"></div>
-            <span className="text-slate-600 ({p50Days}d)</span>
+            <span className="text-slate-600 dark:text-slate-400">P50 ({p50Days}d)</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-1 bg-amber-500 rounded"></div>
-            <span className="text-slate-600 ({p80Days}d)</span>
+            <span className="text-slate-600 dark:text-slate-400">P80 ({p80Days}d)</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-1 bg-emerald-500 rounded"></div>
-            <span className="text-slate-600 ({p95Days}d)</span>
+            <span className="text-slate-600 dark:text-slate-400">P95 ({p95Days}d)</span>
           </div>
         </div>
       </div>
 
       {/* S-Curve Chart */}
-      <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 shadow-xl">
+      <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-3xl p-6 shadow-xl">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-900
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
               Cumulative Probability (S-Curve)
             </h3>
-            <p className="text-sm text-slate-600
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Likelihood of completion by each date
             </p>
           </div>
@@ -336,30 +336,30 @@ export function ModernCharts({ results, startDate }: ModernChartsProps) {
         </div>
 
         {/* Statistics */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-200/50
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-200/50 dark:border-slate-700/50">
           <div className="text-center">
-            <p className="text-2xl font-bold text-slate-900
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {results.statistics.trials.toLocaleString()}
             </p>
-            <p className="text-sm text-slate-600
+            <p className="text-sm text-slate-600 dark:text-slate-400">Simulations</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-slate-900
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {Math.round(results.statistics.mean)}d
             </p>
-            <p className="text-sm text-slate-600
+            <p className="text-sm text-slate-600 dark:text-slate-400">Average</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-slate-900
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {Math.round(results.statistics.min)}d
             </p>
-            <p className="text-sm text-slate-600
+            <p className="text-sm text-slate-600 dark:text-slate-400">Minimum</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-slate-900
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {Math.round(results.statistics.max)}d
             </p>
-            <p className="text-sm text-slate-600
+            <p className="text-sm text-slate-600 dark:text-slate-400">Maximum</p>
           </div>
         </div>
       </div>

@@ -64,15 +64,15 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
   // Get trend color based on trend and strength
   const getTrendColor = (trend: ThroughputTrendAnalysis['trend'], strength: ThroughputTrendAnalysis['trendStrength']) => {
     if (trend === 'increasing') {
-      return strength === 'strong' ? 'text-green-700 bg-green-50 border-green-200' :
-             strength === 'moderate' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
-             'text-blue-700 bg-blue-50 border-blue-200'
+      return strength === 'strong' ? 'text-green-700 bg-green-50 border-green-200 dark:text-green-300 dark:bg-green-950/20 dark:border-green-800' :
+             strength === 'moderate' ? 'text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-950/20 dark:border-emerald-800' :
+             'text-blue-700 bg-blue-50 border-blue-200 dark:text-blue-300 dark:bg-blue-950/20 dark:border-blue-800';
     } else if (trend === 'decreasing') {
-      return strength === 'strong' ? 'text-red-700 bg-red-50 border-red-200' :
-             strength === 'moderate' ? 'text-orange-700 bg-orange-50 border-orange-200' :
-             'text-yellow-700 bg-yellow-50 border-yellow-200'
+      return strength === 'strong' ? 'text-red-700 bg-red-50 border-red-200 dark:text-red-300 dark:bg-red-950/20 dark:border-red-800' :
+             strength === 'moderate' ? 'text-orange-700 bg-orange-50 border-orange-200 dark:text-orange-300 dark:bg-orange-950/20 dark:border-orange-800' :
+             'text-yellow-700 bg-yellow-50 border-yellow-200 dark:text-yellow-300 dark:bg-yellow-950/20 dark:border-yellow-800';
     } else {
-      return 'text-gray-700 bg-gray-50 border-gray-200'
+      return 'text-gray-700 bg-gray-50 border-gray-200 dark:text-gray-300 dark:bg-gray-950/20 dark:border-gray-800';
     }
   };
   
@@ -226,9 +226,9 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
       {/* Mode-Specific Display */}
       {mode === 'probability' && (result.statistics as any).probabilityPercentage !== undefined && (
         <div className="space-y-6">
-          <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+          <Card className="border-2 border-green-200 dark:border-green-800 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl text-green-800">Probability</CardTitle>
+              <CardTitle className="text-2xl text-green-800 dark:text-green-200">Completion Probability</CardTitle>
               <CardDescription>Likelihood of completing by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
             </CardHeader>
             <CardContent className="text-center">
@@ -247,25 +247,25 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                 >
                   <span className="text-4xl font-bold text-white drop-shadow-lg">{(result.statistics as any).probabilityPercentage}%</span>
                 </div>
-                <p className="text-lg font-semibold text-green-800 mb-2">
+                <p className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
                   {(result.statistics as any).successfulCompletions?.toLocaleString() || 0} out of {(result.statistics as any).totalSimulations?.toLocaleString() || 0} simulations
                 </p>
-                <p className="text-sm text-green-600">
+                <p className="text-sm text-green-600 dark:text-green-400">
                   completed by the target date
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="font-semibold text-green-700">Days</p>
-                  <p className="text-green-600">{(result.statistics as any).targetDays || 0} days</p>
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                  <p className="font-semibold text-green-700 dark:text-green-300">Target Days</p>
+                  <p className="text-green-600 dark:text-green-400">{(result.statistics as any).targetDays || 0} days</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="font-semibold text-green-700">Rate</p>
-                  <p className="text-green-600">{(result.statistics as any).probabilityPercentage}%</p>
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                  <p className="font-semibold text-green-700 dark:text-green-300">Success Rate</p>
+                  <p className="text-green-600 dark:text-green-400">{(result.statistics as any).probabilityPercentage}%</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-3">
-                  <p className="font-semibold text-green-700">Level</p>
-                  <p className="text-green-600">
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                  <p className="font-semibold text-green-700 dark:text-green-300">Risk Level</p>
+                  <p className="text-green-600 dark:text-green-400">
                     {(result.statistics as any).probabilityPercentage >= 80 ? 'Low' : 
                      (result.statistics as any).probabilityPercentage >= 60 ? 'Medium' : 'High'}
                   </p>
@@ -275,9 +275,9 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </Card>
           
           {/* How does your target compare to typical completion times? */}
-          <Card className="border-blue-200">
+          <Card className="border-blue-200 dark:border-blue-800">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-blue-800">
+              <CardTitle className="flex items-center space-x-2 text-blue-800 dark:text-blue-200">
                 <TrendingUp className="w-5 h-5" />
                 <span>Target vs Typical Completion</span>
               </CardTitle>
@@ -285,55 +285,55 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-blue-50 rounded-lg p-4 text-center">
-                  <p className="text-sm font-medium text-blue-600 mb-2">Most Likely</p>
-                  <p className="text-2xl font-bold text-blue-900 mb-1">
+                <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 text-center">
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">Most Likely</p>
+                  <p className="text-2xl font-bold text-blue-900 dark:text-blue-100 mb-1">
                     {Math.round(result.statistics.median)} days
                   </p>
-                  <p className="text-xs text-blue-700 mb-2">
+                  <p className="text-xs text-blue-700 dark:text-blue-300 mb-2">
                     {format(addDays(startDate, result.statistics.median), 'MMM d, yyyy')}
                   </p>
                   <div className="text-xs">
                     {((result.statistics as any).targetDays || 0) < result.statistics.median ? (
-                      <span className="text-orange-600 font-semibold">Target is {result.statistics.median - ((result.statistics as any).targetDays || 0)} days earlier</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold">Target is {result.statistics.median - ((result.statistics as any).targetDays || 0)} days earlier</span>
                     ) : ((result.statistics as any).targetDays || 0) > result.statistics.median ? (
-                      <span className="text-green-600 font-semibold">Target is {((result.statistics as any).targetDays || 0) - result.statistics.median} days later</span>
+                      <span className="text-green-600 dark:text-green-400 font-semibold">Target is {((result.statistics as any).targetDays || 0) - result.statistics.median} days later</span>
                     ) : (
-                      <span className="text-blue-600 font-semibold">Target matches most likely</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-semibold">Target matches most likely</span>
                     )}
                   </div>
                 </div>
                 
-                <div className="bg-amber-50 rounded-lg p-4 text-center">
-                  <p className="text-sm font-medium text-amber-600 mb-2">Conservative</p>
-                  <p className="text-2xl font-bold text-amber-900 mb-1">
+                <div className="bg-amber-50 dark:bg-amber-950/20 rounded-lg p-4 text-center">
+                  <p className="text-sm font-medium text-amber-600 dark:text-amber-400 mb-2">Conservative</p>
+                  <p className="text-2xl font-bold text-amber-900 dark:text-amber-100 mb-1">
                     {result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0} days
                   </p>
-                  <p className="text-xs text-amber-700 mb-2">80% confidence</p>
+                  <p className="text-xs text-amber-700 dark:text-amber-300 mb-2">80% confidence</p>
                   <div className="text-xs">
                     {((result.statistics as any).targetDays || 0) < (result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0) ? (
-                      <span className="text-orange-600 font-semibold">Target is {(result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0) - ((result.statistics as any).targetDays || 0)} days earlier</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold">Target is {(result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0) - ((result.statistics as any).targetDays || 0)} days earlier</span>
                     ) : ((result.statistics as any).targetDays || 0) > (result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0) ? (
-                      <span className="text-green-600 font-semibold">Target is {((result.statistics as any).targetDays || 0) - (result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0)} days later</span>
+                      <span className="text-green-600 dark:text-green-400 font-semibold">Target is {((result.statistics as any).targetDays || 0) - (result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0)} days later</span>
                     ) : (
-                      <span className="text-amber-600 font-semibold">Target matches conservative</span>
+                      <span className="text-amber-600 dark:text-amber-400 font-semibold">Target matches conservative</span>
                     )}
                   </div>
                 </div>
                 
-                <div className="bg-emerald-50 rounded-lg p-4 text-center">
-                  <p className="text-sm font-medium text-emerald-600 mb-2">Worst Case</p>
-                  <p className="text-2xl font-bold text-emerald-900 mb-1">
+                <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-lg p-4 text-center">
+                  <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-2">Worst Case</p>
+                  <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-100 mb-1">
                     {result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0} days
                   </p>
-                  <p className="text-xs text-emerald-700 mb-2">95% confidence</p>
+                  <p className="text-xs text-emerald-700 dark:text-emerald-300 mb-2">95% confidence</p>
                   <div className="text-xs">
                     {((result.statistics as any).targetDays || 0) < (result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0) ? (
-                      <span className="text-orange-600 font-semibold">Target is {(result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0) - ((result.statistics as any).targetDays || 0)} days earlier</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold">Target is {(result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0) - ((result.statistics as any).targetDays || 0)} days earlier</span>
                     ) : ((result.statistics as any).targetDays || 0) > (result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0) ? (
-                      <span className="text-green-600 font-semibold">Target is {((result.statistics as any).targetDays || 0) - (result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0)} days later</span>
+                      <span className="text-green-600 dark:text-green-400 font-semibold">Target is {((result.statistics as any).targetDays || 0) - (result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0)} days later</span>
                     ) : (
-                      <span className="text-emerald-600 font-semibold">Target matches worst case</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Target matches worst case</span>
                     )}
                   </div>
                 </div>
@@ -345,41 +345,41 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
 
       {mode === 'target' && (result.statistics as any).startDateOptions && (
         <div className="space-y-4">
-          <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50">
+          <Card className="border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl text-purple-800">Start Dates</CardTitle>
+              <CardTitle className="text-2xl text-purple-800 dark:text-purple-200">Recommended Start Dates</CardTitle>
               <CardDescription>When to start your project to complete by {targetDate && format(targetDate, 'MMM d, yyyy')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 text-center">
-                <div className="bg-white/60 rounded-lg p-4">
-                  <p className="text-sm font-medium text-purple-600">Date</p>
-                  <p className="text-lg font-bold text-purple-900
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Target Date</p>
+                  <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
                     {targetDate && format(targetDate, 'MMM d, yyyy')}
                   </p>
-                  <p className="text-xs text-purple-700">deadline</p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">completion deadline</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-4">
-                  <p className="text-sm font-medium text-purple-600">Duration</p>
-                  <p className="text-lg font-bold text-purple-900
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Project Duration</p>
+                  <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
                     {(result.statistics as any).projectDuration?.p80 || 0} days
                   </p>
-                  <p className="text-xs text-purple-700">confidence</p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">80% confidence</p>
                 </div>
-                <div className="bg-white/60 rounded-lg p-4">
-                  <p className="text-sm font-medium text-purple-600">Range</p>
-                  <p className="text-lg font-bold text-purple-900
+                <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Duration Range</p>
+                  <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
                     {(result.statistics as any).projectDuration?.p50 || 0} - {(result.statistics as any).projectDuration?.p95 || 0}
                   </p>
-                  <p className="text-xs text-purple-700 (P50-P95)</p>
+                  <p className="text-xs text-purple-700 dark:text-purple-300">days (P50-P95)</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="border-purple-200
+          <Card className="border-purple-200 dark:border-purple-800">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-purple-800
+              <CardTitle className="flex items-center space-x-2 text-purple-800 dark:text-purple-200">
                 <Calendar className="w-5 h-5" />
                 <span>Start Date Options</span>
               </CardTitle>
@@ -391,8 +391,8 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                   <div key={index} className={`rounded-lg p-6 border-2 ${option.color.includes('red') ? 'border-red-200' : option.color.includes('yellow') ? 'border-yellow-200' : 'border-green-200'}`}>
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <h3 className="text-xl font-bold text-slate-900
-                        <p className="text-sm text-slate-600 confidence level</p>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">{option.description}</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">{option.confidence} confidence level</p>
                       </div>
                       <div className="text-right">
                         <Badge variant="outline" className={option.color}>
@@ -401,21 +401,21 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-white/60 rounded-lg p-4">
-                        <p className="text-sm font-medium text-slate-600 Date</p>
-                        <p className="text-lg font-bold text-slate-900
+                      <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Start Date</p>
+                        <p className="text-lg font-bold text-slate-900 dark:text-slate-100">
                           {format(option.startDate, 'MMM d, yyyy')}
                         </p>
-                        <p className="text-xs text-slate-500
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           {format(option.startDate, 'EEEE')}
                         </p>
                       </div>
-                      <div className="bg-white/60 rounded-lg p-4">
-                        <p className="text-sm font-medium text-slate-600
-                        <p className="text-lg font-bold text-slate-900
+                      <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4">
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Duration</p>
+                        <p className="text-lg font-bold text-slate-900 dark:text-slate-100">
                           {option.days} days
                         </p>
-                        <p className="text-xs text-slate-500
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           ~{Math.round(option.days / 7)} weeks
                         </p>
                       </div>
@@ -427,9 +427,9 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
           </Card>
           
           {/* Probability vs Start Date Chart */}
-          <Card className="border-purple-200
+          <Card className="border-purple-200 dark:border-purple-800">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-purple-800
+              <CardTitle className="flex items-center space-x-2 text-purple-800 dark:text-purple-200">
                 <TrendingUp className="w-5 h-5" />
                 <span>Success Probability by Start Date</span>
               </CardTitle>
@@ -561,7 +561,7 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                 </ResponsiveContainer>
                 
                 {/* Legend */}
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-1">
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-1">
                   <div className="flex space-x-4 text-xs">
                     <div className="flex items-center space-x-1">
                       <div className="w-3 h-0.5" style={{borderTop: '2px dashed #f59e0b'}}></div>
@@ -586,49 +586,49 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
       {/* Executive Summary Cards - Only show for forecast mode */}
       {mode === 'forecast' && (
       <div className="responsive-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 border-blue-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600 Likely</p>
-                <p className="text-2xl font-bold text-blue-900
+                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Most Likely</p>
+                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                   {Math.round(result.statistics.median)} days
                 </p>
-                <p className="text-xs text-blue-700
+                <p className="text-xs text-blue-700 dark:text-blue-300">
                   {format(addDays(startDate, result.statistics.median), 'MMM d, yyyy')}
                 </p>
               </div>
-              <Target className="w-8 h-8 text-blue-600 />
+              <Target className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
+        <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border-amber-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-amber-600
-                <p className="text-2xl font-bold text-amber-900
+                <p className="text-sm font-medium text-amber-600 dark:text-amber-400">Conservative</p>
+                <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                   {result.confidenceIntervals.find(ci => ci.level === 0.8)?.daysFromStart || 0} days
                 </p>
-                <p className="text-xs text-amber-700 confidence</p>
+                <p className="text-xs text-amber-700 dark:text-amber-300">80% confidence</p>
               </div>
-              <Calendar className="w-8 h-8 text-amber-600 />
+              <Calendar className="w-8 h-8 text-amber-600 dark:text-amber-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/20 dark:to-emerald-900/20 border-emerald-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-emerald-600 Case</p>
-                <p className="text-2xl font-bold text-emerald-900
+                <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Worst Case</p>
+                <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
                   {result.confidenceIntervals.find(ci => ci.level === 0.95)?.daysFromStart || 0} days
                 </p>
-                <p className="text-xs text-emerald-700 confidence</p>
+                <p className="text-xs text-emerald-700 dark:text-emerald-300">95% confidence</p>
               </div>
-              <TrendingUp className="w-8 h-8 text-emerald-600 />
+              <TrendingUp className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
             </div>
           </CardContent>
         </Card>
@@ -650,9 +650,9 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
 
       {/* Throughput Trends Analysis - Show when available in any mode */}
       {result.throughputTrends && (
-        <Card className="border-indigo-200
+        <Card className="border-indigo-200 dark:border-indigo-800">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-indigo-800
+            <CardTitle className="flex items-center space-x-2 text-indigo-800 dark:text-indigo-200">
               <Lightbulb className="w-5 h-5" />
               <span>Historical Throughput Analysis</span>
             </CardTitle>
@@ -683,15 +683,15 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div className="bg-white/60 rounded-lg p-3">
+                    <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
                       <p className="text-xs font-medium opacity-75 mb-1">Recent Average</p>
                       <p className="text-lg font-bold">{result.throughputTrends.recentAverage} items/week</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
+                    <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
                       <p className="text-xs font-medium opacity-75 mb-1">Overall Average</p>
                       <p className="text-lg font-bold">{result.throughputTrends.overallAverage} items/week</p>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3">
+                    <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
                       <p className="text-xs font-medium opacity-75 mb-1">Change</p>
                       <p className="text-lg font-bold">
                         {result.throughputTrends.changePercent >= 0 ? '+' : ''}{result.throughputTrends.changePercent}%
@@ -699,7 +699,7 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                     </div>
                   </div>
                   
-                  <div className="bg-white/40 rounded-lg p-3 mt-4">
+                  <div className="bg-white/40 dark:bg-slate-800/40 rounded-lg p-3 mt-4">
                     <div className="flex items-start space-x-2">
                       <Lightbulb className="w-4 h-4 mt-0.5 flex-shrink-0 opacity-75" />
                       <div>
@@ -857,7 +857,7 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
               </BarChart>
             </ResponsiveContainer>
             {/* Legend for histogram - responsive positioning */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2 pt-[0px] pb-[0px] mt-[-12px] mb-[-12px]">
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-2 pt-[0px] pb-[0px] mt-[-12px] mb-[-12px]">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>
@@ -966,7 +966,7 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
               </AreaChart>
             </ResponsiveContainer>
             {/* Legend for S-curve - responsive positioning */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border rounded-lg px-3 py-2 mt-[-12px] mb-[-12px] pt-[0px] pb-[0px]">
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border rounded-lg px-3 py-2 mt-[-12px] mb-[-12px] pt-[0px] pb-[0px]">
               <div className="flex space-x-4 text-xs">
                 <div className="flex items-center space-x-1">
                   <div className="w-3 h-0.5" style={{borderTop: '2px dashed #3b82f6'}}></div>

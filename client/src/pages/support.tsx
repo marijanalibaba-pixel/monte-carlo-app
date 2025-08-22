@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import {
-  ArrowLeft,
-  BookOpen,
-  Target,
-  Calculator,
-  BarChart3,
-  TrendingUp,
-  Clock,
+import { 
+  ArrowLeft, 
+  BookOpen, 
+  Calculator, 
+  TrendingUp, 
+  BarChart3, 
+  Target, 
+  AlertTriangle,
   Calendar,
-  Activity,
+  Clock,
+  Users,
+  Zap,
   Download,
   GitCompare,
   Info,
@@ -40,9 +42,9 @@ export function Support() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200/50">
+      <div className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center space-x-4">
@@ -54,8 +56,8 @@ export function Support() {
               </Link>
               <div className="flex items-center space-x-4">
                 <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent">Support & Documentation</h1>
-                  <p className="text-slate-600 text-[12px] font-normal">Complete guide to Flow Forecasting</p>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">Support & Documentation</h1>
+                  <p className="text-slate-600 dark:text-slate-400 text-[12px] font-normal">Complete guide to Flow Forecasting</p>
                 </div>
               </div>
             </div>
@@ -78,7 +80,7 @@ export function Support() {
                     <Button
                       key={category.id}
                       variant={activeCategory === category.id ? "default" : "ghost"}
-                      className="w-full justify-start text-left"
+                      className="w-full justify-start"
                       onClick={() => setActiveCategory(category.id)}
                     >
                       <Icon className="w-4 h-4 mr-2" />
@@ -92,532 +94,926 @@ export function Support() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <Card>
-              <CardContent className="p-8">
-                {activeCategory === "getting-started" && (
-                  <div className="space-y-8">
-                    <div>
-                      <h2 className="text-3xl font-bold text-slate-900 mb-4">Getting Started</h2>
-                      <p className="text-lg text-slate-600 mb-8">
-                        Welcome to Flow Forecasting! This guide will help you understand how to use our Monte Carlo simulation tool for project forecasting.
-                      </p>
-                    </div>
-
+            {activeCategory === "getting-started" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <BookOpen className="w-5 h-5" />
+                      <span>Getting Started</span>
+                    </CardTitle>
+                    <CardDescription>Learn how to use the Monte Carlo forecasting application</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Card className="border-emerald-200 bg-emerald-50/50">
+                      <Card className="border-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/20">
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg text-emerald-700">Step 1: Choose Method</CardTitle>
+                          <CardTitle className="text-lg text-emerald-700 dark:text-emerald-300">Step 1: Choose Method</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-sm text-emerald-600">Select either Throughput Analysis or Cycle Time Analysis based on your available data.</p>
+                          <p className="text-sm text-emerald-600 dark:text-emerald-400">Select either Throughput Analysis or Cycle Time Analysis based on your available data.</p>
                         </CardContent>
                       </Card>
-                      
-                      <Card className="border-blue-200 bg-blue-50/50">
+                      <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg text-blue-700">Step 2: Input Data</CardTitle>
+                          <CardTitle className="text-lg text-blue-700 dark:text-blue-300">Step 2: Input Data</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-sm text-blue-600">Enter your project parameters like backlog size, team metrics, and simulation settings.</p>
+                          <p className="text-sm text-blue-600 dark:text-blue-400">Enter your project parameters like backlog size, team metrics, and simulation settings.</p>
                         </CardContent>
                       </Card>
-                      
-                      <Card className="border-purple-200 bg-purple-50/50">
+                      <Card className="border-purple-200 bg-purple-50/50 dark:bg-purple-950/20">
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg text-purple-700">Step 3: Run Forecast</CardTitle>
+                          <CardTitle className="text-lg text-purple-700 dark:text-purple-300">Step 3: Run Forecast</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-sm text-purple-600">Click "Run Monte Carlo Forecast" to generate probabilistic completion date predictions.</p>
+                          <p className="text-sm text-purple-600 dark:text-purple-400">Click "Run Monte Carlo Forecast" to generate probabilistic completion date predictions.</p>
                         </CardContent>
                       </Card>
-                      
-                      <Card className="border-amber-200 bg-amber-50/50">
+                      <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20">
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg text-amber-700">Step 4: Analyze Results</CardTitle>
+                          <CardTitle className="text-lg text-amber-700 dark:text-amber-300">Step 4: Analyze Results</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-sm text-amber-600">Review confidence intervals, statistical analysis, and visualizations to make informed decisions.</p>
+                          <p className="text-sm text-amber-600 dark:text-amber-400">Review confidence intervals, statistical analysis, and visualizations to make informed decisions.</p>
                         </CardContent>
                       </Card>
                     </div>
+                  </CardContent>
+                </Card>
 
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                      <div className="flex items-start space-x-3">
-                        <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <div className="text-sm text-amber-700">
-                            <strong>Quick Start Tip:</strong> If you're new to Monte Carlo forecasting, start with a single project and use the default settings. You can always refine your approach as you become more familiar with the tool.
-                          </div>
-                        </div>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="quick-start">
+                    <AccordionTrigger>Quick Start Guide</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 text-sm">
+                        <p><strong>For new users:</strong> Start with Throughput Analysis if you know your team's average velocity. Use Cycle Time Analysis if you have historical completion time data.</p>
+                        <p><strong>Minimum data needed:</strong> Backlog size, either team throughput OR cycle time percentiles, and a start date.</p>
+                        <p><strong>Recommended trials:</strong> 10,000 simulations provide a good balance of accuracy and speed for most projects.</p>
                       </div>
-                    </div>
-                  </div>
-                )}
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="common-workflow">
+                    <AccordionTrigger>Common Workflow</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 text-sm">
+                        <ol className="list-decimal list-inside space-y-2">
+                          <li>Gather your historical data (velocity, cycle times, or throughput)</li>
+                          <li>Count your backlog items that need completion</li>
+                          <li>Choose the appropriate forecasting method</li>
+                          <li>Enter your data and adjust simulation settings</li>
+                          <li>Run the forecast and review confidence intervals</li>
+                          <li>Save scenarios to compare different approaches</li>
+                          <li>Export results for stakeholder communication</li>
+                        </ol>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            )}
 
-                {activeCategory === "analysis-modes" && (
-                  <div className="space-y-8">
-                    <div>
-                      <h2 className="text-3xl font-bold text-slate-900 mb-4">Analysis Modes</h2>
-                      <p className="text-lg text-slate-600 mb-8">
-                        Choose the right analysis mode based on what you want to learn about your project.
-                      </p>
-                    </div>
-
-                    <Tabs defaultValue="forecast" className="w-full">
-                      <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="forecast" className="flex items-center space-x-2">
-                          <Target className="w-4 h-4" />
-                          <span>Forecast</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="probability" className="flex items-center space-x-2">
-                          <Percent className="w-4 h-4" />
-                          <span>Probability</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="target" className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>Target</span>
-                        </TabsTrigger>
+            {activeCategory === "data-requirements" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <FileText className="w-5 h-5" />
+                      <span>Data Requirements</span>
+                    </CardTitle>
+                    <CardDescription>What data you need to get accurate forecasts</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="throughput" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="throughput">Throughput Method</TabsTrigger>
+                        <TabsTrigger value="cycletime">Cycle Time Method</TabsTrigger>
                       </TabsList>
-
-                      <TabsContent value="forecast" className="space-y-6">
-                        <Card className="border-blue-200 bg-blue-50/50">
+                      <TabsContent value="throughput" className="space-y-4">
+                        <Card>
                           <CardHeader>
-                            <CardTitle className="text-lg text-blue-700">Confidence Intervals</CardTitle>
+                            <CardTitle className="text-lg">Required Data</CardTitle>
                           </CardHeader>
-                          <CardContent>
-                            <div className="text-sm text-blue-600">
-                              <p className="mb-3">Understand the likelihood of different completion dates:</p>
-                              <ul className="space-y-1 ml-4">
-                                <li>• <strong>50% confidence:</strong> Most likely completion date range</li>
-                                <li>• <strong>80% confidence:</strong> Conservative estimate with buffer</li>
-                                <li>• <strong>95% confidence:</strong> Very conservative estimate for critical projects</li>
+                          <CardContent className="space-y-3">
+                            <div className="space-y-2">
+                              <Badge variant="outline" className="bg-green-50 border-green-200 text-green-700">Required</Badge>
+                              <ul className="list-disc list-inside space-y-1 text-sm">
+                                <li><strong>Backlog Size:</strong> Total number of items to complete</li>
+                                <li><strong>Average Throughput:</strong> Items completed per time period (week/sprint)</li>
+                                <li><strong>Start Date:</strong> When the project begins</li>
                               </ul>
                             </div>
-                          </CardContent>
-                        </Card>
-                        
-                        <Card className="border-purple-200 bg-purple-50/50">
-                          <CardHeader>
-                            <CardTitle className="text-lg text-purple-700">Statistical Analysis</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="text-sm text-purple-600">
-                              <p className="mb-3">Key metrics provided:</p>
-                              <ul className="space-y-1 ml-4">
-                                <li>• <strong>Mean completion date:</strong> Average across all simulations</li>
-                                <li>• <strong>Standard deviation:</strong> Measure of variability</li>
-                                <li>• <strong>Skewness:</strong> Distribution asymmetry indicator</li>
+                            <div className="space-y-2">
+                              <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">Recommended</Badge>
+                              <ul className="list-disc list-inside space-y-1 text-sm">
+                                <li><strong>Throughput Variability:</strong> Coefficient of variation (CV) - typically 0.2-0.4</li>
+                                <li><strong>Historical Data:</strong> Past throughput values for automatic CV calculation and trend analysis</li>
+                                <li><strong>Weekly Capacity:</strong> Maximum items the team can handle per week</li>
                               </ul>
                             </div>
-                          </CardContent>
-                        </Card>
-                      </TabsContent>
-
-                      <TabsContent value="probability" className="space-y-6">
-                        <Card className="border-green-200 bg-green-50/50">
-                          <CardHeader>
-                            <CardTitle className="text-lg text-green-700">Target Date Analysis</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="text-sm text-green-600">
-                              <p className="mb-3">Enter a specific target date to learn:</p>
-                              <ul className="space-y-1 ml-4">
-                                <li>• Probability of completing by that date</li>
-                                <li>• Risk level associated with the deadline</li>
-                                <li>• Buffer days needed for higher confidence</li>
+                            <div className="space-y-2">
+                              <Badge variant="outline" className="bg-indigo-50 border-indigo-200 text-indigo-700">Trend Analysis</Badge>
+                              <ul className="list-disc list-inside space-y-1 text-sm">
+                                <li><strong>Historical Throughput:</strong> Enter 4+ weeks of historical data (e.g., "10, 8, 12, 15, 11") to get automatic trend analysis</li>
+                                <li><strong>Trend Insights:</strong> Shows if your team performance is improving, declining, or stable over time</li>
+                                <li><strong>Performance Context:</strong> Helps interpret forecast results with team performance direction</li>
                               </ul>
                             </div>
                           </CardContent>
                         </Card>
                       </TabsContent>
-
-                      <TabsContent value="target" className="space-y-6">
-                        <Card className="border-purple-200 bg-purple-50/50">
+                      <TabsContent value="cycletime" className="space-y-4">
+                        <Card>
                           <CardHeader>
-                            <CardTitle className="text-lg text-purple-700">Start Date Optimization</CardTitle>
+                            <CardTitle className="text-lg">Required Data</CardTitle>
                           </CardHeader>
-                          <CardContent>
-                            <div className="text-sm text-purple-600">
-                              <p className="mb-3">Find the optimal start date for:</p>
-                              <ul className="space-y-1 ml-4">
-                                <li>• Meeting a fixed deadline</li>
-                                <li>• Achieving desired confidence levels</li>
-                                <li>• Planning resource allocation</li>
+                          <CardContent className="space-y-3">
+                            <div className="space-y-2">
+                              <Badge variant="outline" className="bg-green-50 border-green-200 text-green-700">Required</Badge>
+                              <ul className="list-disc list-inside space-y-1 text-sm">
+                                <li><strong>Backlog Size:</strong> Total number of items to complete</li>
+                                <li><strong>P50 Cycle Time:</strong> Median time to complete one item (days)</li>
+                                <li><strong>P80 Cycle Time:</strong> 80th percentile completion time</li>
+                                <li><strong>P95 Cycle Time:</strong> 95th percentile completion time</li>
+                                <li><strong>Start Date:</strong> When the project begins</li>
                               </ul>
+                            </div>
+                            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                              <div className="flex items-start space-x-2">
+                                <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                <div className="text-sm text-amber-700 dark:text-amber-300">
+                                  <p><strong>How to get percentiles:</strong> From your historical data, sort cycle times and find the 50th, 80th, and 95th percentile values. Most project management tools can calculate these automatically.</p>
+                                </div>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>
                       </TabsContent>
                     </Tabs>
-                  </div>
-                )}
+                  </CardContent>
+                </Card>
 
-                {activeCategory === "forecasting-methods" && (
-                  <div className="space-y-8">
-                    <div>
-                      <h2 className="text-3xl font-bold text-slate-900 mb-4">Forecasting Methods</h2>
-                      <p className="text-lg text-slate-600 mb-8">
-                        Choose between two proven statistical approaches based on your available data.
-                      </p>
-                    </div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Data Quality Tips</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Accordion type="single" collapsible>
+                      <AccordionItem value="data-collection">
+                        <AccordionTrigger>Best Practices for Data Collection</AccordionTrigger>
+                        <AccordionContent>
+                          <ul className="list-disc list-inside space-y-2 text-sm">
+                            <li>Use at least 30 historical data points for reliable statistics</li>
+                            <li>Ensure data represents similar work types and team composition</li>
+                            <li>Exclude outliers or clearly non-representative periods</li>
+                            <li>Use consistent time units (days, weeks) across all measurements</li>
+                            <li>Count only completed items, not work in progress</li>
+                          </ul>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="common-issues">
+                        <AccordionTrigger>Common Data Issues</AccordionTrigger>
+                        <AccordionContent>
+                          <ul className="list-disc list-inside space-y-2 text-sm">
+                            <li><strong>Inconsistent item sizing:</strong> Use story points or T-shirt sizes consistently</li>
+                            <li><strong>Mixed work types:</strong> Separate features, bugs, and technical debt</li>
+                            <li><strong>Team changes:</strong> Account for significant team composition changes</li>
+                            <li><strong>Seasonal variations:</strong> Consider holidays, vacation periods</li>
+                            <li><strong>Process changes:</strong> Use data from after major process improvements</li>
+                          </ul>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      <Card className="border-blue-200">
+            {activeCategory === "understanding-results" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <BarChart3 className="w-5 h-5" />
+                      <span>Understanding Results</span>
+                    </CardTitle>
+                    <CardDescription>How to interpret your forecast results and make decisions</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
                         <CardHeader>
-                          <Badge className="w-fit mb-2 bg-blue-100 text-blue-800">Velocity Based</Badge>
-                          <CardTitle className="text-xl">Throughput Analysis</CardTitle>
-                          <CardDescription>Uses team velocity data and work item counts</CardDescription>
+                          <CardTitle className="text-lg text-blue-700 dark:text-blue-300">Confidence Intervals</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div>
-                            <h4 className="font-semibold text-slate-900 mb-2">When to Use:</h4>
-                            <ul className="text-sm text-slate-600 space-y-1">
-                              <li>• You have historical velocity data</li>
-                              <li>• Work is broken into countable items</li>
-                              <li>• Team size and composition is stable</li>
-                              <li>• Similar work complexity</li>
-                            </ul>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-slate-900 mb-2">Required Data:</h4>
-                            <ul className="text-sm text-slate-600 space-y-1">
-                              <li>• Backlog size (number of items)</li>
-                              <li>• Average throughput per time period</li>
-                              <li>• Throughput variability (coefficient of variation)</li>
-                            </ul>
+                        <CardContent className="space-y-2">
+                          <div className="text-sm text-blue-600 dark:text-blue-400">
+                            <p><strong>50% confidence:</strong> Half of simulations completed by this date</p>
+                            <p><strong>80% confidence:</strong> More realistic target with buffer</p>
+                            <p><strong>95% confidence:</strong> Conservative estimate with significant buffer</p>
                           </div>
                         </CardContent>
                       </Card>
 
-                      <Card className="border-green-200">
+                      <Card className="border-purple-200 bg-purple-50/50 dark:bg-purple-950/20">
                         <CardHeader>
-                          <Badge className="w-fit mb-2 bg-green-100 text-green-800">Time Based</Badge>
-                          <CardTitle className="text-xl">Cycle Time Analysis</CardTitle>
-                          <CardDescription>Uses historical completion time data</CardDescription>
+                          <CardTitle className="text-lg text-purple-700 dark:text-purple-300">Statistical Analysis</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div>
-                            <h4 className="font-semibold text-slate-900 mb-2">When to Use:</h4>
-                            <ul className="text-sm text-slate-600 space-y-1">
-                              <li>• You have historical cycle time data</li>
-                              <li>• Work items vary significantly in size</li>
-                              <li>• Focus on individual item completion</li>
-                              <li>• SLA or delivery time commitments</li>
-                            </ul>
-                          </div>
-                          
-                          <div>
-                            <h4 className="font-semibold text-slate-900 mb-2">Required Data:</h4>
-                            <ul className="text-sm text-slate-600 space-y-1">
-                              <li>• Number of items to complete</li>
-                              <li>• Historical percentile data (P50, P80, P95)</li>
-                              <li>• Representative sample size</li>
-                            </ul>
+                        <CardContent className="space-y-2">
+                          <div className="text-sm text-purple-600 dark:text-purple-400">
+                            <p><strong>Mean:</strong> Average completion date across all simulations</p>
+                            <p><strong>Median:</strong> Middle value - often more realistic than mean</p>
+                            <p><strong>Standard Deviation:</strong> Measure of uncertainty/risk</p>
                           </div>
                         </CardContent>
                       </Card>
                     </div>
+                  </CardContent>
+                </Card>
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-start space-x-3">
-                        <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <div className="text-sm text-blue-700">
-                            <strong>Method Selection Tip:</strong> If you're unsure which method to use, throughput analysis is often easier to start with if you track velocity. Cycle time analysis provides more granular insights but requires detailed timing data.
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeCategory === "understanding-results" && (
-                  <div className="space-y-8">
-                    <div>
-                      <h2 className="text-3xl font-bold text-slate-900 mb-4">Understanding Results</h2>
-                      <p className="text-lg text-slate-600 mb-8">
-                        Learn how to interpret and act on your Monte Carlo simulation results.
-                      </p>
-                    </div>
-
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="visualizations">
-                        <AccordionTrigger className="text-lg font-semibold">Charts and Visualizations</AccordionTrigger>
-                        <AccordionContent className="space-y-6">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Card className="border-blue-200 bg-blue-50/30">
-                              <CardHeader>
-                                <CardTitle className="text-lg text-blue-700 flex items-center">
-                                  <BarChart3 className="w-5 h-5 mr-2" />
-                                  Histogram
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <p className="text-sm text-blue-600">Shows the distribution of possible completion dates. Taller bars indicate more likely outcomes.</p>
-                              </CardContent>
-                            </Card>
-                            
-                            <Card className="border-purple-200 bg-purple-50/30">
-                              <CardHeader>
-                                <CardTitle className="text-lg text-purple-700 flex items-center">
-                                  <TrendingUp className="w-5 h-5 mr-2" />
-                                  S-Curve
-                                </CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <p className="text-sm text-purple-600">Cumulative probability chart showing the likelihood of completing by any given date.</p>
-                              </CardContent>
-                            </Card>
-                          </div>
-                          
-                          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                            <h4 className="font-semibold text-amber-800 mb-2">Reading the Charts:</h4>
-                            <ul className="text-sm text-amber-700 space-y-1">
-                              <li>• Look for the peak in the histogram - this is your most likely completion date</li>
-                              <li>• Use the S-curve to find confidence levels (50%, 80%, 95%)</li>
-                              <li>• Wide distributions indicate higher uncertainty</li>
-                              <li>• Skewed distributions suggest asymmetric risk</li>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Chart Interpretation</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Accordion type="single" collapsible>
+                      <AccordionItem value="histogram">
+                        <AccordionTrigger className="flex items-center">
+                          <BarChart3 className="w-4 h-4 mr-2" />
+                          Histogram Chart
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <p>Shows the distribution of completion dates from all simulations:</p>
+                            <ul className="list-disc list-inside space-y-1 ml-4">
+                              <li><strong>Peak:</strong> Most likely completion timeframe</li>
+                              <li><strong>Width:</strong> Indicates uncertainty - wider = more uncertain</li>
+                              <li><strong>Skew:</strong> Asymmetry shows risk direction (right skew = delay risk)</li>
+                              <li><strong>Reference lines:</strong> Show confidence interval boundaries</li>
                             </ul>
                           </div>
                         </AccordionContent>
                       </AccordionItem>
-
-                      <AccordionItem value="statistics">
-                        <AccordionTrigger className="text-lg font-semibold">Statistical Metrics</AccordionTrigger>
-                        <AccordionContent className="space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <h4 className="font-semibold text-slate-900 mb-3">Core Statistics</h4>
-                              <ul className="space-y-2 text-sm text-slate-600">
-                                <li><strong>Mean:</strong> Average completion date across all simulations</li>
-                                <li><strong>Median (P50):</strong> 50% chance of completing by this date</li>
-                                <li><strong>Standard Deviation:</strong> Measure of variability in outcomes</li>
-                                <li><strong>Skewness:</strong> Whether distribution leans early or late</li>
-                              </ul>
-                            </div>
-                            
-                            <div>
-                              <h4 className="font-semibold text-slate-900 mb-3">Confidence Levels</h4>
-                              <ul className="space-y-2 text-sm text-slate-600">
-                                <li><strong>P50 (50%):</strong> Balanced risk/opportunity</li>
-                                <li><strong>P80 (80%):</strong> Conservative with buffer</li>
-                                <li><strong>P95 (95%):</strong> Very safe estimate</li>
-                                <li><strong>P99 (99%):</strong> Extremely conservative</li>
-                              </ul>
-                            </div>
+                      <AccordionItem value="scurve">
+                        <AccordionTrigger className="flex items-center">
+                          <TrendingUp className="w-4 h-4 mr-2" />
+                          S-Curve Chart
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <p>Shows cumulative probability of completion by any given date:</p>
+                            <ul className="list-disc list-inside space-y-1 ml-4">
+                              <li><strong>X-axis:</strong> Completion dates</li>
+                              <li><strong>Y-axis:</strong> Probability of completion by that date</li>
+                              <li><strong>Steep sections:</strong> High probability of completion in that timeframe</li>
+                              <li><strong>Flat sections:</strong> Low probability of completion in that timeframe</li>
+                            </ul>
                           </div>
                         </AccordionContent>
                       </AccordionItem>
-
                       <AccordionItem value="trend-analysis">
-                        <AccordionTrigger className="text-lg font-semibold">Trend Analysis</AccordionTrigger>
-                        <AccordionContent className="space-y-4">
-                          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <div className="flex items-start space-x-3">
-                              <TrendingUp className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                              <div>
-                                <h4 className="font-semibold text-green-800 mb-2">Automatic Trend Detection</h4>
-                                <p className="text-sm text-green-700 mb-3">
-                                  When you provide historical throughput data (4+ data points), the app automatically performs trend analysis to show if your team's performance is improving, declining, or stable over time.
-                                </p>
-                                <ul className="text-sm text-green-700 space-y-1">
-                                  <li>• <strong>Improving trend:</strong> Forecasts may be conservative</li>
-                                  <li>• <strong>Declining trend:</strong> Consider process improvements</li>
-                                  <li>• <strong>Stable trend:</strong> Historical data is most reliable</li>
-                                  <li>• <strong>No clear trend:</strong> Natural variation in performance</li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                            <h4 className="font-semibold text-amber-800 mb-2">Using Trend Insights:</h4>
-                            <ul className="text-sm text-amber-700 space-y-1">
-                              <li>• Factor trends into your confidence levels</li>
-                              <li>• Address declining performance before committing to dates</li>
-                              <li>• Use improving trends to negotiate shorter timelines</li>
-                              <li>• Combine with team retrospectives for context</li>
+                        <AccordionTrigger className="flex items-center">
+                          <TrendingUp className="w-4 h-4 mr-2" />
+                          Historical Throughput Trends
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <p>When you use historical throughput data, the system automatically analyzes performance trends:</p>
+                            <ul className="list-disc list-inside space-y-1 ml-4">
+                              <li><strong>Trend Direction:</strong> Shows if team performance is increasing, decreasing, or stable</li>
+                              <li><strong>Trend Strength:</strong> Indicates how significant the trend is (weak, moderate, strong)</li>
+                              <li><strong>Recent vs Overall:</strong> Compares recent performance to historical average</li>
+                              <li><strong>Recommendations:</strong> Provides context-specific advice for forecast interpretation</li>
                             </ul>
+                            <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800 rounded-lg p-3 mt-3">
+                              <p className="text-indigo-700 dark:text-indigo-300"><strong>Note:</strong> Trend analysis appears in all analysis modes (Forecast, Probability, Target) when historical data is used. It provides valuable context but doesn't change the forecast calculations.</p>
+                            </div>
                           </div>
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
-                  </div>
-                )}
+                  </CardContent>
+                </Card>
 
-                {activeCategory === "export-features" && (
-                  <div className="space-y-8">
-                    <div>
-                      <h2 className="text-3xl font-bold text-slate-900 mb-4">Export Features</h2>
-                      <p className="text-lg text-slate-600 mb-8">
-                        Share your forecasting results with stakeholders using professional export formats.
-                      </p>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Making Decisions with Results</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                        <h4 className="font-semibold text-green-700 dark:text-green-300 mb-2">Recommended Approach</h4>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-green-600 dark:text-green-400">
+                          <li>Use 80% confidence interval for stakeholder commitments</li>
+                          <li>Use 50% confidence for internal planning and resource allocation</li>
+                          <li>Use 95% confidence for critical deadlines with high penalty for delay</li>
+                          <li>Compare multiple scenarios to understand impact of different approaches</li>
+                        </ul>
+                      </div>
+                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                        <h4 className="font-semibold text-amber-700 dark:text-amber-300 mb-2">Risk Assessment</h4>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-amber-600 dark:text-amber-400">
+                          <li>Large spread between 50% and 95% indicates high uncertainty</li>
+                          <li>Right-skewed distribution suggests delay risks</li>
+                          <li>High standard deviation means variable completion times</li>
+                        </ul>
+                      </div>
                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <Card className="border-red-200">
-                        <CardHeader>
-                          <CardTitle className="text-lg text-red-700 flex items-center">
+            {activeCategory === "forecasting-methods" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Calculator className="w-5 h-5" />
+                      <span>Forecasting Methods</span>
+                    </CardTitle>
+                    <CardDescription>Detailed explanation of throughput and cycle time analysis</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="throughput" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="throughput">Throughput Analysis</TabsTrigger>
+                        <TabsTrigger value="cycletime">Cycle Time Analysis</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="throughput" className="space-y-4">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">When to Use Throughput Analysis</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">Best suited for teams that:</p>
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li>Work in regular sprints or iterations</li>
+                              <li>Have consistent team velocity measurements</li>
+                              <li>Complete multiple items per time period</li>
+                              <li>Want to forecast based on team productivity</li>
+                            </ul>
+                            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                              <p className="text-sm text-blue-700 dark:text-blue-300"><strong>Example:</strong> A development team completes an average of 12 story points per sprint with a CV of 0.3, and needs to complete 100 story points.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">How It Works</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <ol className="list-decimal list-inside space-y-2 text-sm">
+                              <li>Simulates team throughput using log-normal distribution</li>
+                              <li>Accounts for variability in team performance</li>
+                              <li>Considers capacity constraints if specified</li>
+                              <li>Tracks completion progress over time periods</li>
+                              <li>Records completion date when backlog reaches zero</li>
+                            </ol>
+                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3">
+                              <p className="text-sm font-mono">Completion Time = Backlog Size ÷ Variable Throughput Rate</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+
+                      <TabsContent value="cycletime" className="space-y-4">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">When to Use Cycle Time Analysis</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">Best suited for teams that:</p>
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li>Have historical cycle time data</li>
+                              <li>Work on items with varying completion times</li>
+                              <li>Want to model individual item completion patterns</li>
+                              <li>Focus on flow efficiency rather than batch delivery</li>
+                            </ul>
+                            <div className="bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800 rounded-lg p-3">
+                              <p className="text-sm text-purple-700 dark:text-purple-300"><strong>Example:</strong> Items typically take 3 days (P50), 7 days (P80), and 14 days (P95) to complete, with 50 items in the backlog.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">Processing Modes</CardTitle>
+                            <CardDescription>Choose how to model parallel work within your team</CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <Card className="border-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/20">
+                                <CardHeader className="pb-3">
+                                  <CardTitle className="text-sm text-emerald-700 dark:text-emerald-300">Worker Scheduling (Recommended)</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <p className="text-xs text-emerald-600 dark:text-emerald-400 mb-2">Items are assigned to the earliest available team member among parallel workers.</p>
+                                  <ul className="list-disc list-inside text-xs space-y-1 text-emerald-600 dark:text-emerald-400">
+                                    <li>More realistic team dynamics</li>
+                                    <li>Faster workers can start new items earlier</li>
+                                    <li>Usually produces shorter, more accurate forecasts</li>
+                                  </ul>
+                                </CardContent>
+                              </Card>
+                              <Card className="border-orange-200 bg-orange-50/50 dark:bg-orange-950/20">
+                                <CardHeader className="pb-3">
+                                  <CardTitle className="text-sm text-orange-700 dark:text-orange-300">Batch Processing</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <p className="text-xs text-orange-600 dark:text-orange-400 mb-2">Items are processed in batches, with each batch completing when the slowest item finishes.</p>
+                                  <ul className="list-disc list-inside text-xs space-y-1 text-orange-600 dark:text-orange-400">
+                                    <li>More conservative estimates</li>
+                                    <li>Built-in buffer for delays</li>
+                                    <li>Simpler mental model</li>
+                                  </ul>
+                                </CardContent>
+                              </Card>
+                            </div>
+                            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                              <p className="text-sm text-blue-700 dark:text-blue-300">
+                                <strong>WIP Limit:</strong> Both modes use a Work In Progress limit (default: 7) to represent team capacity. This determines how many items can be worked on simultaneously.
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">How It Works</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <ol className="list-decimal list-inside space-y-2 text-sm">
+                              <li>Fits log-normal distribution to percentile data (P50, P80, P95)</li>
+                              <li>Generates cycle time for each backlog item from the distribution</li>
+                              <li>Models parallel work using WIP limit (team capacity)</li>
+                              <li><strong>Worker Scheduling:</strong> Assigns items to earliest available worker</li>
+                              <li><strong>Batch Processing:</strong> Groups items, waits for slowest in each batch</li>
+                              <li>Project completes when the last item/batch finishes</li>
+                            </ol>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-lg p-3">
+                                <p className="text-sm font-mono text-emerald-700 dark:text-emerald-300">Worker Scheduling:<br/>Time = MAX(worker finish times)</p>
+                              </div>
+                              <div className="bg-orange-50 dark:bg-orange-950/20 rounded-lg p-3">
+                                <p className="text-sm font-mono text-orange-700 dark:text-orange-300">Batch Processing:<br/>Time = SUM(batch completion times)</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Choosing the Right Method</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-green-700 dark:text-green-300">Use Throughput When:</h4>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-green-600 dark:text-green-400">
+                          <li>You have velocity/throughput history</li>
+                          <li>Team works in batches or sprints</li>
+                          <li>Focus on team productivity</li>
+                          <li>Items are relatively similar in size</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-purple-700 dark:text-purple-300">Use Cycle Time When:</h4>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-purple-600 dark:text-purple-400">
+                          <li>You have individual completion times</li>
+                          <li>Items vary significantly in complexity</li>
+                          <li>Focus on flow and continuous delivery</li>
+                          <li>Work happens in parallel streams</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeCategory === "analysis-modes" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Target className="w-5 h-5" />
+                      <span>Analysis Modes</span>
+                    </CardTitle>
+                    <CardDescription>Choose between Forecast, Probability, and Target analysis</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="forecast" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="forecast">Forecast</TabsTrigger>
+                        <TabsTrigger value="probability">Probability</TabsTrigger>
+                        <TabsTrigger value="target">Target</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="forecast" className="space-y-4">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg flex items-center space-x-2">
+                              <Calculator className="w-5 h-5" />
+                              <span>Standard Forecast Analysis</span>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">The default mode for project forecasting when you:</p>
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li>Want to predict when your project will complete</li>
+                              <li>Need confidence intervals and completion dates</li>
+                              <li>Have no fixed deadline constraints</li>
+                              <li>Want comprehensive statistical analysis</li>
+                            </ul>
+                            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                              <p className="text-sm text-blue-700 dark:text-blue-300"><strong>Result:</strong> Shows completion date ranges with 50%, 80%, and 95% confidence levels, plus detailed statistical breakdown and visualizations.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">What You Get</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li><strong>Confidence Intervals:</strong> 50%, 80%, and 95% completion dates</li>
+                              <li><strong>Statistical Analysis:</strong> Mean, median, standard deviation</li>
+                              <li><strong>Histogram:</strong> Distribution of possible completion times</li>
+                              <li><strong>S-Curve:</strong> Cumulative probability over time</li>
+                              <li><strong>Export Options:</strong> Save charts and data for reporting</li>
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                      
+                      <TabsContent value="probability" className="space-y-4">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg flex items-center space-x-2">
+                              <Percent className="w-5 h-5" />
+                              <span>When to Use Probability Analysis</span>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">Ideal for situations when you:</p>
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li>Have a fixed deadline or target date</li>
+                              <li>Need to assess the risk of missing that deadline</li>
+                              <li>Want to communicate success probability to stakeholders</li>
+                              <li>Need to make go/no-go decisions based on likelihood</li>
+                            </ul>
+                            <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                              <p className="text-sm text-green-700 dark:text-green-300"><strong>Example:</strong> Your team has 100 story points remaining and needs to complete by December 15th. What's the probability of success?</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">How Probability Analysis Works</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <ol className="list-decimal list-inside space-y-2 text-sm">
+                              <li>Runs the standard forecast simulation using your selected method</li>
+                              <li>Calculates the number of days between today and your target date</li>
+                              <li>Counts how many simulation outcomes complete within that timeframe</li>
+                              <li>Converts this to a percentage probability of success</li>
+                            </ol>
+                            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                              <p className="text-sm text-blue-700 dark:text-blue-300"><strong>Result:</strong> Shows a single percentage (e.g., "73% chance of completing by target date") plus detailed statistical breakdown.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">Interpreting Probability Results</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                                <div className="font-semibold text-red-700 dark:text-red-300">Low (&lt;50%)</div>
+                                <div className="text-xs text-red-600 dark:text-red-400">High risk - consider scope reduction or deadline extension</div>
+                              </div>
+                              <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+                                <div className="font-semibold text-yellow-700 dark:text-yellow-300">Medium (50-80%)</div>
+                                <div className="text-xs text-yellow-600 dark:text-yellow-400">Moderate risk - monitor closely and have contingency plans</div>
+                              </div>
+                              <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                                <div className="font-semibold text-green-700 dark:text-green-300">High (&gt;80%)</div>
+                                <div className="text-xs text-green-600 dark:text-green-400">Low risk - good confidence in meeting the deadline</div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                      
+                      <TabsContent value="target" className="space-y-4">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg flex items-center space-x-2">
+                              <Calendar className="w-5 h-5" />
+                              <span>When to Use Target Analysis</span>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">Perfect for scenarios where you:</p>
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li>Have a fixed deadline but flexible start date</li>
+                              <li>Need to determine optimal project timing</li>
+                              <li>Want to see how early start affects success probability</li>
+                              <li>Need to present start date recommendations to stakeholders</li>
+                            </ul>
+                            <div className="bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800 rounded-lg p-3">
+                              <p className="text-sm text-purple-700 dark:text-purple-300"><strong>Example:</strong> You must deliver by March 1st. When should you start to have 80% confidence of success?</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">How Target Analysis Works</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <ol className="list-decimal list-inside space-y-2 text-sm">
+                              <li>Uses your baseline forecast to understand typical completion times</li>
+                              <li>Calculates time buffers needed for different confidence levels</li>
+                              <li>Works backwards from your target date to recommend start dates</li>
+                              <li>Shows probability curve of success across different start dates</li>
+                            </ol>
+                            <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800 rounded-lg p-3">
+                              <p className="text-sm text-indigo-700 dark:text-indigo-300"><strong>Key Visualization:</strong> The "Success Probability by Start Date" chart shows how your chances improve with earlier start dates.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">Understanding the Probability Curve</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">The Target Analysis chart displays:</p>
+                            <ul className="list-disc list-inside space-y-1 text-sm ml-4">
+                              <li><strong>X-axis:</strong> Potential start dates (earlier dates on the left)</li>
+                              <li><strong>Y-axis:</strong> Success probability percentage (0-100%)</li>
+                              <li><strong>Curve shape:</strong> Shows how earlier starts dramatically improve odds</li>
+                              <li><strong>Sweet spots:</strong> Identify optimal start dates for your risk tolerance</li>
+                            </ul>
+                            <div className="bg-slate-50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 rounded-lg p-3">
+                              <p className="text-sm text-slate-700 dark:text-slate-300"><strong>Pro Tip:</strong> Look for the steepest part of the curve - small changes in start date can significantly impact success probability.</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-lg">Start Date Recommendations</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <p className="text-sm">Target Analysis provides specific recommendations:</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-3">
+                                <div className="font-semibold text-emerald-700 dark:text-emerald-300">Conservative (95%)</div>
+                                <div className="text-xs text-emerald-600 dark:text-emerald-400">Maximum buffer, lowest risk</div>
+                              </div>
+                              <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                                <div className="font-semibold text-blue-700 dark:text-blue-300">Balanced (80%)</div>
+                                <div className="text-xs text-blue-600 dark:text-blue-400">Good confidence with reasonable buffer</div>
+                              </div>
+                              <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3">
+                                <div className="font-semibold text-orange-700 dark:text-orange-300">Aggressive (50%)</div>
+                                <div className="text-xs text-orange-600 dark:text-orange-400">Minimal buffer, higher risk</div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeCategory === "export-features" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Download className="w-5 h-5" />
+                      <span>Export Features</span>
+                    </CardTitle>
+                    <CardDescription>Share and save your forecast results</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Card className="border-red-200 bg-red-50/50 dark:bg-red-950/20">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-red-700 dark:text-red-300 flex items-center">
                             <FileText className="w-5 h-5 mr-2" />
                             PDF Report
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-sm text-red-600 mb-3">
-                            Generate a comprehensive report including:
-                          </p>
-                          <ul className="text-sm text-red-600 space-y-1">
-                            <li>• Executive summary with key dates</li>
-                            <li>• All charts and visualizations</li>
-                            <li>• Statistical analysis details</li>
-                            <li>• Input parameters and assumptions</li>
-                            <li>• Professional formatting for presentations</li>
+                          <ul className="list-disc list-inside space-y-1 text-sm text-red-600 dark:text-red-400">
+                            <li>Complete forecast analysis</li>
+                            <li>Embedded charts and graphs</li>
+                            <li>Statistical summary</li>
+                            <li>Professional formatting</li>
+                            <li>Ready for stakeholder sharing</li>
                           </ul>
                         </CardContent>
                       </Card>
 
-                      <Card className="border-green-200">
-                        <CardHeader>
-                          <CardTitle className="text-lg text-green-700 flex items-center">
+                      <Card className="border-green-200 bg-green-50/50 dark:bg-green-950/20">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-green-700 dark:text-green-300 flex items-center">
                             <Download className="w-5 h-5 mr-2" />
                             CSV Data
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-sm text-green-600 mb-3">
-                            Export raw data for further analysis:
-                          </p>
-                          <ul className="text-sm text-green-600 space-y-1">
-                            <li>• All simulation results</li>
-                            <li>• Percentile calculations</li>
-                            <li>• Date ranges and probabilities</li>
-                            <li>• Import into Excel or other tools</li>
-                            <li>• Create custom charts and reports</li>
+                          <ul className="list-disc list-inside space-y-1 text-sm text-green-600 dark:text-green-400">
+                            <li>Raw simulation data</li>
+                            <li>All completion dates</li>
+                            <li>Percentile calculations</li>
+                            <li>Input parameters</li>
+                            <li>Importable to Excel/Sheets</li>
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg text-blue-700 dark:text-blue-300 flex items-center">
+                            <ImageIcon className="w-5 h-5 mr-2" />
+                            Chart Images
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="list-disc list-inside space-y-1 text-sm text-blue-600 dark:text-blue-400">
+                            <li>High-resolution PNG files</li>
+                            <li>Histogram and S-curve charts</li>
+                            <li>Publication quality</li>
+                            <li>Perfect for presentations</li>
+                            <li>Standalone visuals</li>
                           </ul>
                         </CardContent>
                       </Card>
                     </div>
+                  </CardContent>
+                </Card>
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Scenario Comparison</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
                       <div className="flex items-start space-x-3">
-                        <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <GitCompare className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                         <div>
-                          <div className="text-sm text-blue-700">
-                            <strong>Export Tips:</strong> PDF reports are perfect for stakeholder meetings and documentation. CSV exports are ideal for further statistical analysis or creating custom dashboards in other tools.
-                          </div>
+                          <h4 className="font-semibold text-slate-900 dark:text-white">Save and Compare Scenarios</h4>
+                          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Save multiple forecast scenarios to compare different approaches, team sizes, or timeframes side by side.</p>
                         </div>
                       </div>
+                      <Accordion type="single" collapsible>
+                        <AccordionItem value="scenario-tips">
+                          <AccordionTrigger>Tips for Scenario Analysis</AccordionTrigger>
+                          <AccordionContent>
+                            <ul className="list-disc list-inside space-y-1 text-sm">
+                              <li>Compare optimistic vs. realistic vs. pessimistic assumptions</li>
+                              <li>Test impact of team size changes</li>
+                              <li>Evaluate different scope reduction options</li>
+                              <li>Model the effect of process improvements</li>
+                              <li>Assess risk mitigation strategies</li>
+                            </ul>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </div>
-                  </div>
-                )}
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
-                {activeCategory === "terminology" && (
-                  <div className="space-y-8">
-                    <div>
-                      <h2 className="text-3xl font-bold text-slate-900 mb-4">Terminology</h2>
-                      <p className="text-lg text-slate-600 mb-8">
-                        Key terms and concepts used in Monte Carlo forecasting.
-                      </p>
+            {activeCategory === "terminology" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <HelpCircle className="w-5 h-5" />
+                      <span>Terminology & Definitions</span>
+                    </CardTitle>
+                    <CardDescription>Key terms and concepts used in Monte Carlo forecasting</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="statistical-terms">
+                        <AccordionTrigger>Statistical Terms</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <div><strong>Mean:</strong> The mathematical average of all simulated completion dates.</div>
+                            <div><strong>Median (P50):</strong> The middle value when all dates are sorted - 50% of simulations finished by this date.</div>
+                            <div><strong>Mode:</strong> The most frequently occurring completion date in the simulations.</div>
+                            <div><strong>Standard Deviation:</strong> Measures how spread out the completion dates are from the mean.</div>
+                            <div><strong>Coefficient of Variation (CV):</strong> Standard deviation divided by mean, expressing variability as a percentage.</div>
+                            <div><strong>Percentile (P80, P95):</strong> The value below which a certain percentage of simulations fall.</div>
+                            <div><strong>Range:</strong> The difference between the earliest and latest completion dates.</div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                      
+                      <AccordionItem value="forecasting-terms">
+                        <AccordionTrigger>Forecasting Terms</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <div><strong>Monte Carlo Simulation:</strong> A statistical method that uses random sampling to model uncertainty and risk.</div>
+                            <div><strong>Confidence Interval:</strong> A range of dates with a specific probability of containing the actual completion date.</div>
+                            <div><strong>Simulation Trials:</strong> The number of times the forecast model runs to generate the probability distribution.</div>
+                            <div><strong>Throughput:</strong> The rate at which a team completes work items (e.g., story points per sprint).</div>
+                            <div><strong>Cycle Time:</strong> The time it takes to complete a single work item from start to finish.</div>
+                            <div><strong>Backlog:</strong> The total amount of work to be completed (in items, points, or hours).</div>
+                            <div><strong>Log-normal Distribution:</strong> A probability distribution used to model positive values with right-skewed patterns.</div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                      
+                      <AccordionItem value="agile-terms">
+                        <AccordionTrigger>Agile & Project Terms</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <div><strong>Velocity:</strong> The amount of work a team completes in a fixed time period (usually a sprint).</div>
+                            <div><strong>Story Points:</strong> A unit of measure for expressing the relative size and complexity of user stories.</div>
+                            <div><strong>Sprint:</strong> A fixed time period (usually 1-4 weeks) during which specific work is completed.</div>
+                            <div><strong>Capacity:</strong> The maximum amount of work a team can handle in a given time period.</div>
+                            <div><strong>WIP (Work in Progress):</strong> The number of items currently being worked on.</div>
+                            <div><strong>Lead Time:</strong> The total time from when a request is made until it's completed.</div>
+                            <div><strong>Dependencies:</strong> Work items that rely on other items to be completed first.</div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                      
+                      <AccordionItem value="risk-terms">
+                        <AccordionTrigger>Risk & Uncertainty Terms</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <div><strong>Risk Factor:</strong> An event or condition that could negatively impact project timeline.</div>
+                            <div><strong>Variability:</strong> The degree to which actual performance differs from average performance.</div>
+                            <div><strong>Uncertainty:</strong> The lack of complete knowledge about future outcomes.</div>
+                            <div><strong>Buffer:</strong> Extra time built into estimates to account for uncertainty and risks.</div>
+                            <div><strong>Confidence Level:</strong> The probability that the actual outcome will fall within the predicted range.</div>
+                            <div><strong>Right-skewed:</strong> A distribution where most values cluster on the left with a long tail extending right (common in project timelines).</div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Common Abbreviations</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div className="space-y-2">
+                        <div><strong>CV:</strong> Coefficient of Variation</div>
+                        <div><strong>P50:</strong> 50th Percentile (Median)</div>
+                        <div><strong>P80:</strong> 80th Percentile</div>
+                        <div><strong>P95:</strong> 95th Percentile</div>
+                        <div><strong>SD:</strong> Standard Deviation</div>
+                      </div>
+                      <div className="space-y-2">
+                        <div><strong>MC:</strong> Monte Carlo</div>
+                        <div><strong>CI:</strong> Confidence Interval</div>
+                        <div><strong>PDF:</strong> Probability Density Function</div>
+                        <div><strong>CDF:</strong> Cumulative Distribution Function</div>
+                        <div><strong>SLE:</strong> Service Level Expectation</div>
+                      </div>
                     </div>
-
-                    <div className="grid grid-cols-1 gap-4">
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Monte Carlo Simulation</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-slate-600">
-                            A mathematical technique that uses random sampling to model complex systems and predict probable outcomes. Named after the Monte Carlo casino in Monaco.
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Throughput</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-slate-600">
-                            The number of work items completed by a team in a given time period. Also known as velocity in agile contexts.
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Cycle Time</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-slate-600">
-                            The time it takes to complete a single work item from start to finish. Used to predict completion times for individual items.
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Percentile (P50, P80, P95)</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-slate-600">
-                            Statistical measures indicating the value below which a certain percentage of observations fall. P50 is the median, P80 means 80% of results fall below this value.
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Confidence Interval</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-slate-600">
-                            A range of values that contains the true value with a specified probability. Higher confidence levels provide wider, more conservative ranges.
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Standard Deviation</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-slate-600">
-                            A measure of variability in a dataset. Higher standard deviation indicates more uncertainty and wider ranges in forecasts.
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Skewness</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-slate-600">
-                            A measure of the asymmetry of a distribution. Positive skew means the tail extends toward higher values (later dates).
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
       {/* Footer */}
-      <div className="mt-20 border-t border-slate-200/50 bg-white/30 backdrop-blur-sm">
+      <div className="mt-20 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center space-y-4">
-            <p className="text-sm text-slate-500">
-              Powered by advanced statistical modeling • Built for professional forecasting
-            </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Contact: flow.forecasting.app@gmail.com</p>
             
             {/* Support Section */}
             <div className="max-w-2xl mx-auto">
-              <p className="text-xs text-slate-400 mb-3">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mb-3">
                 If you like this little app and want to see more experiments like this, consider buying us a coffee. Every small support helps us keep building cool and free stuff that (hopefully) makes life a bit easier.
               </p>
               <div className="flex justify-center items-center space-x-6">
@@ -625,19 +1021,19 @@ export function Support() {
                   href="https://buymeacoffee.com/flowforcasting" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 text-xs text-amber-600 hover:text-amber-700 transition-colors"
+                  className="inline-flex items-center space-x-2 text-xs text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 transition-colors"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-.766-1.645a4.32 4.32 0 0 0-1.513-1.147c-.6-.28-1.248-.42-1.897-.41H6.39c-.65-.01-1.297.13-1.897.41a4.32 4.32 0 0 0-1.513 1.147c-.378.482-.647 1.047-.766 1.645L2.082 7.81c-.07.351-.05.713.058 1.054.108.341.297.65.55.896.253.246.567.426.913.523.346.097.708.109 1.058.035L6.39 9.653c.65.01 1.297-.13 1.897-.41a4.32 4.32 0 0 0 1.513-1.147c.378-.482.647-1.047.766-1.645L10.698 6c.119-.598.388-1.163.766-1.645a4.32 4.32 0 0 1 1.513-1.147c.6-.28 1.248-.42 1.897-.41h3.517c.65-.01 1.297.13 1.897.41a4.32 4.32 0 0 1 1.513 1.147c.378.482.647 1.047.766 1.645l.132.451z"/>
                   </svg>
                   <span>Buy Me Coffee</span>
                 </a>
-                <span className="text-slate-300">•</span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
                 <a 
                   href="https://paypal.me/mtrnski" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 text-xs text-blue-600 hover:text-blue-700 transition-colors"
+                  className="inline-flex items-center space-x-2 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.028-.026.057-.039.085-.94 4.814-4.169 6.523-8.097 6.523h-2.29c-.67 0-1.238.482-1.365 1.153l-.69 4.353-.066.412L6.26 22.7a.641.641 0 0 0 .633.737h4.607c.524 0 .968-.382 1.05-.9l.12-.76.445-2.817.029-.179c.082-.518.526-.9 1.05-.9h.66c3.533 0 6.295-1.336 7.102-5.202.337-1.615.203-2.963-.57-3.902z"/>

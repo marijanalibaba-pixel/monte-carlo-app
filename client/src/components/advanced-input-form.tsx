@@ -138,15 +138,15 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <Card className="border-none bg-gradient-to-r from-blue-50 to-indigo-50">
+      <Card className="border-none bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
       </Card>
       {/* Getting Started Info */}
       <div className="text-center mb-8">
-        <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2">
+        <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
             Create Multiple Forecasts
           </h3>
-          <p className="text-sm text-blue-700">
+          <p className="text-sm text-blue-700 dark:text-blue-300">
             Run single or multiple forecasts with different scenarios. Save your results and compare them side-by-side to make better-informed decisions.
           </p>
         </div>
@@ -293,11 +293,11 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
             </TabsList>
 
             <TabsContent value="throughput" className="mt-6 space-y-6">
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-900 mb-2">
+              <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
                   Team Velocity Modeling
                 </h4>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
                   Models how many items your team completes per week using historical patterns or statistical parameters.
                 </p>
               </div>
@@ -306,7 +306,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'historical' ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'historical' ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
                     onClick={() => {
                       setDataSourceType('historical');
                       if (dataSourceType !== 'historical') {
@@ -327,7 +327,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   </Card>
                   
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'statistical' ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'statistical' ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
                     onClick={() => {
                       setDataSourceType('statistical');
                       setHistoricalData("");
@@ -346,7 +346,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                 </div>
 
                 {/* Current Calculation Method Indicator */}
-                <div className={`p-4 rounded-lg border-l-4 ${dataSourceType === 'historical' ? 'border-l-blue-500 bg-blue-50' : 'border-l-orange-500 bg-orange-50'}`}>
+                <div className={`p-4 rounded-lg border-l-4 ${dataSourceType === 'historical' ? 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
                   <div className="flex items-center space-x-2 mb-2">
                     <div className={`w-3 h-3 rounded-full ${dataSourceType === 'historical' ? 'bg-blue-500' : 'bg-orange-500'}`} />
                     <h4 className="font-semibold">
@@ -384,7 +384,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                     <p className="text-sm text-muted-foreground">
                       <strong>Enter in reverse chronological order:</strong> Start with last week's throughput, then the week before, and so on.
                       {historicalData && (
-                        <span className="font-medium text-blue-600">
+                        <span className="font-medium text-blue-600 dark:text-blue-400">
                           {` Found ${parseHistoricalData(historicalData).length} weeks of data`}
                         </span>
                       )}
@@ -450,11 +450,11 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
             </TabsContent>
 
             <TabsContent value="cycletime" className="mt-6 space-y-6">
-              <div className="bg-emerald-50 rounded-lg p-4">
-                <h4 className="font-semibold text-emerald-900 mb-2">
+              <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-lg p-4">
+                <h4 className="font-semibold text-emerald-900 dark:text-emerald-100 mb-2">
                   Individual Item Duration
                 </h4>
-                <p className="text-sm text-emerald-700">
+                <p className="text-sm text-emerald-700 dark:text-emerald-300">
                   Models project completion based on how long individual items typically take to finish.
                 </p>
               </div>
@@ -463,7 +463,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'worker-scheduling' ? 'border-emerald-500 bg-emerald-50 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'worker-scheduling' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
                     onClick={() => setProcessingMode('worker-scheduling')}
                   >
                     <CardContent className="p-4">
@@ -479,7 +479,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   </Card>
                   
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'batch-max' ? 'border-emerald-500 bg-emerald-50 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'batch-max' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
                     onClick={() => setProcessingMode('batch-max')}
                   >
                     <CardContent className="p-4">
@@ -495,7 +495,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                 </div>
 
                 {/* Current Processing Mode Indicator */}
-                <div className={`p-4 rounded-lg border-l-4 ${processingMode === 'worker-scheduling' ? 'border-l-emerald-500 bg-emerald-50' : 'border-l-orange-500 bg-orange-50'}`}>
+                <div className={`p-4 rounded-lg border-l-4 ${processingMode === 'worker-scheduling' ? 'border-l-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
                   <div className="flex items-center space-x-2 mb-2">
                     <div className={`w-3 h-3 rounded-full ${processingMode === 'worker-scheduling' ? 'bg-emerald-500' : 'bg-orange-500'}`} />
                     <h4 className="font-semibold">
@@ -603,12 +603,12 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               </div>
               
               {/* Dependency Modeling Explanation */}
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <h4 className="font-semibold text-blue-900 mb-2 flex items-center">
+              <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center">
                   <Target className="w-4 h-4 mr-2" />
                   What is Dependency Modeling?
                 </h4>
-                <div className="text-sm text-blue-800 space-y-2">
+                <div className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
                   <p>
                     <strong>Dependencies</strong> are external factors that can delay your project beyond normal work variation:
                   </p>
