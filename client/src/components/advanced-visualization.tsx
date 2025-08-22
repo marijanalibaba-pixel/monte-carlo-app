@@ -411,10 +411,11 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
                     </h4>
                     <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
                       <li>Reduce work-in-progress (WIP) limits to improve flow</li>
-                      <li>Eliminate blockers and bottlenecks in your process</li>
-                      <li>Add team capacity or cross-train team members</li>
-                      <li>Simplify or break down large work items</li>
-                      <li>Improve team collaboration and reduce handoffs</li>
+                      <li>Identify and optimize bottlenecks using TOC principles</li>
+                      <li>Cross-train team members to balance capacity</li>
+                      <li>Split large work items into smaller, faster units</li>
+                      <li>Eliminate waste and cut waiting times for decisions/reviews</li>
+                      <li>Use pull instead of push systems to stabilize flow</li>
                     </ul>
                   </div>
                 </div>
