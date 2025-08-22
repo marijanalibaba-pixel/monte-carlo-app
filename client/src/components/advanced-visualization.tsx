@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState } from "react";
-import { ForecastResult } from "@/lib/monte-carlo-engine";
+import { ForecastResult, ThroughputTrendAnalysis } from "@/lib/monte-carlo-engine";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine,
   LineChart, Line, Area, AreaChart, ScatterChart, Scatter, Cell
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   TrendingUp, BarChart3, Target, Calendar, AlertTriangle, 
-  Activity, Gauge, PieChart, Zap, Award, Info
+  Activity, Gauge, PieChart, Zap, Award, Info, TrendingDown, Minus, Lightbulb
 } from "lucide-react";
 import { format, addDays } from "date-fns";
 
@@ -46,6 +46,35 @@ const StatTooltip = ({ children, explanation }: { children: React.ReactNode; exp
 };
 
 export function AdvancedVisualization({ result, startDate, mode = 'forecast', targetDate }: AdvancedVisualizationProps) {
+  
+  // Get trend icon based on trend direction
+  const getTrendIcon = (trend: ThroughputTrendAnalysis['trend']) => {
+    switch (trend) {
+      case 'increasing':
+        return TrendingUp;
+      case 'decreasing':
+        return TrendingDown;
+      case 'stable':
+        return Minus;
+      default:
+        return Minus;
+    }
+  };
+
+  // Get trend color based on trend and strength
+  const getTrendColor = (trend: ThroughputTrendAnalysis['trend'], strength: ThroughputTrendAnalysis['trendStrength']) => {
+    if (trend === 'increasing') {
+      return strength === 'strong' ? 'text-green-700 bg-green-50 border-green-200 dark:text-green-300 dark:bg-green-950/20 dark:border-green-800' :
+             strength === 'moderate' ? 'text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-950/20 dark:border-emerald-800' :
+             'text-blue-700 bg-blue-50 border-blue-200 dark:text-blue-300 dark:bg-blue-950/20 dark:border-blue-800';
+    } else if (trend === 'decreasing') {
+      return strength === 'strong' ? 'text-red-700 bg-red-50 border-red-200 dark:text-red-300 dark:bg-red-950/20 dark:border-red-800' :
+             strength === 'moderate' ? 'text-orange-700 bg-orange-50 border-orange-200 dark:text-orange-300 dark:bg-orange-950/20 dark:border-orange-800' :
+             'text-yellow-700 bg-yellow-50 border-yellow-200 dark:text-yellow-300 dark:bg-yellow-950/20 dark:border-yellow-800';
+    } else {
+      return 'text-gray-700 bg-gray-50 border-gray-200 dark:text-gray-300 dark:bg-gray-950/20 dark:border-gray-800';
+    }
+  };
   
   // Prepare histogram data with meaningful range only (95th percentile)
   const histogramData = useMemo(() => {
@@ -618,6 +647,76 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
         </Card>
       </div>
       )}
+
+      {/* Throughput Trends Analysis - Show when available */}
+      {result.throughputTrends && mode === 'forecast' && (
+        <Card className="border-indigo-200 dark:border-indigo-800">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2 text-indigo-800 dark:text-indigo-200">
+              <Lightbulb className="w-5 h-5" />
+              <span>Historical Throughput Analysis</span>
+            </CardTitle>
+            <CardDescription>Insights from your historical data patterns (not affecting forecast calculations)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className={`border-l-4 p-4 rounded-lg ${getTrendColor(result.throughputTrends.trend, result.throughputTrends.trendStrength)}`}>
+              <div className="flex items-start space-x-3">
+                {(() => {
+                  const TrendIcon = getTrendIcon(result.throughputTrends.trend);
+                  return <TrendIcon className="w-6 h-6 mt-0.5 flex-shrink-0" />;
+                })()}
+                <div className="flex-1 space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="font-semibold text-lg capitalize">
+                      {result.throughputTrends.trend} Trend
+                    </h4>
+                    <Badge variant="outline" className={
+                      result.throughputTrends.trendStrength === 'strong' ? 'border-current' :
+                      result.throughputTrends.trendStrength === 'moderate' ? 'border-current opacity-80' : 'border-current opacity-60'
+                    }>
+                      {result.throughputTrends.trendStrength}
+                    </Badge>
+                  </div>
+                  
+                  <p className="text-sm leading-relaxed">
+                    {result.throughputTrends.description}
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                      <p className="text-xs font-medium opacity-75 mb-1">Recent Average</p>
+                      <p className="text-lg font-bold">{result.throughputTrends.recentAverage} items/week</p>
+                    </div>
+                    <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                      <p className="text-xs font-medium opacity-75 mb-1">Overall Average</p>
+                      <p className="text-lg font-bold">{result.throughputTrends.overallAverage} items/week</p>
+                    </div>
+                    <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3">
+                      <p className="text-xs font-medium opacity-75 mb-1">Change</p>
+                      <p className="text-lg font-bold">
+                        {result.throughputTrends.changePercent >= 0 ? '+' : ''}{result.throughputTrends.changePercent}%
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/40 dark:bg-slate-800/40 rounded-lg p-3 mt-4">
+                    <div className="flex items-start space-x-2">
+                      <Lightbulb className="w-4 h-4 mt-0.5 flex-shrink-0 opacity-75" />
+                      <div>
+                        <p className="text-xs font-semibold opacity-75 mb-1">RECOMMENDATION</p>
+                        <p className="text-sm leading-relaxed">
+                          {result.throughputTrends.recommendation}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
       {/* Confidence Intervals Table - Only show for forecast mode */}
       {mode === 'forecast' && (
       <Card>

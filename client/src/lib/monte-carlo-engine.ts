@@ -113,6 +113,120 @@ export class StatisticalUtils {
     const stdDev = Math.sqrt(variance);
     return stdDev / mean;
   }
+
+  /**
+   * Analyze trends in historical throughput data
+   * Returns trend information without affecting forecast calculations
+   */
+  static analyzeThroughputTrends(data: number[]): {
+    trend: 'increasing' | 'decreasing' | 'stable';
+    trendStrength: 'weak' | 'moderate' | 'strong';
+    description: string;
+    recommendation: string;
+    recentAverage: number;
+    overallAverage: number;
+    changePercent: number;
+    linearSlope: number;
+  } {
+    if (data.length < 3) {
+      return {
+        trend: 'stable',
+        trendStrength: 'weak',
+        description: 'Insufficient data for trend analysis',
+        recommendation: 'Collect more historical data for trend insights',
+        recentAverage: data[0] || 0,
+        overallAverage: data.reduce((a, b) => a + b, 0) / data.length,
+        changePercent: 0,
+        linearSlope: 0
+      };
+    }
+
+    // Data comes in reverse chronological order (most recent first)
+    // So we need to reverse it for trend analysis
+    const chronologicalData = [...data].reverse();
+    const n = chronologicalData.length;
+    
+    // Calculate linear regression slope
+    const x = chronologicalData.map((_, i) => i);
+    const y = chronologicalData;
+    const meanX = x.reduce((a, b) => a + b, 0) / n;
+    const meanY = y.reduce((a, b) => a + b, 0) / n;
+    
+    const numerator = x.reduce((sum, xi, i) => sum + (xi - meanX) * (y[i] - meanY), 0);
+    const denominator = x.reduce((sum, xi) => sum + Math.pow(xi - meanX, 2), 0);
+    const slope = denominator !== 0 ? numerator / denominator : 0;
+    
+    // Calculate recent vs overall averages
+    const recentWeeks = Math.min(4, Math.floor(n / 3)); // Use last 1/3 of data or 4 weeks, whichever is smaller
+    const recentData = data.slice(0, recentWeeks); // Most recent data
+    const overallAverage = data.reduce((a, b) => a + b, 0) / data.length;
+    const recentAverage = recentData.reduce((a, b) => a + b, 0) / recentData.length;
+    
+    const changePercent = ((recentAverage - overallAverage) / overallAverage) * 100;
+    
+    // Determine trend direction
+    let trend: 'increasing' | 'decreasing' | 'stable';
+    if (Math.abs(slope) < 0.1) {
+      trend = 'stable';
+    } else if (slope > 0) {
+      trend = 'increasing';
+    } else {
+      trend = 'decreasing';
+    }
+    
+    // Determine trend strength based on slope and change percentage
+    let trendStrength: 'weak' | 'moderate' | 'strong';
+    const absChangePercent = Math.abs(changePercent);
+    if (absChangePercent < 10) {
+      trendStrength = 'weak';
+    } else if (absChangePercent < 25) {
+      trendStrength = 'moderate';
+    } else {
+      trendStrength = 'strong';
+    }
+    
+    // Generate description and recommendation
+    let description: string;
+    let recommendation: string;
+    
+    if (trend === 'increasing') {
+      if (trendStrength === 'strong') {
+        description = `Your throughput shows a strong upward trend (+${Math.abs(changePercent).toFixed(1)}% recently). Team performance is significantly improving.`;
+        recommendation = 'Consider being more optimistic in your forecasts. This upward trend suggests you might complete work faster than baseline estimates.';
+      } else if (trendStrength === 'moderate') {
+        description = `Your throughput shows a moderate upward trend (+${Math.abs(changePercent).toFixed(1)}% recently). Team performance is improving steadily.`;
+        recommendation = 'You may want to consider slightly more optimistic forecasts, but continue monitoring the trend for consistency.';
+      } else {
+        description = `Your throughput shows a slight upward trend (+${Math.abs(changePercent).toFixed(1)}% recently). Performance appears to be gradually improving.`;
+        recommendation = 'Current forecasts should be appropriate, but keep monitoring for sustained improvement.';
+      }
+    } else if (trend === 'decreasing') {
+      if (trendStrength === 'strong') {
+        description = `Your throughput shows a strong downward trend (-${Math.abs(changePercent).toFixed(1)}% recently). Team performance is declining significantly.`;
+        recommendation = 'Consider more conservative forecasts and investigate factors affecting team performance. You may need additional buffer time.';
+      } else if (trendStrength === 'moderate') {
+        description = `Your throughput shows a moderate downward trend (-${Math.abs(changePercent).toFixed(1)}% recently). Team performance is declining.`;
+        recommendation = 'Monitor the situation closely and consider slightly more conservative forecasts until the trend stabilizes.';
+      } else {
+        description = `Your throughput shows a slight downward trend (-${Math.abs(changePercent).toFixed(1)}% recently). Performance appears to be gradually declining.`;
+        recommendation = 'Current forecasts should be appropriate, but monitor for continued decline and consider investigating causes.';
+      }
+    } else {
+      description = `Your throughput appears stable with minimal variation (${changePercent >= 0 ? '+' : ''}${changePercent.toFixed(1)}% recently). Team performance is consistent.`;
+      recommendation = 'Your historical data shows consistent performance. Current forecasts should be reliable and representative of future performance.';
+    }
+    
+    return {
+      trend,
+      trendStrength,
+      description,
+      recommendation,
+      recentAverage: Math.round(recentAverage * 10) / 10,
+      overallAverage: Math.round(overallAverage * 10) / 10,
+      changePercent: Math.round(changePercent * 10) / 10,
+      linearSlope: Math.round(slope * 100) / 100
+    };
+  }
 }
 
 // Core simulation interfaces
@@ -148,6 +262,17 @@ export interface RiskFactor {
   impactDays: number;   // Additional days if risk occurs
 }
 
+export interface ThroughputTrendAnalysis {
+  trend: 'increasing' | 'decreasing' | 'stable';
+  trendStrength: 'weak' | 'moderate' | 'strong';
+  description: string;
+  recommendation: string;
+  recentAverage: number;
+  overallAverage: number;
+  changePercent: number;
+  linearSlope: number;
+}
+
 export interface ForecastResult {
   completionDates: Date[];
   confidenceIntervals: {
@@ -174,6 +299,7 @@ export interface ForecastResult {
     expectedDelayDays: number;
     riskFactorImpacts: { [key: string]: number };
   };
+  throughputTrends?: ThroughputTrendAnalysis;
 }
 
 /**
@@ -189,6 +315,12 @@ export class MonteCarloEngine {
     simConfig: SimulationConfig
   ): ForecastResult {
     const completionDays: number[] = [];
+    
+    // Analyze trends if historical data is provided
+    let throughputTrends: ThroughputTrendAnalysis | undefined;
+    if (config.historicalThroughput && config.historicalThroughput.length >= 3) {
+      throughputTrends = StatisticalUtils.analyzeThroughputTrends(config.historicalThroughput);
+    }
     
     for (let trial = 0; trial < simConfig.trials; trial++) {
       let remainingWork = config.backlogSize;
@@ -245,7 +377,14 @@ export class MonteCarloEngine {
       completionDays.push(daysElapsed);
     }
     
-    return this.processResults(completionDays, simConfig);
+    const result = this.processResults(completionDays, simConfig);
+    
+    // Add trend analysis to result
+    if (throughputTrends) {
+      result.throughputTrends = throughputTrends;
+    }
+    
+    return result;
   }
 
   /**
