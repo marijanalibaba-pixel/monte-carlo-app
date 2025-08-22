@@ -236,6 +236,16 @@ export interface ThroughputConfig {
   averageThroughput?: number;       // Mean items per week
   throughputVariability?: number;   // Coefficient of variation (0-1)
   weeklyCapacity?: number;          // Maximum items per week
+  timeUnit?: 'daily' | 'weekly';   // Whether inputs are daily or weekly
+}
+
+export interface ImprovementRecommendation {
+  currentProbability: number;
+  targetProbability: number;
+  requiredThroughputIncrease: number;  // Percentage increase needed
+  currentThroughput: number;           // Current average throughput
+  recommendedThroughput: number;       // Recommended throughput
+  timeUnit: 'daily' | 'weekly';
 }
 
 export interface CycleTimeConfig {
@@ -300,6 +310,7 @@ export interface ForecastResult {
     riskFactorImpacts: { [key: string]: number };
   };
   throughputTrends?: ThroughputTrendAnalysis;
+  improvementRecommendation?: ImprovementRecommendation;
 }
 
 /**
@@ -680,7 +691,117 @@ export class MonteCarloEngine {
       } as any
     };
 
+    // If probability is low, calculate improvement recommendations
+    if (probabilityPercentage < 80 && throughputConfig) {
+      const improvementRecommendation = this.calculateImprovementRecommendation(
+        probabilityPercentage,
+        80, // Target 80% probability
+        throughputConfig,
+        simConfig,
+        targetDate
+      );
+      probabilityResult.improvementRecommendation = improvementRecommendation;
+    }
+
     return probabilityResult;
+  }
+
+  /**
+   * Calculate throughput improvement needed to achieve target probability
+   */
+  private static calculateImprovementRecommendation(
+    currentProbability: number,
+    targetProbability: number,
+    throughputConfig: ThroughputConfig,
+    simConfig: SimulationConfig,
+    targetDate: Date
+  ): ImprovementRecommendation {
+    const originalThroughput = throughputConfig.averageThroughput || 
+      (throughputConfig.historicalThroughput?.reduce((a, b) => a + b, 0) || 0) / (throughputConfig.historicalThroughput?.length || 1);
+    
+    // Convert to display units based on timeUnit
+    const displayThroughput = throughputConfig.timeUnit === 'daily' ? originalThroughput / 7 : originalThroughput;
+    const displayUnit = throughputConfig.timeUnit || 'weekly';
+
+    // Binary search for required throughput multiplier
+    let low = 1.0;
+    let high = 3.0; // Up to 200% increase
+    let bestMultiplier = high;
+    
+    for (let iteration = 0; iteration < 20; iteration++) {
+      const multiplier = (low + high) / 2;
+      
+      // Create modified config with increased throughput
+      const testConfig: ThroughputConfig = {
+        ...throughputConfig,
+        averageThroughput: throughputConfig.averageThroughput ? 
+          throughputConfig.averageThroughput * multiplier : undefined,
+        historicalThroughput: throughputConfig.historicalThroughput ? 
+          throughputConfig.historicalThroughput.map(val => val * multiplier) : undefined
+      };
+      
+      // Run simulation with increased throughput (without recursion)
+      const testResult = this.calculateProbabilityOnly(
+        simConfig, targetDate, testConfig
+      );
+      
+      const testProbability = (testResult.statistics as any).probabilityPercentage;
+      
+      if (testProbability >= targetProbability) {
+        bestMultiplier = multiplier;
+        high = multiplier;
+      } else {
+        low = multiplier;
+      }
+      
+      // Early exit if we found a good solution
+      if (Math.abs(testProbability - targetProbability) < 2) {
+        bestMultiplier = multiplier;
+        break;
+      }
+    }
+    
+    const requiredIncrease = Math.round((bestMultiplier - 1) * 100);
+    const recommendedThroughput = displayThroughput * bestMultiplier;
+    
+    return {
+      currentProbability,
+      targetProbability,
+      requiredThroughputIncrease: requiredIncrease,
+      currentThroughput: displayThroughput,
+      recommendedThroughput,
+      timeUnit: displayUnit as 'daily' | 'weekly'
+    };
+  }
+
+  /**
+   * Helper method to calculate probability without improvement recommendations (avoids recursion)
+   */
+  private static calculateProbabilityOnly(
+    simConfig: SimulationConfig,
+    targetDate: Date,
+    throughputConfig: ThroughputConfig
+  ): ForecastResult {
+    const standardResult = this.forecastByThroughput(throughputConfig, simConfig);
+    
+    const targetDays = Math.ceil((targetDate.getTime() - simConfig.startDate.getTime()) / (24 * 60 * 60 * 1000));
+    const completionDays = standardResult.completionDates.map(date => 
+      Math.ceil((date.getTime() - simConfig.startDate.getTime()) / (24 * 60 * 60 * 1000))
+    );
+    
+    const successfulCompletions = completionDays.filter(days => days <= targetDays).length;
+    const probabilityPercentage = Math.round((successfulCompletions / completionDays.length) * 100);
+
+    return {
+      ...standardResult,
+      statistics: {
+        ...standardResult.statistics,
+        probabilityPercentage,
+        targetDays,
+        successfulCompletions,
+        totalSimulations: completionDays.length
+      } as any
+    };
   }
 
   /**

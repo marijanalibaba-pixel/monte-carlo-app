@@ -340,6 +340,87 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
               </div>
             </CardContent>
           </Card>
+
+          {/* Improvement Recommendations - Show when probability is low */}
+          {result.improvementRecommendation && (
+            <Card className="border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center space-x-2 text-amber-800 dark:text-amber-200">
+                  <TrendingUp className="w-5 h-5" />
+                  <span>Improvement Recommendations</span>
+                </CardTitle>
+                <CardDescription>
+                  Throughput changes needed to reach {result.improvementRecommendation.targetProbability}% probability of success
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="bg-amber-100/60 dark:bg-amber-950/40 rounded-lg p-4 border border-amber-200/60 dark:border-amber-800/60">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-amber-700 dark:text-amber-300">Current Situation</p>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-2xl font-bold text-amber-800 dark:text-amber-200">
+                            {result.improvementRecommendation.currentThroughput.toFixed(1)}
+                          </span>
+                          <span className="text-sm text-amber-600 dark:text-amber-400">
+                            items/{result.improvementRecommendation.timeUnit === 'daily' ? 'day' : 'week'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-amber-600 dark:text-amber-400">
+                          {result.improvementRecommendation.currentProbability}% success probability
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-amber-700 dark:text-amber-300">Recommended Target</p>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-2xl font-bold text-green-700 dark:text-green-300">
+                            {result.improvementRecommendation.recommendedThroughput.toFixed(1)}
+                          </span>
+                          <span className="text-sm text-green-600 dark:text-green-400">
+                            items/{result.improvementRecommendation.timeUnit === 'daily' ? 'day' : 'week'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-green-600 dark:text-green-400">
+                          {result.improvementRecommendation.targetProbability}% success probability
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/60 dark:bg-slate-800/60 rounded-lg p-4 text-center">
+                    <div className="flex items-center justify-center space-x-2 mb-2">
+                      <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Required Increase
+                      </span>
+                    </div>
+                    <div className="text-3xl font-bold text-green-700 dark:text-green-300">
+                      +{result.improvementRecommendation.requiredThroughputIncrease}%
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                      throughput improvement needed
+                    </p>
+                  </div>
+                  
+                  <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center">
+                      <Lightbulb className="w-4 h-4 mr-2" />
+                      Ways to Improve Throughput
+                    </h4>
+                    <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
+                      <li>Reduce work-in-progress (WIP) limits to improve flow</li>
+                      <li>Eliminate blockers and bottlenecks in your process</li>
+                      <li>Add team capacity or cross-train team members</li>
+                      <li>Simplify or break down large work items</li>
+                      <li>Improve team collaboration and reduce handoffs</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
 

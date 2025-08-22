@@ -63,6 +63,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
   const [weeklyCapacity, setWeeklyCapacity] = useState(20);
   const [useCapacityLimit, setUseCapacityLimit] = useState(false);
   const [dataSourceType, setDataSourceType] = useState<'historical' | 'statistical'>('historical');
+  const [timeUnit, setTimeUnit] = useState<'daily' | 'weekly'>('weekly');
   
   // Cycle time parameters
   const [p50CycleTime, setP50CycleTime] = useState(3);
@@ -109,14 +110,30 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
     };
     
     if (forecastType === 'throughput') {
-      const historicalThroughput = dataSourceType === 'historical' && historicalData ? parseHistoricalData(historicalData) : undefined;
+      let processedHistoricalData = dataSourceType === 'historical' && historicalData ? parseHistoricalData(historicalData) : undefined;
+      let processedAverageThroughput = dataSourceType === 'statistical' ? averageThroughput : undefined;
+      let processedWeeklyCapacity = useCapacityLimit ? weeklyCapacity : undefined;
+      
+      // Convert daily inputs to weekly (multiply by 7) for internal calculations
+      if (timeUnit === 'daily') {
+        if (processedHistoricalData) {
+          processedHistoricalData = processedHistoricalData.map(val => val * 7);
+        }
+        if (processedAverageThroughput) {
+          processedAverageThroughput = processedAverageThroughput * 7;
+        }
+        if (processedWeeklyCapacity) {
+          processedWeeklyCapacity = processedWeeklyCapacity * 7;
+        }
+      }
       
       const throughputConfig: ThroughputConfig = {
         backlogSize,
-        historicalThroughput,
-        averageThroughput: dataSourceType === 'statistical' ? averageThroughput : undefined,
+        historicalThroughput: processedHistoricalData,
+        averageThroughput: processedAverageThroughput,
         throughputVariability: dataSourceType === 'statistical' ? throughputVariability : undefined,
-        weeklyCapacity: useCapacityLimit ? weeklyCapacity : undefined
+        weeklyCapacity: processedWeeklyCapacity,
+        timeUnit: timeUnit // Add time unit for display purposes
       };
       
       onForecast(throughputConfig, undefined, simConfig, mode !== 'forecast' ? targetDate : undefined);
@@ -298,8 +315,40 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   Team Velocity Modeling
                 </h4>
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  Models how many items your team completes per week using historical patterns or statistical parameters.
+                  Models how many items your team completes per {timeUnit === 'daily' ? 'day' : 'week'} using historical patterns or statistical parameters.
                 </p>
+              </div>
+
+              {/* Time Unit Selection */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold">Time Unit</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <Card 
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${timeUnit === 'weekly' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    onClick={() => setTimeUnit('weekly')}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-3 h-3 rounded-full border-2 transition-all ${timeUnit === 'weekly' ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`} />
+                        <h4 className="font-semibold text-sm">Weekly</h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">Items per week</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card 
+                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${timeUnit === 'daily' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    onClick={() => setTimeUnit('daily')}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-3 h-3 rounded-full border-2 transition-all ${timeUnit === 'daily' ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`} />
+                        <h4 className="font-semibold text-sm">Daily</h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">Items per day</p>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
 
               {/* Data Source Selection */}
@@ -321,7 +370,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                         <Badge variant="outline" className="text-xs">Recommended</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Use your actual weekly completion data (most recent first) for authentic patterns
+                        Use your actual {timeUnit} completion data (most recent first) for authentic patterns
                       </p>
                     </CardContent>
                   </Card>
@@ -365,7 +414,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                 {dataSourceType === 'historical' && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-base font-semibold">Historical Weekly Data</Label>
+                      <Label className="text-base font-semibold">Historical {timeUnit === 'daily' ? 'Daily' : 'Weekly'} Data</Label>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -382,10 +431,10 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       className="h-24 resize-none"
                     />
                     <p className="text-sm text-muted-foreground">
-                      <strong>Enter in reverse chronological order:</strong> Start with last week's throughput, then the week before, and so on.
+                      <strong>Enter in reverse chronological order:</strong> Start with last {timeUnit === 'daily' ? 'day' : 'week'}'s throughput, then the {timeUnit === 'daily' ? 'day' : 'week'} before, and so on.
                       {historicalData && (
                         <span className="font-medium text-blue-600 dark:text-blue-400">
-                          {` Found ${parseHistoricalData(historicalData).length} weeks of data`}
+                          {` Found ${parseHistoricalData(historicalData).length} ${timeUnit === 'daily' ? 'days' : 'weeks'} of data`}
                         </span>
                       )}
                     </p>
@@ -396,7 +445,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                 {dataSourceType === 'statistical' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
                     <div className="space-y-3">
-                      <Label>Average Weekly Throughput</Label>
+                      <Label>Average {timeUnit === 'daily' ? 'Daily' : 'Weekly'} Throughput</Label>
                       <Input
                         type="number"
                         step="0.1"
@@ -404,7 +453,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                         onChange={(e) => setAverageThroughput(parseFloat(e.target.value) || 0)}
                         className="text-lg"
                       />
-                      <p className="text-xs text-muted-foreground">Mean items completed per week</p>
+                      <p className="text-xs text-muted-foreground">Mean items completed per {timeUnit === 'daily' ? 'day' : 'week'}</p>
                     </div>
 
                     <div className="space-y-3">
