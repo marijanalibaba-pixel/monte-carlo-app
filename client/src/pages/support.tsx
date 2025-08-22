@@ -207,8 +207,16 @@ export function Support() {
                               <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">Recommended</Badge>
                               <ul className="list-disc list-inside space-y-1 text-sm">
                                 <li><strong>Throughput Variability:</strong> Coefficient of variation (CV) - typically 0.2-0.4</li>
-                                <li><strong>Historical Data:</strong> Past throughput values for automatic CV calculation</li>
+                                <li><strong>Historical Data:</strong> Past throughput values for automatic CV calculation and trend analysis</li>
                                 <li><strong>Weekly Capacity:</strong> Maximum items the team can handle per week</li>
+                              </ul>
+                            </div>
+                            <div className="space-y-2">
+                              <Badge variant="outline" className="bg-indigo-50 border-indigo-200 text-indigo-700">Trend Analysis</Badge>
+                              <ul className="list-disc list-inside space-y-1 text-sm">
+                                <li><strong>Historical Throughput:</strong> Enter 4+ weeks of historical data (e.g., "10, 8, 12, 15, 11") to get automatic trend analysis</li>
+                                <li><strong>Trend Insights:</strong> Shows if your team performance is improving, declining, or stable over time</li>
+                                <li><strong>Performance Context:</strong> Helps interpret forecast results with team performance direction</li>
                               </ul>
                             </div>
                           </CardContent>
@@ -359,6 +367,26 @@ export function Support() {
                               <li><strong>Steep sections:</strong> High probability of completion in that timeframe</li>
                               <li><strong>Flat sections:</strong> Low probability of completion in that timeframe</li>
                             </ul>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="trend-analysis">
+                        <AccordionTrigger className="flex items-center">
+                          <TrendingUp className="w-4 h-4 mr-2" />
+                          Historical Throughput Trends
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-sm">
+                            <p>When you use historical throughput data, the system automatically analyzes performance trends:</p>
+                            <ul className="list-disc list-inside space-y-1 ml-4">
+                              <li><strong>Trend Direction:</strong> Shows if team performance is increasing, decreasing, or stable</li>
+                              <li><strong>Trend Strength:</strong> Indicates how significant the trend is (weak, moderate, strong)</li>
+                              <li><strong>Recent vs Overall:</strong> Compares recent performance to historical average</li>
+                              <li><strong>Recommendations:</strong> Provides context-specific advice for forecast interpretation</li>
+                            </ul>
+                            <div className="bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800 rounded-lg p-3 mt-3">
+                              <p className="text-indigo-700 dark:text-indigo-300"><strong>Note:</strong> Trend analysis appears in all analysis modes (Forecast, Probability, Target) when historical data is used. It provides valuable context but doesn't change the forecast calculations.</p>
+                            </div>
                           </div>
                         </AccordionContent>
                       </AccordionItem>
