@@ -648,7 +648,7 @@ export function AdvancedVisualization({ result, startDate, mode = 'forecast', ta
       </div>
       )}
 
-      {/* Throughput Trends Analysis - Show when available */}
+      {/* Throughput Trends Analysis - Show when available in any mode */}
       {result.throughputTrends && (
         <Card className="border-indigo-200 dark:border-indigo-800">
           <CardHeader>

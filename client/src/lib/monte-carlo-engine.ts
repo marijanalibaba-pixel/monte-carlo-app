@@ -669,6 +669,7 @@ export class MonteCarloEngine {
     // Create special result object with probability info
     const probabilityResult: ForecastResult = {
       ...standardResult,
+      throughputTrends: standardResult.throughputTrends, // Preserve trend analysis
       statistics: {
         ...standardResult.statistics,
         // Add probability as a special statistic
@@ -738,6 +739,7 @@ export class MonteCarloEngine {
     // Create special result with start date recommendations
     const targetResult: ForecastResult = {
       ...baselineResult,
+      throughputTrends: baselineResult.throughputTrends, // Preserve trend analysis
       statistics: {
         ...baselineResult.statistics,
         targetDate: targetDate,
