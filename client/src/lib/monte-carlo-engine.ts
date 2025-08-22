@@ -319,7 +319,11 @@ export class MonteCarloEngine {
     // Analyze trends if historical data is provided
     let throughputTrends: ThroughputTrendAnalysis | undefined;
     if (config.historicalThroughput && config.historicalThroughput.length >= 3) {
+      console.log('Processing historical throughput data for trends:', config.historicalThroughput);
       throughputTrends = StatisticalUtils.analyzeThroughputTrends(config.historicalThroughput);
+      console.log('Generated throughput trends:', throughputTrends);
+    } else {
+      console.log('Skipping trend analysis - no historical data or insufficient data points');
     }
     
     for (let trial = 0; trial < simConfig.trials; trial++) {

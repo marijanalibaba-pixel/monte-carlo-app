@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { track } from '@vercel/analytics';
 import { Link } from "wouter";
-import { exportToPDF, exportToCSV, exportChartsAsImages, ExportData } from "@/lib/export-utils";
+import { exportToPDF, exportToCSV, ExportData } from "@/lib/export-utils";
 import { MonteCarloEngine, ThroughputConfig, CycleTimeConfig, SimulationConfig, ForecastResult } from "@/lib/monte-carlo-engine";
 import { ForecastScenario } from "@/lib/forecast-comparison";
 import { AdvancedInputForm } from "@/components/advanced-input-form";
@@ -195,20 +195,6 @@ export function AdvancedDashboard() {
     await exportToCSV(exportData);
   };
 
-  const handleExportCharts = async () => {
-    if (!result || !lastConfig) return;
-    
-    const exportData: ExportData = {
-      result,
-      startDate: lastConfig.startDate,
-      inputParameters: {
-        backlogSize: lastConfig.parameters?.backlogSize || 100,
-        trials: result.statistics ? 10000 : 1000,
-        forecastType: lastConfig.type
-      }
-    };
-    await exportChartsAsImages(exportData);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -455,10 +441,6 @@ export function AdvancedDashboard() {
                     <DropdownMenuItem onClick={handleExportToCSV}>
                       <Download className="w-4 h-4 mr-2" />
                       Export CSV Data
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleExportCharts}>
-                      <Image className="w-4 h-4 mr-2" />
-                      Export Chart Images
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
