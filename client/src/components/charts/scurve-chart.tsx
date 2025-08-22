@@ -75,7 +75,7 @@ export function SCurveChart({ results, startDate }: SCurveChartProps) {
       <div className="h-80 relative">
         {hoveredData && (
           <div 
-            className="absolute top-4 right-4 bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl z-10 
+            className="absolute top-4 right-4 bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl z-10 "
                        animate-fadeInSlide backdrop-blur-sm border border-gray-700"
           >
             <div className="text-sm font-semibold">Day {hoveredData.days}</div>
