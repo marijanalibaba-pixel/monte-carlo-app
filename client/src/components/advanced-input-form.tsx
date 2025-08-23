@@ -66,12 +66,12 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
   const [timeUnit, setTimeUnit] = useState<'daily' | 'weekly'>('weekly');
   
   // Cycle time parameters
-  const [p50CycleTime, setP50CycleTime] = useState(3);
-  const [p80CycleTime, setP80CycleTime] = useState(7);
-  const [p95CycleTime, setP95CycleTime] = useState(14);
+  const [p50CycleTime, setP50CycleTime] = useState<number | string>(3);
+  const [p80CycleTime, setP80CycleTime] = useState<number | string>(7);
+  const [p95CycleTime, setP95CycleTime] = useState<number | string>(14);
   const [workingDaysPerWeek, setWorkingDaysPerWeek] = useState(5);
   const [processingMode, setProcessingMode] = useState<'batch-max' | 'worker-scheduling'>('worker-scheduling');
-  const [wipLimit, setWipLimit] = useState(7);
+  const [wipLimit, setWipLimit] = useState<number | string>(7);
   
   // Advanced options
   const [includeDependencies, setIncludeDependencies] = useState(false);
@@ -140,12 +140,12 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
     } else {
       const cycleTimeConfig: CycleTimeConfig = {
         backlogSize,
-        p50CycleTime,
-        p80CycleTime,
-        p95CycleTime,
+        p50CycleTime: typeof p50CycleTime === 'string' ? 3 : p50CycleTime || 3,
+        p80CycleTime: typeof p80CycleTime === 'string' ? 7 : p80CycleTime || 7,
+        p95CycleTime: typeof p95CycleTime === 'string' ? 14 : p95CycleTime || 14,
         workingDaysPerWeek,
         processingMode,
-        wipLimit
+        wipLimit: typeof wipLimit === 'string' ? 7 : wipLimit || 7
       };
       
       onForecast(undefined, cycleTimeConfig, simConfig, mode !== 'forecast' ? targetDate : undefined);
@@ -185,15 +185,10 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                 value={backlogSize}
                 onChange={(e) => {
                   const value = e.target.value;
-                  if (value === '' || value === '0') {
+                  if (value === '') {
                     setBacklogSize(0);
                   } else {
                     setBacklogSize(parseInt(value) || 0);
-                  }
-                }}
-                onFocus={(e) => {
-                  if (e.target.value === '0') {
-                    e.target.select();
                   }
                 }}
                 className="text-lg"
@@ -464,15 +459,10 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                         value={averageThroughput}
                         onChange={(e) => {
                           const value = e.target.value;
-                          if (value === '' || value === '0') {
+                          if (value === '') {
                             setAverageThroughput(0);
                           } else {
                             setAverageThroughput(parseFloat(value) || 0);
-                          }
-                        }}
-                        onFocus={(e) => {
-                          if (e.target.value === '0') {
-                            e.target.select();
                           }
                         }}
                         className="text-lg"
@@ -593,14 +583,9 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       onChange={(e) => {
                         const value = e.target.value;
                         if (value === '') {
-                          setWipLimit(7);
+                          setWipLimit('');
                         } else {
-                          setWipLimit(parseInt(value) || 7);
-                        }
-                      }}
-                      onFocus={(e) => {
-                        if (e.target.value === '7') {
-                          e.target.select();
+                          setWipLimit(parseInt(value) || 0);
                         }
                       }}
                       min={1}
@@ -617,15 +602,10 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       value={p50CycleTime}
                       onChange={(e) => {
                         const value = e.target.value;
-                        if (value === '' || value === '0') {
-                          setP50CycleTime(0);
+                        if (value === '') {
+                          setP50CycleTime('');
                         } else {
                           setP50CycleTime(parseFloat(value) || 0);
-                        }
-                      }}
-                      onFocus={(e) => {
-                        if (e.target.value === '0') {
-                          e.target.select();
                         }
                       }}
                     />
@@ -640,15 +620,10 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       value={p80CycleTime}
                       onChange={(e) => {
                         const value = e.target.value;
-                        if (value === '' || value === '0') {
-                          setP80CycleTime(0);
+                        if (value === '') {
+                          setP80CycleTime('');
                         } else {
                           setP80CycleTime(parseFloat(value) || 0);
-                        }
-                      }}
-                      onFocus={(e) => {
-                        if (e.target.value === '0') {
-                          e.target.select();
                         }
                       }}
                     />
@@ -663,15 +638,10 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       value={p95CycleTime}
                       onChange={(e) => {
                         const value = e.target.value;
-                        if (value === '' || value === '0') {
-                          setP95CycleTime(0);
+                        if (value === '') {
+                          setP95CycleTime('');
                         } else {
                           setP95CycleTime(parseFloat(value) || 0);
-                        }
-                      }}
-                      onFocus={(e) => {
-                        if (e.target.value === '0') {
-                          e.target.select();
                         }
                       }}
                     />
