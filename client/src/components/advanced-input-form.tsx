@@ -183,7 +183,19 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               <Input
                 type="number"
                 value={backlogSize}
-                onChange={(e) => setBacklogSize(parseInt(e.target.value) || 0)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '' || value === '0') {
+                    setBacklogSize(0);
+                  } else {
+                    setBacklogSize(parseInt(value) || 0);
+                  }
+                }}
+                onFocus={(e) => {
+                  if (e.target.value === '0') {
+                    e.target.select();
+                  }
+                }}
                 className="text-lg"
               />
               <p className="text-sm text-muted-foreground">Total items to complete</p>
@@ -450,7 +462,19 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                         type="number"
                         step="0.1"
                         value={averageThroughput}
-                        onChange={(e) => setAverageThroughput(parseFloat(e.target.value) || 0)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === '' || value === '0') {
+                            setAverageThroughput(0);
+                          } else {
+                            setAverageThroughput(parseFloat(value) || 0);
+                          }
+                        }}
+                        onFocus={(e) => {
+                          if (e.target.value === '0') {
+                            e.target.select();
+                          }
+                        }}
                         className="text-lg"
                       />
                       <p className="text-xs text-muted-foreground">Mean items completed per {timeUnit === 'daily' ? 'day' : 'week'}</p>
@@ -566,7 +590,19 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                     <Input
                       type="number"
                       value={wipLimit}
-                      onChange={(e) => setWipLimit(parseInt(e.target.value) || 7)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '') {
+                          setWipLimit(7);
+                        } else {
+                          setWipLimit(parseInt(value) || 7);
+                        }
+                      }}
+                      onFocus={(e) => {
+                        if (e.target.value === '7') {
+                          e.target.select();
+                        }
+                      }}
                       min={1}
                       max={20}
                     />
@@ -579,7 +615,19 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       type="number"
                       step="0.5"
                       value={p50CycleTime}
-                      onChange={(e) => setP50CycleTime(parseFloat(e.target.value) || 0)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || value === '0') {
+                          setP50CycleTime(0);
+                        } else {
+                          setP50CycleTime(parseFloat(value) || 0);
+                        }
+                      }}
+                      onFocus={(e) => {
+                        if (e.target.value === '0') {
+                          e.target.select();
+                        }
+                      }}
                     />
                     <p className="text-xs text-muted-foreground">Median time</p>
                   </div>
@@ -590,7 +638,19 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       type="number"
                       step="0.5"
                       value={p80CycleTime}
-                      onChange={(e) => setP80CycleTime(parseFloat(e.target.value) || 0)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || value === '0') {
+                          setP80CycleTime(0);
+                        } else {
+                          setP80CycleTime(parseFloat(value) || 0);
+                        }
+                      }}
+                      onFocus={(e) => {
+                        if (e.target.value === '0') {
+                          e.target.select();
+                        }
+                      }}
                     />
                     <p className="text-xs text-muted-foreground">80th percentile</p>
                   </div>
@@ -601,20 +661,42 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       type="number"
                       step="0.5"
                       value={p95CycleTime}
-                      onChange={(e) => setP95CycleTime(parseFloat(e.target.value) || 0)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || value === '0') {
+                          setP95CycleTime(0);
+                        } else {
+                          setP95CycleTime(parseFloat(value) || 0);
+                        }
+                      }}
+                      onFocus={(e) => {
+                        if (e.target.value === '0') {
+                          e.target.select();
+                        }
+                      }}
                     />
                     <p className="text-xs text-muted-foreground">95th percentile</p>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <Label>Working Days/Week</Label>
-                    <Input
-                      type="number"
-                      value={workingDaysPerWeek}
-                      onChange={(e) => setWorkingDaysPerWeek(parseInt(e.target.value) || 5)}
-                      min={1}
-                      max={7}
-                    />
+                    <div className="space-y-2">
+                      <Slider
+                        value={[workingDaysPerWeek]}
+                        onValueChange={(value) => setWorkingDaysPerWeek(value[0])}
+                        min={1}
+                        max={7}
+                        step={1}
+                      />
+                      <div className="flex justify-between items-center text-xs text-muted-foreground">
+                        <span>1 day</span>
+                        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 py-1.5 rounded-lg shadow-lg">
+                          <span className="text-base font-bold">{workingDaysPerWeek}</span>
+                          <span className="text-xs ml-1 opacity-90">days</span>
+                        </div>
+                        <span>7 days</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
