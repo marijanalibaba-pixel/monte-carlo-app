@@ -75,9 +75,9 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
 
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="chart-container p-6">
       <h4 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-        <BarChart3 className="text-[hsl(var(--primary-500))] mr-2 h-4 w-4" />
+        <BarChart3 className="text-primary mr-2 h-4 w-4" />
         Completion Distribution (Histogram)
       </h4>
       <div className="h-80 relative">
@@ -112,34 +112,34 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
               labelFormatter={(value) => `Day ${value}`}
             />
             <Bar 
-              dataKey="count" 
-              fill="hsl(var(--primary-500))" 
-              fillOpacity={0.6}
+              dataKey="count"
+              fill="hsl(var(--chart-1))"
+              fillOpacity={0.7}
               stroke="hsl(var(--primary-600))"
               strokeWidth={1}
             />
             <ReferenceLine 
               x={p50Days} 
-              stroke="#3b82f6" 
+              stroke="hsl(var(--chart-1))"
               strokeWidth={6} 
               strokeDasharray="12 6" 
-              label={{ value: `P50`, position: "top", style: { fill: "#3b82f6", fontWeight: "bold", fontSize: "14px" } }}
+              label={{ value: `P50`, position: "top", style: { fill: "hsl(var(--chart-1))", fontWeight: "bold", fontSize: "14px" } }}
               strokeOpacity={0.9}
             />
             <ReferenceLine 
               x={p80Days} 
-              stroke="#f59e0b" 
+              stroke="hsl(var(--chart-3))"
               strokeWidth={6} 
               strokeDasharray="12 6" 
-              label={{ value: `P80`, position: "top", style: { fill: "#f59e0b", fontWeight: "bold", fontSize: "14px" } }}
+              label={{ value: `P80`, position: "top", style: { fill: "hsl(var(--chart-3))", fontWeight: "bold", fontSize: "14px" } }}
               strokeOpacity={0.9}
             />
             <ReferenceLine 
               x={p95Days} 
-              stroke="#10b981" 
+              stroke="hsl(var(--chart-2))"
               strokeWidth={6} 
               strokeDasharray="12 6" 
-              label={{ value: `P95`, position: "top", style: { fill: "#10b981", fontWeight: "bold", fontSize: "14px" } }}
+              label={{ value: `P95`, position: "top", style: { fill: "hsl(var(--chart-2))", fontWeight: "bold", fontSize: "14px" } }}
               strokeOpacity={0.9}
             />
           </BarChart>
@@ -152,15 +152,15 @@ export function HistogramChart({ results, startDate }: HistogramChartProps) {
         </div>
         <div className="flex gap-4 text-xs">
           <span className="flex items-center gap-1">
-            <div className="w-3 h-0.5 bg-blue-500"></div>
+            <div className="w-3 h-0.5 bg-chart-1"></div>
             P50 ({p50Days}d)
           </span>
           <span className="flex items-center gap-1">
-            <div className="w-3 h-0.5 bg-amber-500"></div>
+            <div className="w-3 h-0.5 bg-chart-3"></div>
             P80 ({p80Days}d)
           </span>
           <span className="flex items-center gap-1">
-            <div className="w-3 h-0.5 bg-emerald-500"></div>
+            <div className="w-3 h-0.5 bg-chart-2"></div>
             P95 ({p95Days}d)
           </span>
         </div>

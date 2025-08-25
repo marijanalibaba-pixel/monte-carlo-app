@@ -362,7 +362,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'historical' ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${dataSourceType === 'historical' ? 'border-primary bg-primary-50 dark:bg-primary-950/20 shadow-md' : 'border-border hover:border-primary/50'}`}
                     onClick={() => {
                       setDataSourceType('historical');
                       if (dataSourceType !== 'historical') {
@@ -372,9 +372,9 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${dataSourceType === 'historical' ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${dataSourceType === 'historical' ? 'bg-primary border-primary' : 'border-muted-foreground/30'}`} />
                         <h4 className="font-semibold">Historical Data</h4>
-                        <Badge variant="outline" className="text-xs">Recommended</Badge>
+                        <Badge className="text-xs bg-success-50 text-success-700 border-success-200">Recommended</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         Use your actual {timeUnit} completion data (most recent first) for authentic patterns
@@ -383,7 +383,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   </Card>
                   
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${dataSourceType === 'statistical' ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${dataSourceType === 'statistical' ? 'border-primary bg-primary-50 dark:bg-primary-950/20 shadow-md' : 'border-border hover:border-primary/50'}`}
                     onClick={() => {
                       setDataSourceType('statistical');
                       setHistoricalData("");
@@ -391,7 +391,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${dataSourceType === 'statistical' ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}`} />
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${dataSourceType === 'statistical' ? 'bg-primary border-primary' : 'border-muted-foreground/30'}`} />
                         <h4 className="font-semibold">Statistical Parameters</h4>
                       </div>
                       <p className="text-sm text-muted-foreground">
@@ -402,9 +402,9 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                 </div>
 
                 {/* Current Calculation Method Indicator */}
-                <div className={`p-4 rounded-lg border-l-4 ${dataSourceType === 'historical' ? 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
+                <div className={`p-4 rounded-lg border-l-4 transition-all duration-200 ${dataSourceType === 'historical' ? 'border-l-primary bg-primary-50 dark:bg-primary-950/20' : 'border-l-warning bg-warning-50 dark:bg-warning-950/20'}`}>
                   <div className="flex items-center space-x-2 mb-2">
-                    <div className={`w-3 h-3 rounded-full ${dataSourceType === 'historical' ? 'bg-blue-500' : 'bg-orange-500'}`} />
+                    <div className={`w-3 h-3 rounded-full ${dataSourceType === 'historical' ? 'bg-primary' : 'bg-warning'}`} />
                     <h4 className="font-semibold">
                       {dataSourceType === 'historical' ? 'Using Bootstrap Sampling' : 'Using Statistical Distribution'}
                     </h4>
@@ -526,14 +526,14 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'worker-scheduling' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${processingMode === 'worker-scheduling' ? 'border-success bg-success-50 dark:bg-success-950/20 shadow-md' : 'border-border hover:border-success/50'}`}
                     onClick={() => setProcessingMode('worker-scheduling')}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${processingMode === 'worker-scheduling' ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`} />
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${processingMode === 'worker-scheduling' ? 'bg-success border-success' : 'border-muted-foreground/30'}`} />
                         <h4 className="font-semibold">Worker Scheduling</h4>
-                        <Badge variant="outline" className="text-xs">Recommended</Badge>
+                        <Badge className="text-xs bg-success-50 text-success-700 border-success-200">Recommended</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         Items assigned to earliest available team member. More realistic and faster results.
@@ -542,12 +542,12 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                   </Card>
                   
                   <Card 
-                    className={`cursor-pointer border-2 transition-all hover:shadow-md ${processingMode === 'batch-max' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer border-2 transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${processingMode === 'batch-max' ? 'border-success bg-success-50 dark:bg-success-950/20 shadow-md' : 'border-border hover:border-success/50'}`}
                     onClick={() => setProcessingMode('batch-max')}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${processingMode === 'batch-max' ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`} />
+                        <div className={`w-4 h-4 rounded-full border-2 transition-all ${processingMode === 'batch-max' ? 'bg-success border-success' : 'border-muted-foreground/30'}`} />
                         <h4 className="font-semibold">Batch Processing</h4>
                       </div>
                       <p className="text-sm text-muted-foreground">
@@ -558,9 +558,9 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                 </div>
 
                 {/* Current Processing Mode Indicator */}
-                <div className={`p-4 rounded-lg border-l-4 ${processingMode === 'worker-scheduling' ? 'border-l-emerald-500 bg-emerald-50 dark:bg-emerald-950/20' : 'border-l-orange-500 bg-orange-50 dark:bg-orange-950/20'}`}>
+                <div className={`p-4 rounded-lg border-l-4 transition-all duration-200 ${processingMode === 'worker-scheduling' ? 'border-l-success bg-success-50 dark:bg-success-950/20' : 'border-l-warning bg-warning-50 dark:bg-warning-950/20'}`}>
                   <div className="flex items-center space-x-2 mb-2">
-                    <div className={`w-3 h-3 rounded-full ${processingMode === 'worker-scheduling' ? 'bg-emerald-500' : 'bg-orange-500'}`} />
+                    <div className={`w-3 h-3 rounded-full ${processingMode === 'worker-scheduling' ? 'bg-success' : 'bg-warning'}`} />
                     <h4 className="font-semibold">
                       {processingMode === 'worker-scheduling' ? 'Using Worker Scheduling' : 'Using Batch Processing'}
                     </h4>
@@ -660,7 +660,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
                       />
                       <div className="flex justify-between items-center text-xs text-muted-foreground">
                         <span>1 day</span>
-                        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 py-1.5 rounded-lg shadow-lg">
+                        <div className="bg-gradient-primary text-white px-3 py-1.5 rounded-lg shadow-lg">
                           <span className="text-base font-bold">{workingDaysPerWeek}</span>
                           <span className="text-xs ml-1 opacity-90">days</span>
                         </div>
@@ -704,12 +704,12 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
               </div>
               
               {/* Dependency Modeling Explanation */}
-              <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center">
+              <div className="bg-info-50 dark:bg-info-950/20 rounded-lg p-4 border border-info-200 dark:border-info-800 transition-all duration-200">
+                <h4 className="font-semibold text-info-900 dark:text-info-100 mb-2 flex items-center">
                   <Target className="w-4 h-4 mr-2" />
                   What is Dependency Modeling?
                 </h4>
-                <div className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+                <div className="text-sm text-info-800 dark:text-info-200 space-y-2">
                   <p>
                     <strong>Dependencies</strong> are external factors that can delay your project beyond normal work variation:
                   </p>
@@ -786,7 +786,7 @@ export function AdvancedInputForm({ mode, onForecast, isRunning }: AdvancedInput
           onClick={handleSubmit}
           disabled={isRunning}
           size="lg"
-          className="w-full md:w-auto px-12 py-6 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+          className="w-full md:w-auto px-12 py-6 text-lg bg-gradient-primary hover:shadow-lg hover:scale-105 transition-all duration-200"
         >
           {isRunning ? (
             <div className="flex items-center space-x-3">
